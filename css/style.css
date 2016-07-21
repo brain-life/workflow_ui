@@ -1,0 +1,12 @@
+body {
+  background-color: #eee;
+}
+.container .page {
+  background-color: white;
+  box-shadow: 0 0 5px #ccc;
+  padding: 20px;
+}
+li.clickable:hover {
+  cursor: pointer;
+  background-color: #ddd !important;
+}

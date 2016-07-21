@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="PageController as page">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Connectome Evaluator / Life Tracking</title>
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootswatch/yeti/bootstrap.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.min.css">
+    <link rel="stylesheet" href="bower_components/angularjs-toaster/toaster.min.css">
+    <link rel="stylesheet" href="bower_components/angular/angular-csp.css">
+    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
+
+    <link rel="stylesheet" href="bower_components/sca-ng-wf/ui/css/style.css">
+
+    <link rel="stylesheet" href="/shared/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <sca-menubar header="menu.header" menu="menu.top" active="'wf'" profile="menu._profile" user="menu.user"></sca-menubar>
+    <toaster-container toaster-options="{'position-class': 'toast-bottom-full-width'}"></toaster-container>
+    <ng-view></ng-view><!-- <ng-view/> will cause route looping-->
+    <ng-include src="'t/footer.html'"></ng-include> <!--should this be part of view?-->
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script><!--bootstrap requires jquery-->
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-jwt/dist/angular-jwt.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script src="bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="bower_components/angularjs-toaster/toaster.min.js"></script>
+    <script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
+
+    <script src="config.js"></script>
+
+    <!-- TODO make this configurable? don't forget the shared/css/style.css -->
+    <script src="/shared/config.js"></script> 
+    <script src="/shared/dist/shared.js"></script> 
+
+    <script src="bower_components/sca-ng-wf/ui/js/wf.js"></script>
+    <script src="bower_components/sca-product-raw/ui/raw.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+</body>
+</html>
+
