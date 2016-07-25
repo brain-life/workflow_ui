@@ -74,6 +74,18 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
         controller: 'TaskController',
         requiresLogin: true
     })
+
+    .when('/input/:type', {
+        templateUrl: 't/input.html',
+        controller: 'InputController',
+        requiresLogin: true
+    })
+    .when('/import/:taskid', {
+        templateUrl: 't/import.html',
+        controller: 'ImportController',
+        requiresLogin: true
+    })
+
     .otherwise({
         redirectTo: '/submit'
     });
@@ -147,7 +159,7 @@ function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
 app.factory('instance', ['appconf', '$http', 'jwtHelper', 'toaster',
 function(appconf, $http, jwtHelper, toaster) {
     console.log("getting test instance");
-    var workflow_id = "sca-wf-jouncy"; //TODO - need to match the workflow_id registered on server..
+    var workflow_id = "sca-wf-conneval"; //needs to match package.json/name
     return $http.get(appconf.wf_api+'/instance', {
         params: {
             find: { workflow_id: workflow_id } 
@@ -178,22 +190,22 @@ function(appconf, $http, jwtHelper, toaster) {
     });
 }]);
 
-//http://plnkr.co/edit/juqoNOt1z1Gb349XabQ2?p=preview
 /**
  * AngularJS default filter with the following expression:
  * "person in people | filter: {name: $select.search, age: $select.search}"
- * performs a AND between 'name: $select.search' and 'age: $select.search'.
- * We want to perform a OR.
+ * performs an AND between 'name: $select.search' and 'age: $select.search'.
+ * We want to perform an OR.
  */
 app.filter('propsFilter', function() {
   return function(items, props) {
     var out = [];
 
     if (angular.isArray(items)) {
+      var keys = Object.keys(props);
+        
       items.forEach(function(item) {
         var itemMatches = false;
 
-        var keys = Object.keys(props);
         for (var i = 0; i < keys.length; i++) {
           var prop = keys[i];
           var text = props[prop].toLowerCase();
@@ -247,4 +259,20 @@ app.directive('uiSelectRequired', function() {
   };
 });
 
+app.controller('ImportController', 
+['$scope', 'menu', 'scaMessage', 'toaster', 'jwtHelper', '$http', '$location', '$routeParams', '$timeout', 'instance', 'scaTask',
+function($scope, menu, scaMessage, toaster, jwtHelper, $http, $location, $routeParams, $timeout, instance, scaTask) {
+    scaMessage.show(toaster);
+
+    instance.then(function(_instance) {
+        $scope.instance = _instance;
+    });
+
+    $scope.taskid = $routeParams.taskid;
+
+    $scope.task = scaTask.get($routeParams.taskid);
+    $scope.$watchCollection('task', function(task) {
+        if(task.status == "finished") $location.path("/submit");
+    });
+}]);
 
