@@ -66,7 +66,7 @@ app.controller('PageController', function($scope, appconf, $route, menu, jwtHelp
             //console.log("eventws message received");
             var task = JSON.parse(e.data);
             //console.dir(task);
-            console.log([task.status, task.status_msg, task.next_date]);
+            console.log([task._id, task.status, task.status_msg, task.next_date]);
         }
         eventws.onclose = function(e) {
             console.log("eventws connection closed - should reconnect");
