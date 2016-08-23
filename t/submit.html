@@ -37,25 +37,28 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label">.b File</label>
+                <label class="col-sm-2 control-label">.bvals File</label>
                 <div class="col-sm-10">
-                    <!--
-                    <select class="form-control" ng-model="instance.config.b">
-                        <option ng-repeat="file in bs" value="{{file.id}}">{{file.filename}} ({{file.id}})</option>
-                    </select>
-                    <ul class="list-group">
-                        <li class="list-group-item clickable" ng-click="openpage('input/b');" style="background-color: #f0f0f0;">
-                            Add
-                        </li>
-                    </ul>
-                    -->
-                    <ui-select ng-model="instance.config.b">
+                    <ui-select ng-model="instance.config.bvals">
                         <ui-select-match>{{$select.selected.filename}}</ui-select-match>
-                        <ui-select-choices repeat="file in bs">
+                        <ui-select-choices repeat="file in bvalss">
                             {{file.filename}}
                         </ui-select-choices>
                     </ui-select>
-                    <a href="javascript:void(0)" ng-click="openpage('input/b');">Add</a>
+                    <a href="javascript:void(0)" ng-click="openpage('input/bvals');">Add</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">.bvecs File</label>
+                <div class="col-sm-10">
+                    <ui-select ng-model="instance.config.bvecs">
+                        <ui-select-match>{{$select.selected.filename}}</ui-select-match>
+                        <ui-select-choices repeat="file in bvecss">
+                            {{file.filename}}
+                        </ui-select-choices>
+                    </ui-select>
+                    <a href="javascript:void(0)" ng-click="openpage('input/bvecs');">Add</a>
                 </div>
             </div>
 
@@ -99,8 +102,10 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-primary" 
-                            ng-disabled="!instance.config.diff || !instance.config.b || !instance.config.mask">Submit</button>
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary" 
+                            ng-disabled="!instance.config.diff || !instance.config.bvals || !instance.config.bvecs || !instance.config.mask">Submit</button>
                     </div>
                 </div>
             </div>

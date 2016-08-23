@@ -158,7 +158,7 @@ function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
 //return singleton instance or create new one if it doesn't exist yet
 app.factory('instance', ['appconf', '$http', 'jwtHelper', 'toaster',
 function(appconf, $http, jwtHelper, toaster) {
-    console.log("getting test instance");
+    console.log("getting conneval instance");
     var workflow_id = "sca-wf-conneval"; //needs to match package.json/name
     return $http.get(appconf.wf_api+'/instance', {
         params: {
@@ -167,6 +167,7 @@ function(appconf, $http, jwtHelper, toaster) {
     })
     .then(function(res) {
         if(res.data.count != 0) {
+            console.dir(res.data.instances[0]);
             return res.data.instances[0];
         } else {
             console.log("creating new instance");
@@ -259,20 +260,4 @@ app.directive('uiSelectRequired', function() {
   };
 });
 
-app.controller('ImportController', 
-['$scope', 'menu', 'scaMessage', 'toaster', 'jwtHelper', '$http', '$location', '$routeParams', '$timeout', 'instance', 'scaTask',
-function($scope, menu, scaMessage, toaster, jwtHelper, $http, $location, $routeParams, $timeout, instance, scaTask) {
-    scaMessage.show(toaster);
-
-    instance.then(function(_instance) {
-        $scope.instance = _instance;
-    });
-
-    $scope.taskid = $routeParams.taskid;
-
-    $scope.task = scaTask.get($routeParams.taskid);
-    $scope.$watchCollection('task', function(task) {
-        if(task.status == "finished") $location.path("/submit");
-    });
-}]);
 

@@ -28,6 +28,7 @@
     "sca-product-raw": "soichih/sca-product-raw",
     "sca-ng-wf": "soichih/sca-ng-wf",
     "ui-select": "angular-ui-select#^0.16.1",
-    "ng-file-upload": "~12.0.4"
+    "ng-file-upload": "~12.0.4",
+    "reconnectingWebsocket": "^1.0.0"
   }
 }
