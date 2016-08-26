@@ -118,10 +118,10 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         $http.get($scope.appconf.wf_api+"/task", {params: {
             where: {
                 instance_id: $routeParams.instid,
+                status: "finished",
                 name: "bvecs",
                 //"products.type": "soichih/neuro/bvecs",
                 "products.type": "raw",
-                status: "finished",
             },
             //find the latest one
             sort: "-finish_date",
@@ -387,39 +387,6 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
                 else toaster.error(res.statusText);
             });
         });
-
-        /*
-        
-        //list all files from _upload
-        $http.get($scope.appconf.wf_api+"/resource/ls/"+$scope.resources.upload.resource._id, {params: {
-            path: $scope.instance._id+"/_upload",
-        }}).then(function(res) {
-            if(!res.data.files) {
-                toaster.error("Failed to load files uploaded");
-                return;
-            }
-            var files = res.data.files;
-            var symlinks = [];
-            files.forEach(function(file) {
-                symlinks.push({src: file.filename, dest: ""});
-            });
-            $http.post($scope.appconf.wf_api+"/task", {
-                instance_id: $scope.instance._id,
-                name: $scope.type, //important for bvals and bvecs which doesn't have dedicated importer
-                service: "soichih/sca-product-raw", 
-                config: {
-                    symlink: [] 
-                }
-            })
-            .then(function(res) {
-                var download_task = res.data.task;
-                do_import(download_task);
-            }, function(res) {
-                if(res.data && res.data.message) toaster.error(res.data.message);
-                else toaster.error(res.statusText);
-            });
-        });
-        */
     }
 
     $scope.fromurl = function(url) {
@@ -427,6 +394,7 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.instance._id,
             service: "soichih/sca-product-raw", //-raw service provides URL download
+            name: $scope.type,
             config: {
                 download: [{dir:"download", url:url}],
             }

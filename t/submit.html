@@ -40,9 +40,9 @@
                 <label class="col-sm-2 control-label">.bvals File</label>
                 <div class="col-sm-10">
                     <ui-select ng-model="instance.config.bvals">
-                        <ui-select-match>{{$select.selected.filename}}</ui-select-match>
+                        <ui-select-match>{{$select.selected.task_id}} {{$select.selected.filename}}</ui-select-match>
                         <ui-select-choices repeat="file in bvalss">
-                            {{file.filename}}
+                            {{file.task_id}} {{file.filename}}
                         </ui-select-choices>
                     </ui-select>
                     <a href="javascript:void(0)" ng-click="openpage('input/bvals');">Add</a>
@@ -53,9 +53,9 @@
                 <label class="col-sm-2 control-label">.bvecs File</label>
                 <div class="col-sm-10">
                     <ui-select ng-model="instance.config.bvecs">
-                        <ui-select-match>{{$select.selected.filename}}</ui-select-match>
+                        <ui-select-match>{{$select.selected.task_id}} {{$select.selected.filename}}</ui-select-match>
                         <ui-select-choices repeat="file in bvecss">
-                            {{file.filename}}
+                            {{file.task_id}} {{file.filename}}
                         </ui-select-choices>
                     </ui-select>
                     <a href="javascript:void(0)" ng-click="openpage('input/bvecs');">Add</a>

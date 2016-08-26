@@ -36,10 +36,16 @@ angular.module('app.config', [])
                 url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/dwi_data_b3000_aligned_trilin.nii.gz"
             },
         ],
-        b: [
+        bvals: [
             {
-                name: "Test data from Franco. lifebid/110411/outdir",
-                url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/dwi_data_b3000_aligned_trilin.b"
+                name: "Test data from Franco. lifedemo",
+                url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals"
+            },
+        ],
+        bvecs: [
+            {
+                name: "Test data from Franco. lifedemo",
+                url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs"
             },
         ],
         mask: [
