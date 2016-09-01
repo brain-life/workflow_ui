@@ -33,7 +33,8 @@ angular.module('app.config', [])
         diff: [
             {
                 name: "Test data from Franco. lifebid/110411/diffusion_data",
-                url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/dwi_data_b3000_aligned_trilin.nii.gz"
+                //url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/dwi_data_b3000_aligned_trilin.nii.gz"
+                url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz"
             },
         ],
         bvals: [

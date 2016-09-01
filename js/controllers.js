@@ -42,8 +42,8 @@ app.controller('PageController', function($scope, appconf, $route, menu, jwtHelp
         }, console.dir);
     });
 
+    /*
     //obtain event access token.. but first I need an instance id
-    instance.then(function(_instance) {
         $http.get(appconf.wf_api+"/instance/eventtoken/"+_instance._id)
         .then(function(res) {
             var jwt = res.data;
@@ -52,27 +52,34 @@ app.controller('PageController', function($scope, appconf, $route, menu, jwtHelp
             console.error(res);
         });
     });
+    */
 
-    //connect to event service
-    function connect_event(jwt) {
-        //connect to amqp
-        //var jwt = localStorage.getItem(appconf.jwt_id);
-        var eventws = new ReconnectingWebSocket("wss:"+window.location.hostname+appconf.event_api+"/wf?jwt="+jwt);
+    //var jwt = localStorage.getItem(appconf.jwt_id);
+    instance.then(function(_instance) {
+        var eventws = new ReconnectingWebSocket("wss:"+window.location.hostname+appconf.event_api+"/subscribe?jwt="+jwt);
         eventws.onopen = function(e) {
-            console.log("eventws connection opened");
-            //eventws.send("howdy");
+            console.log("eventws connection opened.. binding");
+            eventws.send(JSON.stringify({
+                bind: {
+                    ex: "wf",
+                    key: "task."+_instance._id+".#",
+                }
+            }));
         }
-        eventws.onmessage = function(e) {
-            //console.log("eventws message received");
-            var task = JSON.parse(e.data);
-            //console.dir(task);
-            console.log([task._id, task.status, task.status_msg, task.next_date]);
+        eventws.onmessage = function(json) {
+            var e = JSON.parse(json.data);
+            if(e.msg) {
+                var task = e.msg;
+                console.log([task._id, task.status, task.status_msg, task.next_date]);
+            } else {
+                console.log("unknown message from eventws");
+                console.dir(e);
+            }
         }
         eventws.onclose = function(e) {
             console.log("eventws connection closed - should reconnect");
         }
-    }
-
+    });
 });
 
 app.controller('SubmitController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location',
@@ -100,7 +107,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }})
         .then(function(res) {
             $scope.diffs = []; 
-            res.data.forEach(function(task) {
+            res.data.tasks.forEach(function(task) {
                 task.products[0].files.forEach(function(file, idx) {
                     file.checked = true;
                     file.id = idx;
@@ -129,7 +136,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }})
         .then(function(res) {
             $scope.bvecss = []; 
-            res.data.forEach(function(task) {
+            res.data.tasks.forEach(function(task) {
                 task.products[0].files.forEach(function(file, idx) {
                     file.checked = true;
                     file.id = idx;
@@ -158,7 +165,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         .then(function(res) {
             console.log("list of all raw files");
             $scope.bvalss = []; 
-            res.data.forEach(function(task) {
+            res.data.tasks.forEach(function(task) {
                 task.products[0].files.forEach(function(file, idx) {
                     file.checked = true;
                     file.id = idx;
@@ -186,7 +193,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }})
         .then(function(res) {
             $scope.masks = []; 
-            res.data.forEach(function(task) {
+            res.data.tasks.forEach(function(task) {
                 task.products[0].files.forEach(function(file, idx) {
                     file.checked = true;
                     file.id = idx;
@@ -287,7 +294,7 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
             }
         }})
         .then(function(res) {
-            $scope.tasks = res.data;
+            $scope.tasks = res.data.tasks;
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
@@ -321,7 +328,7 @@ function($scope, menu, scaMessage, toaster, jwtHelper, $http, $location, $routeP
             }
         }})
         .then(function(res) {
-            $scope.tasks = res.data;
+            $scope.tasks = res.data.task;
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
@@ -413,6 +420,7 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.instance._id,
             service: "soichih/sca-service-hpss",
+            name: $scope.type,
             config: {
                 get: [{localdir:"download", hpsspath:form.path}],
                 auth: {
