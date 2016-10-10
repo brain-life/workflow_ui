@@ -21,12 +21,14 @@ angular.module('app.config', [])
 
     jwt_id: 'jwt',
 
+    /*
     breads: [
         {id: "workflows", label: "Workflows", url:"/wf/#/workflows" },
         {id: "submit", label: "Submit", url: "#/submit"},
         {id: "running", label: "Running", url: "#/running"},
         {id: "finished", label: "Finished", url: "#/finished"},
     ],
+    */
 
     upload_task_id: "_upload", //task used to store files uploaded by sca-wf-uploader
     sample_urls: {

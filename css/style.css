@@ -1,12 +1,193 @@
 body {
-  background-color: #eee;
+  color: #383838;
+  font-size: 14px;
 }
-.container .page {
+h2,
+h3 {
+  color: #878787;
+  font-weight: bold;
+}
+h2 {
+  font-size: 21px;
+}
+h2.page-heading {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  color: #008cba;
+}
+h3 {
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+}
+.fixed-top {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  width: 100%;
   background-color: white;
-  box-shadow: 0 0 5px #ccc;
-  padding: 20px;
+}
+.static-content h1 {
+  background-color: #555;
+  /*background-color: #008cba;*/
+  margin-top: 0px;
+  padding: 40px 0px;
+  box-shadow: 0px 0px 20px gray;
+  margin-bottom: 0px;
+  color: white;
+  /*
+        img.backdrop {
+            opacity: 0.5;
+            position: absolute;
+            width: 200px;
+            z-index: -1;
+        }
+        */
+}
+.static-content h1 button {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.static-content p {
+  margin-bottom: 1.3em;
+  line-height: 1.7em;
+  color: #555;
+  font-size: 16px;
+}
+.static-content p.alert {
+  color: white;
+}
+/*
+.container {
+    .page {
+        background-color: white;
+        box-shadow: 0 0 5px #ccc;
+        padding: 20px;
+    }
 }
 li.clickable:hover {
+    cursor: pointer;
+    background-color: #ddd !important;
+}
+*/
+.subbar {
+  position: fixed;
+  top: 0;
+  left: 80px;
+  z-index: 998;
+  width: 350px;
+  height: 100%;
+  border-right: 1px solid #eee;
+}
+.subbar .subbar-list {
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 350px;
+  position: fixed;
+  top: 108px;
+  bottom: 0px;
+}
+.subbar .subbar-list .subbar-list-item {
+  padding: 5px 20px;
+  box-sizing: border-box;
+  border: 3px solid transparent;
+  /*box-shadow: 0px -1px 1px #eee;*/
+  /*
+            &:hover {
+                cursor: pointer;
+                background-color: #eee;
+            }
+            */
+}
+.subbar .subbar-list .subbar-list-item .list-header {
+  font-size: 16px;
+  font-weight: 400;
+  color: #666;
+  margin-bottom: 0px;
+}
+.subbar .subbar-list .subbar-list-item.active {
+  border: 3px solid #ddd;
+}
+.workflow {
+  padding-right: 10px;
+  padding-top: 20px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  width: 350px;
+  position: fixed;
+  top: 97px;
+  bottom: 0px;
+}
+.workflow .workflow-item {
+  margin-left: 35px;
+  padding-bottom: 30px;
+  padding-left: 35px;
+  position: relative;
+  color: #666;
+  transition: color 1s;
+}
+.workflow .workflow-item:hover {
   cursor: pointer;
-  background-color: #ddd !important;
+  color: #008cba;
+}
+.workflow .workflow-item:hover .item-header-badge {
+  color: #008bca;
+}
+.workflow .workflow-item .item-header {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.workflow .workflow-item .item-header .item-header-badge {
+  display: block;
+  position: absolute;
+  top: -8px;
+  left: -21px;
+  transition: background-color 2s;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 6px;
+  text-align: center;
+  background-color: #ddd;
+  color: #aaa;
+  /*border: 1px solid #ccc;*/
+}
+.workflow .workflow-item .workflow-detail {
+  margin-bottom: 0px;
+  font-size: 12px;
+}
+.workflow .workflow-item.active {
+  color: #008cba;
+}
+.workflow .workflow-item.active .item-header-badge {
+  color: white;
+  background-color: #008cba;
+  /*border: none;*/
+}
+.workflow .workflow-item:not(:last-child) {
+  border-left: 1px solid #ddd;
+}
+.subbar-content {
+  margin-left: 350px;
+  overflow-x: hidden;
+}
+.margin30 {
+  margin: 0px 30px;
+}
+/*use animate.css*/
+.animate-submit.ng-enter {
+  animation: fadeIn 1s;
+}
+.animate-submit.ng-leave {
+  animation: fadeOut 1s;
+}
+.form-section.ng-enter {
+  animation: fadeIn 0.2s;
+}
+.form-section.ng-leave {
+  animation: fadeOut 0.2s;
 }

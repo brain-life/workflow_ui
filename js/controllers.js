@@ -1,15 +1,25 @@
 'use strict';
 
-app.controller('PageController', function($scope, appconf, $route, menu, jwtHelper, scaTask, $location, $http, $timeout, instance) {
+app.controller('PageController', function($scope, appconf, jwtHelper, $location, $http, instance) {
     $scope.appconf = appconf;
     $scope.title = appconf.title;
-    $scope.menu = menu;
+    $scope.active_menu = "unknown";
 
     var jwt = localStorage.getItem(appconf.jwt_id);
     if(jwt) $scope.user = jwtHelper.decodeToken(jwt);
 
+    //open another page inside the app.
     $scope.openpage = function(page) {
+        console.log("path to "+page);
         $location.path(page);
+    }
+    $scope.back = function() {
+        window.history.back();
+    }
+
+    //relocate out of the app..
+    $scope.relocate = function(url) {
+        document.location = url;
     }
 
     //load resources that user has access
@@ -19,72 +29,86 @@ app.controller('PageController', function($scope, appconf, $route, menu, jwtHelp
         hpss: [], //to load from sda - array
         upload: null, //used to upload files
     };
-    $http.get($scope.appconf.wf_api+"/resource/best", {params: {
-        service: "_upload",
-    }}).then(function(res) {
-        $scope.resources.upload = res.data;
+    if($scope.user) {
         $http.get($scope.appconf.wf_api+"/resource/best", {params: {
-            service: "soichih/sca-service-neuro-tracking",
+            service: "_upload", //needs to be registered
         }}).then(function(res) {
-            $scope.resources.tracking = res.data;
+            $scope.resources.upload = res.data.resource;
             $http.get($scope.appconf.wf_api+"/resource/best", {params: {
-                service: "soichih/life-1",
+                service: "soichih/sca-service-neuro-tracking",
             }}).then(function(res) {
-                $scope.resources.life = res.data;
-                $http.get($scope.appconf.wf_api+"/resource", {params: {
-                    where: {type: 'hpss'},
-                }})
-                .then(function(res) {
-                    $scope.resources.hpss = res.data;
-                    $scope.$broadcast("resources", $scope.resources);
+                $scope.resources.tracking = res.data.resource;
+                $http.get($scope.appconf.wf_api+"/resource/best", {params: {
+                    service: "soichih/life-1",
+                }}).then(function(res) {
+                    $scope.resources.life = res.data.resource;
+                    $http.get($scope.appconf.wf_api+"/resource", {params: {
+                        where: {type: 'hpss'},
+                    }})
+                    .then(function(res) {
+                        $scope.resources.hpss = res.data.resources[0];
+                        $scope.$broadcast("resources", $scope.resources);
+                    });
                 });
-            });
-        }, console.dir);
-    });
-
-    /*
-    //obtain event access token.. but first I need an instance id
-        $http.get(appconf.wf_api+"/instance/eventtoken/"+_instance._id)
-        .then(function(res) {
-            var jwt = res.data;
-            connect_event(jwt);
-        }, function(res) {
-            console.error(res);
+            }, console.dir);
         });
-    });
-    */
 
-    //var jwt = localStorage.getItem(appconf.jwt_id);
-    instance.then(function(_instance) {
-        var eventws = new ReconnectingWebSocket("wss:"+window.location.hostname+appconf.event_api+"/subscribe?jwt="+jwt);
-        eventws.onopen = function(e) {
-            console.log("eventws connection opened.. binding");
-            eventws.send(JSON.stringify({
-                bind: {
-                    ex: "wf",
-                    key: "task."+_instance._id+".#",
-                }
-            }));
-        }
-        eventws.onmessage = function(json) {
-            var e = JSON.parse(json.data);
-            if(e.msg) {
-                var task = e.msg;
-                console.log([task._id, task.status, task.status_msg, task.next_date]);
-            } else {
-                console.log("unknown message from eventws");
-                console.dir(e);
+        instance.then(function(_instance) {
+            var eventws = new ReconnectingWebSocket("wss:"+window.location.hostname+appconf.event_api+"/subscribe?jwt="+jwt);
+            eventws.onopen = function(e) {
+                console.log("eventws connection opened.. binding");
+                eventws.send(JSON.stringify({
+                    bind: {
+                        ex: "wf.task",
+                        key: $scope.user.sub+"."+_instance._id+".#",
+                    }
+                }));
             }
-        }
-        eventws.onclose = function(e) {
-            console.log("eventws connection closed - should reconnect");
-        }
-    });
+            eventws.onmessage = function(json) {
+                var e = JSON.parse(json.data);
+                if(e.msg) {
+                    var task = e.msg;
+                    console.log([task._id, task.status, task.status_msg, task.next_date]);
+                } else {
+                    console.log("unknown message from eventws");
+                    console.dir(e);
+                }
+            }
+            eventws.onclose = function(e) {
+                console.log("eventws connection closed - should reconnect");
+            }
+        });
+    }
 });
 
-app.controller('SubmitController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location',
+app.controller('HomeController', 
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
+    $scope.$parent.active_menu = "home";
     scaMessage.show(toaster);
+});
+
+app.factory('submitform', function() {
+    return {
+        diffusion: {},
+        anatomy: {},
+        config: {},
+    }
+});
+
+app.controller('SubmitController', 
+function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout, submitform) {
+    $scope.$parent.active_menu = "submit";
+    scaMessage.show(toaster);
+
+    $scope.form = submitform;
+
+    //timeout to cause ng-animate
+    $timeout(function() {
+        if($routeParams.step) $scope.step = $routeParams.step;
+        else {
+            $scope.step = "diffusion"; //current step
+        }
+    }, 0);
 
     instance.then(function(_instance) {
         $scope.instance = _instance;
@@ -245,11 +269,50 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             else toaster.error(res.statusText);
         });
     }
-}]);
+
+    $scope.uploading = null; //files currently uploaded
+    $scope.upload_bids = function(file) {
+        if(!file) return toaster.error("Please select a valid BIDS file");
+
+        var path = $scope.instance._id+"/upload/"+file.name;
+        $scope.uploading = {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            //lastModified: file.lastModified,
+        };
+        console.log("uploading to:"+path);
+        console.dir($scope.resources);
+
+        //do upload
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", $scope.appconf.wf_api+"/resource/upload/"+$scope.resources.upload._id+"/"+btoa(path));
+        var jwt = localStorage.getItem($scope.appconf.jwt_id);
+        xhr.setRequestHeader("Authorization", "Bearer "+jwt);
+        xhr.upload.addEventListener("progress", function(evt) {
+            console.log("process");
+            console.dir(evt);
+            $scope.uploading.progress = evt.loaded / evt.total;
+        }, false);
+        xhr.addEventListener("load", function(evt) {
+            $scope.uploading = null;
+            console.log("loaded");
+            /*
+            validate_and_import(file.name, {
+                import: {
+                    dataset_id: selected._id,
+                    path: "../_upload/"+file.name,
+                }
+            });
+            */
+        }, false);
+        xhr.send(file);
+        $scope.uploading.progress = 0;
+    }
+});
 
 app.controller('TaskController', 
-['$scope', 'menu', 'scaMessage', 'toaster', 'jwtHelper', '$http', '$location', '$routeParams', '$timeout', 'scaTask', 'scaResource',
-function($scope, menu, scaMessage, toaster, jwtHelper, $http, $window, $routeParams, $timeout, scaTask, scaResource) {
+function($scope, scaMessage, toaster, jwtHelper, $http, $window, $routeParams, scaTask, scaResource) {
 
     scaMessage.show(toaster);
     $scope.menu_active = "finished";
@@ -274,11 +337,11 @@ function($scope, menu, scaMessage, toaster, jwtHelper, $http, $window, $routePar
     $scope.back = function() {
         $window.history.back();
     }
-}]);
+});
 
 //just a list of previously submitted tasks
-app.controller('RunningController', ['$scope', 'menu', 'scaMessage', 'toaster', 'jwtHelper', '$http', '$location', '$routeParams', 'instance',
-function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $routeParams, instance) {
+app.controller('RunningController', 
+function($scope, scaMessage, toaster, jwtHelper, $http, $location, $routeParams, instance) {
     scaMessage.show(toaster);
     $scope.menu_active = "running";
 
@@ -307,12 +370,11 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
     $scope.new = function() {
         $location.path("/submit");
     }
-}]);
-
+});
 
 //just a list of previously submitted tasks
-app.controller('FinishedController', ['$scope', 'menu', 'scaMessage', 'toaster', 'jwtHelper', '$http', '$location', '$routeParams', 'instance',
-function($scope, menu, scaMessage, toaster, jwtHelper, $http, $location, $routeParams, instance) {
+app.controller('FinishedController', 
+function($scope, scaMessage, toaster, jwtHelper, $http, $location, $routeParams, instance) {
     scaMessage.show(toaster);
     $scope.menu_active = "finished";
 
@@ -328,7 +390,7 @@ function($scope, menu, scaMessage, toaster, jwtHelper, $http, $location, $routeP
             }
         }})
         .then(function(res) {
-            $scope.tasks = res.data.task;
+            $scope.tasks = res.data.tasks;
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
@@ -341,9 +403,9 @@ function($scope, menu, scaMessage, toaster, jwtHelper, $http, $location, $routeP
     $scope.new = function() {
         $location.path("/submit");
     }
-}]);
+});
 
-app.controller('InputController', ['$scope', 'scaMessage', 'toaster', 'instance', '$http', '$routeParams',
+app.controller('InputController', 
 function($scope, scaMessage, toaster, instance, $http, $routeParams) {
     scaMessage.show(toaster);
 
@@ -368,7 +430,7 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
     $scope.doneupload = function(url) {
         //list all files in _upload and symlink
         $http.get($scope.appconf.wf_api+"/resource/ls/"+$scope.resources.upload.resource._id, {params: {
-            path: $scope.instance._id+"/_upload",
+            path: $scope.instance._id+"/upload",
         }}).then(function(res) {
             if(!res.data.files) {
                 toaster.error("Failed to load files uploaded");
@@ -376,7 +438,7 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
             }
             var symlinks = [];
             res.data.files.forEach(function(file) {
-                symlinks.push({src: "../_upload/"+file.filename, dest: "download/"+file.filename});
+                symlinks.push({src: "../upload/"+file.filename, dest: "download/"+file.filename});
             });
             $http.post($scope.appconf.wf_api+"/task", {
                 instance_id: $scope.instance._id,
@@ -463,10 +525,10 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
             });
         }
     }
-}]);
+});
 
-app.controller('ImportController', function(
-$scope, menu, scaMessage, toaster, jwtHelper, $http, $location, $routeParams, instance, scaTask) {
+app.controller('ImportController', 
+function($scope, scaMessage, toaster, jwtHelper, $http, $location, $routeParams, instance, scaTask) {
     scaMessage.show(toaster);
 
     instance.then(function(_instance) {

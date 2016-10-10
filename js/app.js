@@ -9,11 +9,16 @@ var app = angular.module('app', [
     'angular-loading-bar',
     'angular-jwt',
     'ui.bootstrap',
+    'ui.bootstrap.modal',
     'ui.bootstrap.tooltip',
     'ui.select',
+    'ui.gravatar',
+    'ui.ace',
+    'ngSanitize', //used by ui-select?
     'sca-ng-wf',
     'sca-shared',
     'sca-product-raw',
+    'yaru22.angular-timeago',
 ]);
 
 //can't quite do the slidedown animation through pure angular/css.. borrowing slideDown from jQuery..
@@ -54,11 +59,18 @@ app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
 //configure route
 app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     $routeProvider
-    .when('/submit', {
+
+    .when('/home', {
+        templateUrl: 't/home.html',
+        controller: 'HomeController',
+        requiresLogin: true,
+    })
+    .when('/submit/:step?', {
         templateUrl: 't/submit.html',
         controller: 'SubmitController',
         requiresLogin: true,
     })
+
     .when('/running', {
         templateUrl: 't/tasks.html',
         controller: 'RunningController',
@@ -87,7 +99,7 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     })
 
     .otherwise({
-        redirectTo: '/submit'
+        redirectTo: '/home'
     });
     //console.dir($routeProvider);
 }]).run(['$rootScope', '$location', 'toaster', 'jwtHelper', 'appconf', '$http', 'scaMessage',
@@ -109,17 +121,19 @@ function($rootScope, $location, toaster, jwtHelper, appconf, $http, scaMessage) 
 //configure httpProvider to send jwt unless skipAuthorization is set in config (not tested yet..)
 app.config(['appconf', '$httpProvider', 'jwtInterceptorProvider', 
 function(appconf, $httpProvider, jwtInterceptorProvider) {
-    jwtInterceptorProvider.tokenGetter = function(jwtHelper, config, $http) {
+    jwtInterceptorProvider.tokenGetter = function(jwtHelper, $http) {
         //don't send jwt for template requests (I don't think angular will ever load css/js - browsers do)
-        if (config.url.substr(config.url.length - 5) == '.html') return null;
+        //if (config.url.substr(config.url.length - 5) == '.html') return null;
         return localStorage.getItem(appconf.jwt_id);
     }
     $httpProvider.interceptors.push('jwtInterceptor');
 }]);
 
+/*
 //load menu and profile by promise chaining
 app.factory('menu', ['appconf', '$http', 'jwtHelper', '$sce', 'scaMessage', 'scaMenu', 'toaster',
 function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
+    console.log("conneval menu factory");
     var jwt = localStorage.getItem(appconf.jwt_id);
     var menu = {
         header: {
@@ -154,6 +168,7 @@ function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
     }
     return menu;
 }]);
+*/
 
 //return singleton instance or create new one if it doesn't exist yet
 app.factory('instance', ['appconf', '$http', 'jwtHelper', 'toaster',

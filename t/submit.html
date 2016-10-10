@@ -1,27 +1,104 @@
-<sca-breadcrumb breads="appconf.breads" active="'submit'"></sca-breadcrumb>
-<div class="container">
-    <h2>Connectome Evaluator</h2>
-    <p>Submit a connectome evaluator workflow</p>
+<div class="subbar">
+    <div style="padding-left: 20px; margin-bottom: 25px;">
+        <h2>Submit</h2>
+        <p class="help-block">Guide you through submitting connectome evaluator</p>
+    </div>
+    <hr style="margin: 0px;">
 
-    <div class="page">
-        <p class="alert alert-warning" ng-if="!resources.life">No resource is available to submit your workflow. Please check your resource status.</p>
-        <form ng-submit="submit()" class="form-horizontal">
+    <div class="workflow">
+        <div class="workflow-item" ng-class="{active: step == 'diffusion'}" ng-click="openpage('/submit/diffusion')">
+            <div class="item-header"><span class="item-header-badge">1</span> Enter Diffusion Data</div>
+            <p class="workflow-detail">Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id. Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi cillum consequat sunt ea pariatur.</p>
+        </div>
+        <div class="workflow-item" ng-class="{active: step == 'anatomy'}" ng-click="openpage('/submit/anatomy')">
+            <div class="item-header"><span class="item-header-badge">2</span> Enter Anatomy Data</div>
+            <p class="workflow-detail">Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id. Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi cillum consequat sunt ea pariatur.</p>
+        </div>
+        <div class="workflow-item" ng-class="{active: step == 'configure'}" ng-click="openpage('/submit/configure')">
+            <div class="item-header"><span class="item-header-badge">3</span> Configure</div>
+            <p class="workflow-detail">Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id. Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi cillum consequat sunt ea pariatur.</p>
+        </div>
+        <div class="workflow-item" ng-class="{active: step == 'submit'}" ng-click="openpage('/submit/submit')">
+            <div class="item-header"><span class="item-header-badge">4</span> Submit</div>
+            <p class="workflow-detail">Finally, submit your request to be processed on our computer. It should normally take about a few hours, and we will send you an email once processing is completed.</p>
+        </div>
+    </div><!--workflow-->
 
-            <!--
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Name</label>
-                <div class="col-sm-10">
-                    <input type="text" ng-model="task.name" class="form-control" placeholder="Just a name to give to this run."></input>
+</div><!--subbar-->
+<div class="subbar-content">
+    <div class="margin30 animate-submit" ng-if="step == 'diffusion'">
+        <form ng-submit="openpage('/submit/anatomy')" class="form-horizontal">
+            <h2>
+                <br>
+                <!--
+                <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                -->
+
+                <div class="pull-right">
+                    <button type="button" class="btn" ng-click="back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+            </h2>
+            <h2 class="page-heading">Enter Diffusion Data</h2>
+
+            <p class="help-block">Let's start by preparing your diffusion data. Diffusion data is ...brah.. </p>
+
+            <h3>Method</h3>
+            <div class="radio"> 
+                <label><input type="radio" ng-model="form.diffusion.method" value="upload">Upload from my computer
+                    <p class="help-block">You can only upload data files up to 2G in size.</p>
+                </label>
+            </div>
+            <div class="radio"> 
+                <label><input type="radio" ng-model="form.diffusion.method" value="url">Load from public URL
+                    <p class="help-block">Use diffusion data publically available via a web URL.</p>
+                </label>
+            </div>
+            <div class="radio"> 
+                <label><input type="radio" ng-model="form.diffusion.method" value="sample">Use sample data</label>
+            </div>
+
+            <div ng-if="form.diffusion.method && form.diffusion.method != 'sample'" class="form-section">
+                <h3>Data Format</h3>
+                <div class="radio"> 
+                    <label><input type="radio" ng-model="form.diffusion.datatype" value="bids">BIDS (.tar)</label>
+                </div>
+                <div class="radio"> 
+                    <label><input type="radio" ng-model="form.diffusion.datatype" value="ind">.dwi.nii.gz / .bvecs / .bvals</label>
                 </div>
             </div>
-            -->
 
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Description</label>
-                <div class="col-sm-10">
-                    <textarea ng-model="instance.config.desc" class="form-control" placeholder="Description for this submission"></textarea>
+            <div ng-if="form.diffusion.method == 'sample'" class="form-section">
+                <h3>Sample Data</h3>
+                <p class="help-block">Please choose sample data</p>
+                <div class="radio"> 
+                    <label><input type="radio" ng-model="form.diffusion.sample" value="sample1">
+                        Sample diffusion data 1
+                        <p class="help-block">Here is some description about this sample data.</p>
+                    </label>
+                </div>
+                <div class="radio"> 
+                    <label><input type="radio" ng-model="form.diffusion.sample" value="sample2">
+                        Sample diffusion data 2
+                        <p class="help-block">Here is some description about this sample data. Where it comes from, etc..</p>
+                    </label>
                 </div>
             </div>
+
+            <div ng-if="form.diffusion.method == 'upload' && form.diffusion.datatype == 'bids'" class="form-section">
+                <h3>BIDS</h3>     
+                <button type="file" class="btn btn-sm btn-primary"
+                    ngf-pattern="'.tar'" 
+                    ngf-select="upload_bids($file, $invalidFiles)"
+                    ngf-max-size="2GB">
+                    <i class="fa fa-cloud-upload" aria-hidden="true"></i>&nbsp;&nbsp;Select BIDS (.tar)
+                </button>
+                {{uploading}}
+            </div>
+
+            <!-- 
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">Diffusion Data</label>
@@ -61,7 +138,26 @@
                     <a href="javascript:void(0)" ng-click="openpage('input/bvecs');">Add</a>
                 </div>
             </div>
+            -->
+        </form>
+    </div>
 
+    <div class="margin30 animate-submit" ng-if="step == 'anatomy'">
+        <form ng-submit="openpage('/submit/configure')" class="form-horizontal">
+            <h2>
+                <br>
+                <!--
+                <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                -->
+
+                <div class="pull-right">
+                    <button type="button" class="btn" ng-click="back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+            </h2>
+            <h2 class="page-heading">Enter Anatomy Data</h2>
             <div class="form-group">
                 <label class="col-sm-2 control-label">WM Mask</label>
                 <div class="col-sm-10">
@@ -84,35 +180,49 @@
                     <a href="javascript:void(0)" ng-click="openpage('input/mask');">Add</a>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Fibers</label>
-                <div class="col-sm-10">
-                    <input type="text" ng-model="instance.config.fibers" class="form-control" placeholder="5000"></input>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">Fibers Max Attempted</label>
-                <div class="col-sm-10">
-                    <input type="text" ng-model="instance.config.fibers_max" class="form-control" placeholder="10000"></input>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <div class="pull-right">
-                        <button 
-                            type="submit" 
-                            class="btn btn-primary" 
-                            ng-disabled="!instance.config.diff || !instance.config.bvals || !instance.config.bvecs || !instance.config.mask">Submit</button>
-                    </div>
-                </div>
-            </div>
-            <!--
-            <pre>{{instance.config|json}}</pre>
-            -->
         </form>
+    </div>
+    <div class="margin30 animate-submit" ng-if="step == 'configure'">
+        <form ng-submit="openpage('/submit/submit')" class="form-horizontal">
+            <h2>
+                <br>
+                <!--
+                <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                -->
+
+                <div class="pull-right">
+                    <button type="button" class="btn" ng-click="back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+            </h2>
+            <h2 class="page-heading">Configure</h2>
+        </form>
+    </div>
+    <div class="margin30 animate-submit" ng-if="step == 'submit'">
+        <h2>
+            <br>
+            <!--
+            <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+            <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+            <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+            -->
+
+            <div class="pull-right">
+                <button type="button" class="btn" ng-click="back()">Back</button>
+                <!--<button type="submit" class="btn btn-primary">Next</button>-->
+            </div>
+        </h2>
+        <h2 class="page-heading">Submit</h2>
+        <p>We are now ready to submit your connectome evaluation process. Please verify all of the information and click submit button below.</p>
+        <p>Once submitted, the process should take about a few hours, and we will send you an email once the processing is completed.</p>
+        <button type="button" class="btn btn-primary">Submit</button>
+    </div>
+
+    <div class="margin30">
+        <h4>Debug</h4>
+        <pre>{{form|json}}</pre>
     </div>
 </div>
 
