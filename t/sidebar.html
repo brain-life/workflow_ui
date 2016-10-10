@@ -1,0 +1,35 @@
+<div class="sca-sidebar">
+    <h2 class="text-muted" ng-click="openpage('/home');" style="margin-top: 43px; cursor: pointer;">
+        <i class="fa fa-flask" aria-hidden="true"></i>
+    </h2>
+    <br>
+    <br>
+
+    <!--
+    <div class="menu" ng-class="{'active':  active_menu == 'home'}" ng-click="openpage('/home');">
+        <h3><i class="fa fa-home" aria-hidden="true"></i></h3> Home
+    </div>
+    -->
+    <div class="menu" ng-class="{'active':  active_menu == 'submit'}" ng-click="openpage('/submit')">
+        <h3><i class="fa fa-play-circle" aria-hidden="true"></i></h3> Submit
+    </div>
+    <div class="menu" ng-class="{'active':  active_menu == 'runs'}" ng-click="openpage('/runs')">
+        <h3><i class="fa fa-list-alt" aria-hidden="true"></i></h3> Jobs
+    </div>
+
+    <div class="bottom">
+        <div class="menu" ng-click="relocate('https://github.com/soichih/sca-wf-conneval/wiki/Help')">
+            <h3><i class="fa fa-question" aria-hidden="true"></i></h3> Help
+        </div>
+        <hr>
+        <div class="menu" ng-click="relocate('/profile')">
+            <h3><i class="fa fa-cog" aria-hidden="true"></i></h3> Settings
+        </div>
+    </div>
+
+    <!--
+    <div id="settings-menu" ng-if="show_settings">
+        <a href="/profile" class="menu">Profile</a>
+    </div>
+    -->
+</div>
