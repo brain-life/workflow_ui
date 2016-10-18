@@ -1,9 +1,16 @@
 'use strict';
 
+app.controller('TestController', function($scope, appconf, jwtHelper, $location, $http, instance) {
+    //TODO..
+});
+
 app.controller('PageController', function($scope, appconf, jwtHelper, $location, $http, instance) {
     $scope.appconf = appconf;
     $scope.title = appconf.title;
     $scope.active_menu = "unknown";
+
+    //inventory of all tasks we know from websocket
+    $scope.tasks = {};
 
     var jwt = localStorage.getItem(appconf.jwt_id);
     if(jwt) $scope.user = jwtHelper.decodeToken(jwt);
@@ -12,6 +19,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
     $scope.openpage = function(page) {
         console.log("path to "+page);
         $location.path(page);
+        window.scrollTo(0,0);
     }
     $scope.back = function() {
         window.history.back();
@@ -68,7 +76,16 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
                 var e = JSON.parse(json.data);
                 if(e.msg) {
                     var task = e.msg;
-                    console.log([task._id, task.status, task.status_msg, task.next_date]);
+                    $scope.$broadcast("task_updated", task);
+                    
+                    console.log("task update:"+task._id+" "+task.name+" "+task.status+"/"+task.status_msg);
+                    $scope.$apply(function() {
+                        if(!$scope.tasks[task._id]) $scope.tasks[task._id] = task; //new task
+                        else { 
+                            for(var k in task) $scope.tasks[task._id][k] = task[k]; //update all fields
+                        }
+                    });
+                    //console.dir(task);
                 } else {
                     console.log("unknown message from eventws");
                     console.dir(e);
@@ -79,6 +96,11 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
             }
         });
     }
+
+    $scope.toast_error = function(res) {
+        if(res.data && res.data.message) toaster.error(res.data.message);
+        else toaster.error(res.statusText);
+    }
 });
 
 app.controller('HomeController', 
@@ -88,229 +110,33 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 });
 
 app.factory('submitform', function() {
+    //default
     return {
-        diffusion: {},
-        anatomy: {},
-        config: {},
+        
+        //used while processing upload /transfer
+        processing: {},
+
+        //final path for data 
+        t1: null,
+        dwi: null,
+        bvecs: null,
+        bvals: null,
+
+        //config for various services
+        config: {
+            tracking: {
+                fibers: 500000,  
+                fibers_max: 1000000,  
+            },
+            life: {
+                discretization: 360,  
+                num_iteration: 500,  
+            }
+        },
     }
 });
 
-app.controller('SubmitController', 
-function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout, submitform) {
-    $scope.$parent.active_menu = "submit";
-    scaMessage.show(toaster);
-
-    $scope.form = submitform;
-
-    //timeout to cause ng-animate
-    $timeout(function() {
-        if($routeParams.step) $scope.step = $routeParams.step;
-        else {
-            $scope.step = "diffusion"; //current step
-        }
-    }, 0);
-
-    instance.then(function(_instance) {
-        $scope.instance = _instance;
-        if($scope.instance.config === undefined) $scope.instance.config = {
-            fibers: 5000,
-            fibers_max: 10000,
-        };
-
-        //find all diff import 
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                name: "diff import",
-                "products.type": "nifti",
-                status: "finished",
-            },
-            //find last one
-            sort: "-finish_date",
-            //limit: 1, //find the latest one
-        }})
-        .then(function(res) {
-            $scope.diffs = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.diffs.push(file);
-                });
-            });
-            if($scope.diffs.length > 0) $scope.instance.config.diff = $scope.diffs[0];
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-
-        //find all .bvecs import
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                status: "finished",
-                name: "bvecs",
-                //"products.type": "soichih/neuro/bvecs",
-                "products.type": "raw",
-            },
-            //find the latest one
-            sort: "-finish_date",
-            //limit: 1,
-        }})
-        .then(function(res) {
-            $scope.bvecss = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.bvecss.push(file);
-                });
-            });
-            if($scope.bvecss.length > 0) $scope.instance.config.bvecs = $scope.bvecss[0];
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-        
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                name: "bvals",
-                //"products.type": "soichih/neuro/bvals",
-                "products.type": "raw",
-                status: "finished",
-            },
-            //find the latest one
-            sort: "-finish_date",
-            //limit: 1,
-        }})
-        .then(function(res) {
-            console.log("list of all raw files");
-            $scope.bvalss = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.bvalss.push(file);
-                });
-            });
-            if($scope.bvalss.length > 0) $scope.instance.config.bvals = $scope.bvalss[0];
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-        
-        //find all mask import
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                name: "mask import",
-                "products.type": "nifti",
-                status: "finished",
-            },
-            //find the latest one
-            sort: "-finish_date",
-            //limit: 1,
-        }})
-        .then(function(res) {
-            $scope.masks = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.masks.push(file);
-                });
-            });
-            if($scope.masks.length > 0) $scope.instance.config.mask = $scope.masks[0];
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-
-    });
-
-    $scope.submit = function() {
-        var dwi = $scope.instance.config.diff;
-        var bvecs = $scope.instance.config.bvecs;
-        var bvals = $scope.instance.config.bvals;
-        var mask = $scope.instance.config.mask;
-
-        var deps = [];
-        deps.push(dwi.task_id);
-        deps.push(bvecs.task_id);
-        deps.push(bvals.task_id);
-        deps.push(mask.task_id);
-        
-        $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
-            name: "conneval task",
-            desc: $scope.instance.config.desc,
-            service: "soichih/sca-service-neuro-tracking",
-            config: {
-                "dwi_path": "../"+dwi.task_id+"/"+dwi.filename,
-                "bvecs_path": "../"+bvecs.task_id+"/"+bvecs.filename,
-                "bvals_path": "../"+bvals.task_id+"/"+bvals.filename,
-                "mask_path": "../"+mask.task_id+"/"+mask.filename,
-                "lmax": [2,4,6], //TODO
-                "fibers": $scope.instance.config.fibers,
-                "fibers_max": $scope.instance.config.fibers_max,
-            },
-            deps: deps,
-        })
-        .then(function(res) {
-            toaster.pop("success", "Submitted a new task");
-            $location.path("/task/"+res.data.task._id);
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-    }
-
-    $scope.uploading = null; //files currently uploaded
-    $scope.upload_bids = function(file) {
-        if(!file) return toaster.error("Please select a valid BIDS file");
-
-        var path = $scope.instance._id+"/upload/"+file.name;
-        $scope.uploading = {
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            //lastModified: file.lastModified,
-        };
-        console.log("uploading to:"+path);
-        console.dir($scope.resources);
-
-        //do upload
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", $scope.appconf.wf_api+"/resource/upload/"+$scope.resources.upload._id+"/"+btoa(path));
-        var jwt = localStorage.getItem($scope.appconf.jwt_id);
-        xhr.setRequestHeader("Authorization", "Bearer "+jwt);
-        xhr.upload.addEventListener("progress", function(evt) {
-            console.log("process");
-            console.dir(evt);
-            $scope.uploading.progress = evt.loaded / evt.total;
-        }, false);
-        xhr.addEventListener("load", function(evt) {
-            $scope.uploading = null;
-            console.log("loaded");
-            /*
-            validate_and_import(file.name, {
-                import: {
-                    dataset_id: selected._id,
-                    path: "../_upload/"+file.name,
-                }
-            });
-            */
-        }, false);
-        xhr.send(file);
-        $scope.uploading.progress = 0;
-    }
-});
-
+/*
 app.controller('TaskController', 
 function($scope, scaMessage, toaster, jwtHelper, $http, $window, $routeParams, scaTask, scaResource) {
 
@@ -338,6 +164,7 @@ function($scope, scaMessage, toaster, jwtHelper, $http, $window, $routeParams, s
         $window.history.back();
     }
 });
+*/
 
 //just a list of previously submitted tasks
 app.controller('RunningController', 
@@ -427,6 +254,7 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
         }
     });
 
+    /*
     $scope.doneupload = function(url) {
         //list all files in _upload and symlink
         $http.get($scope.appconf.wf_api+"/resource/ls/"+$scope.resources.upload.resource._id, {params: {
@@ -457,6 +285,7 @@ function($scope, scaMessage, toaster, instance, $http, $routeParams) {
             });
         });
     }
+    */
 
     $scope.fromurl = function(url) {
         //first submit download service
@@ -543,4 +372,5 @@ function($scope, scaMessage, toaster, jwtHelper, $http, $location, $routeParams,
         if(task.status == "finished") $location.path("/submit");
     });
 });
+
 

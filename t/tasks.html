@@ -1,23 +1,105 @@
-<!--<sca-menutab menu="appconf.menu" active="'submit'" user="user"></sca-menutab>-->
-<sca-breadcrumb breads="appconf.breads" active="menu_active"></sca-breadcrumb>
-<div class="container">
-    <h3 ng-if="menu_active == 'running'">Running Tasks</h3>
-    <h3 ng-if="menu_active == 'finished'">Finished Tasks</h3>
-    <div class="page">
-        <p ng-if="tasks.length == 0" class="text-muted">No tasks</p>
-        <ul class="list-group">
-            <li class="list-group-item slide-down clickable" ng-repeat="task in tasks | orderBy:'-create_date'" ng-click="open(task)">
-                <sca-wf-tasksum task="task">
-                    <!--tranclude a bit more details-->
-                    <pre style="font-size: 80%;">{{task|json}}</pre>
-                </sca-wf-tasksum>
-            </li>
-        </ul>
-        
-        <!--
-        <button class="btn" ng-click="new()" type="button">Submit New</button>
-        -->
-    </div>
-</div>
+<ng-include src="'t/sidebar.html'"></ng-include>
+<div class="sca-sidebar-page">
+    <div class="subbar">
+        <div style="padding-left: 20px; margin-bottom: 25px;">
+            <h2>Jobs</h2>
+            <p class="help-block">Show all jobs that you have submitted</p>
+        </div>
+        <hr style="margin: 0px;">
 
+        <div class="subbar-list">
+            <div class="subbar-list-item" 
+                ng-repeat="task in tasks"
+                ng-class="{'active': selected_main == task}"
+                ng-click="select(task)">
 
+                <small><taskstatus status="task.status" class="pull-right"></taskstatus></small>
+                <div class="list-header">{{task.desc}}</div>
+                <small>
+                    <time class="text-muted" style="position: relative; top: -4px;">{{task.create_date | date}}</time>
+                    <p>
+                        <code>dwi</code>{{task.config._form.dwi|filename}}
+                        <code>t1</code>{{task.config._form.t1|filename}}
+                    </p>
+                </small>
+
+            </div>
+        </div><!--workflow-->
+
+    </div><!--subbar-->
+    <div class="subbar-content">
+        <div class="margin30" ng-if="!selected_main">
+            <br>
+            <p class="alert alert-info">Please select a job</p>
+        </div>
+        <div class="margin30" ng-if="selected_main">
+            <div class="fixed-top container" style="padding-left: 455px">
+                <h2>
+                    <i class="fa fa-trash-o" aria-hidden="true" ng-click="delete()"></i>&nbsp;&nbsp;&nbsp;
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                    <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                    <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+
+                    <span class="pull-right" ng-class="{'text-muted':!selected_app.locked}">
+                        <button type="button" class="btn" ng-model="selected_app.locked">
+                            <i class="fa fa-play" aria-hidden="true"></i> Stop
+                        </button>
+                    </span>
+                </h2>
+                <h2 class="page-heading">{{selected_main.desc}}</h2>
+            </div>  
+            <div class="workflow" style="padding-top: 110px;">
+                <div class="well">
+                    <submitdetail detail="selected_main.config._form"></submitdetail>
+                </div>
+
+                <div class="workflow-item" ng-repeat="task in selected">
+                    <div class="item-header"><span class="item-header-badge">{{$index+1}}</span> {{task.name}}</div>
+                    <p class="workflow-detail">
+                        <button class="btn btn-xs pull-right" 
+                            ng-if="!task.show_output" 
+                            ng-click="task.show_output = true">
+                            <i class="fa fa-caret-right" aria-hidden="true"></i> Raw Outputs
+                        </button>
+                        <h5 ng-click="show_progress(task)">
+                            <taskstatus status="task.status"></taskstatus><span class="label label-default">{{task.status_msg}}</span>
+                        </h5>
+                        <div ng-switch="task.name">
+                            <div ng-switch-when="freesurfer">
+                                <p class="help-block">Run freesurfer/recon-all on anatomy data in order to generate /mri/aseg.mgz file used to create white matter mask. Normally takes about 12 hours to run.</p>
+                            </div>
+                            <div ng-switch-when="neuro-tracking">
+                                <p class="help-block">TODO - explain what neuro-tracking service does, and how the output from this service is used within the context of connectome evaluation. Normally takes about an hour to run.</p>
+                            </div>
+                            <div ng-switch-when="life">
+                                <p class="help-block">TODO - explain what life does. Normally takes about an hour to run.</p>
+                                <lifeplot task="task"></lifeplot>
+                                <!--
+                                <div id="plot_life1" style="width:700px;height:300px;"></div>
+                                <div id="plot_life2" style="width:700px;height:300px;"></div>
+                                --> 
+                            </div>
+                            <div ng-switch-when="connectome-comparison">
+                                <p class="help-block">Analyzes the FE structure generated by life service and calculates RMSE and NNZ. Normally takes a few minutes to run.</p>
+                                <comparisonplot task="task"></comparisonplot>
+                            </div>
+                            <div ng-switch-default>
+                                <p class="help-block">Unknown task..</p>
+                            </div>
+                            <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
+                        </div>
+                    </p>
+                </div><!--workflow-item-->
+            </div><!--workflow-->
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <h4>Debug</h4>
+            <div class="task" ng-repeat="task in selected">
+                <pre>{{task|json}}</pre>
+            </div>
+        </div><!--magin30-->
+    </div><!--subbar-->
+</div><!--sca-sidebbar-page-->

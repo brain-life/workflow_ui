@@ -21,10 +21,13 @@
 <body>
     <!--<sca-menubar header="menu.header" menu="menu.top" active="'wf'" profile="menu._profile" user="menu.user"></sca-menubar>-->
     <toaster-container toaster-options="{'position-class': 'toast-bottom-full-width'}"></toaster-container>
+    <ng-view></ng-view>
+    <!--
     <ng-include src="'t/sidebar.html'"></ng-include>
     <div class="sca-sidebar-page">
         <ng-view></ng-view>
     </div>
+    -->
 
     <!--pre angular dep-->
     <script src="node_modules/jquery/dist/jquery.min.js"></script><!--bootstrap requires jquery-->
@@ -47,9 +50,13 @@
     <script src="node_modules/angular-ui-ace/src/ui-ace.js"></script>
     <script src="node_modules/angular-gravatar/build/angular-gravatar.min.js"></script>
     <script src="node_modules/angular-timeago/dist/angular-timeago.min.js"></script>
+    <script src="node_modules/angular-location-update/angular-location-update.min.js"></script>
 
     <!--post anglar-->
     <script src="node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
+
+    <!-- Latest compiled and minified plotly.js JavaScript -->
+    <script type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <script src="config.js"></script>
 
@@ -61,7 +68,11 @@
     <script src="node_modules/sca-product-raw/ui/raw.js"></script>
 
     <script src="js/app.js"></script>
+    <script src="js/directive.js"></script>
+    <script src="js/router.js"></script>
     <script src="js/controllers.js"></script>
+    <script src="js/submit.js"></script>
+    <script src="js/tasks.js"></script>
 </body>
 </html>
 

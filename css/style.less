@@ -12,7 +12,7 @@ h2 {
 }
 h2.page-heading {
     padding-bottom: 8px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ddd;
     color: #008cba;
 }
 
@@ -85,7 +85,37 @@ li.clickable:hover {
     z-index: 998;
     width: 350px;
     height: 100%;
-    border-right: 1px solid #eee;
+    border-right: 1px solid #ddd;
+
+    .workflow {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        width: 350px;
+        position: fixed;
+        top: 97px;
+        bottom: 0px;
+
+        padding-right: 10px;
+        padding-top: 20px;
+
+        .workflow-item {
+            /*
+            &:hover {
+                cursor: pointer;
+                color: #008cba;
+                .item-header-badge {
+                    color: #008bca;
+                }
+            }
+            */
+        }
+
+        .item-header {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    }
 
     .subbar-list {
         overflow-x: hidden;
@@ -109,12 +139,10 @@ li.clickable:hover {
 
             }
 
-            /*
             &:hover {
                 cursor: pointer;
                 background-color: #eee;
             }
-            */
             &.active {
                 border: 3px solid #ddd;
             }
@@ -123,15 +151,6 @@ li.clickable:hover {
 }
 
 .workflow {
-    padding-right: 10px;
-    padding-top: 20px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    width: 350px;
-    position: fixed;
-    top: 97px;
-    bottom: 0px;
- 
     .workflow-item {
         margin-left: 35px;
         padding-bottom: 30px;
@@ -141,18 +160,8 @@ li.clickable:hover {
 
         transition: color 1s;
 
-        &:hover {
-            cursor: pointer;
-            color: #008cba;
-            .item-header-badge {
-                color: #008bca;
-            }
-        }
 
         .item-header {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
 
             .item-header-badge {
                 display: block;
@@ -196,6 +205,16 @@ li.clickable:hover {
 .subbar-content {
     margin-left: 350px;
     overflow-x: hidden;
+    
+    .workflow {
+        .workflow-item {
+            .item-header {
+                font-size: 20px;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+        }
+    }
 }
 .margin30 {
     margin: 0px 30px;
@@ -214,4 +233,20 @@ li.clickable:hover {
 }
 .form-section.ng-leave {
     animation: fadeOut 0.2s; 
+}
+.start-button {
+    margin: 8px 20px;
+}
+
+.step-badge {
+    display: inline-block;
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 6px;
+    text-align: center;
+    background-color: #ddd;
+    color: #aaa;
 }

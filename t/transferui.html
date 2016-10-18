@@ -1,0 +1,28 @@
+<div class="row" ng-if="!form.processing[id]">
+    <div class="col-md-9">
+        <div class="input-group">
+            <input type="text" class="form-control" ng-model="form[id+'_url']" placeholder="Enter URL"></input>
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="download(form[id+'_url'], id)" ng-disabled="!form[id+'_url']">Download</button>
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <span class="text-muted" style="margin: 0px 20px;">Or</span>&nbsp;
+        <button type="file" class="btn btn-default btn-primary"
+            ng-if="!form.processing[id]"
+            ngf-pattern="ngfpattern" 
+            ngf-select="upload($file, id)"
+            ngf-max-size="2GB">
+            <i class="fa fa-cloud-upload" aria-hidden="true"></i>&nbsp;&nbsp;Upload
+        </button>
+    </div>
+</div><!--row-->
+<div ng-if="form.processing[id]">
+    <div class="pull-right" ng-click="remove(id)" style="margin-right: 14px; margin-top: 13px; cursor: pointer;">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+    </div>
+    <div style="border: 1px solid #ddd; border-right: 40px solid #ddd">
+        <uploading_status detail="form.processing[id]" tasks="tasks"></uploading_status>
+    </div>
+</div>
