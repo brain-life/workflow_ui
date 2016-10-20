@@ -12,18 +12,16 @@
                 <div class="item-header"><span class="item-header-badge">1</span> Enter Your Data</div>
                 <p class="workflow-detail">Upload your anatomy and diffusion data and validate them to make sure that we can run connectome evaluator.</p>
             </div>
-            <!--
-            <div class="workflow-item" ng-class="{active: step == 'anatomy'}" ng-click="openpage('/submit/anatomy')">
-                <div class="item-header"><span class="item-header-badge">2</span> Enter Anatomy Data</div>
-                <p class="workflow-detail">Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id. Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi cillum consequat sunt ea pariatur.</p>
+            <div class="workflow-item" ng-class="{active: step == 'validate'}" ng-click="openpage('/submit/validate')">
+                <div class="item-header"><span class="item-header-badge">2</span> Validate Data</div>
+                <p class="workflow-detail">Run data validataion steps to make sure that your data is ready to be processed.</p>
             </div>
-            -->
             <div class="workflow-item" ng-class="{active: step == 'configure'}" ng-click="openpage('/submit/configure')">
-                <div class="item-header"><span class="item-header-badge">2</span> Configure</div>
+                <div class="item-header"><span class="item-header-badge">3</span> Configure</div>
                 <p class="workflow-detail">Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id. Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi cillum consequat sunt ea pariatur.</p>
             </div>
             <div class="workflow-item" ng-class="{active: step == 'submit'}" ng-click="openpage('/submit/submit')">
-                <div class="item-header"><span class="item-header-badge">3</span> Submit</div>
+                <div class="item-header"><span class="item-header-badge">4</span> Submit</div>
                 <p class="workflow-detail">Finally, submit your request to be processed on our computer. It should normally take about a few hours, and we will send you an email once processing is completed.</p>
             </div>
         </div><!--workflow-->
@@ -31,7 +29,7 @@
     </div><!--subbar-->
     <div class="subbar-content">
         <div class="margin30 animate-submit" ng-if="step == 'diffusion'">
-            <form ng-submit="openpage('/submit/configure')" class="form-horizontal">
+            <form ng-submit="openpage('/submit/validate')" class="form-horizontal">
                 <div class="fixed-top container" style="padding-left: 455px;">
                     <h2>
                         <br>
@@ -128,6 +126,48 @@
                 </div><!--container-->
             </form>
         </div>
+
+        <div class="margin30 animate-submit" ng-if="step == 'validate'">
+            <form ng-submit="openpage('/submit/configure')" class="form-horizontal">
+                <div class="fixed-top container" style="padding-left: 455px;">
+                    <h2>
+                        <br>
+                        <div class="pull-right">
+                            <button type="button" class="btn" ng-click="back()">Back</button>
+                            <button type="submit" class="btn btn-primary">Next</button>
+                        </div>
+                    </h2>
+                    <h2 class="page-heading">Validate Data</h2>
+                </div>
+                <div style="padding-top: 110px;">
+                    <div ng-switch="tasks[validation_task_id].status">
+                        <div ng-switch-when="finished">
+                            <p class="bg-warning" style="padding: 10px;" 
+                                ng-repeat="warning in tasks[validation_task_id].products[0].results.warnings">
+                                <b><i class="fa fa-exclamation text-warning" aria-hidden="true"></i> {{warning}}</b>
+                            </p>
+                            <p class="bg-danger" style="padding: 10px;" 
+                                ng-repeat="error in tasks[validation_task_id].products[0].results.errors">
+                                <b><i class="fa fa-exclamation" aria-hidden="true"></i> {{error}}</b>
+                            </p>
+                            <p class="bg-success" style="padding: 10px;"
+                                ng-if="tasks[validation_task_id].products[0].results.warnings.length == 0 &&
+                                    tasks[validation_task_id].products[0].results.errors.length == 0">
+                                <b>Congratulations! Your data passed all of our checks. Please proceed.</b>
+                            </p>
+                        </div>
+                        <div ng-switch-when="failed">
+                            <h3><i class="fa fa-exclamation" aria-hidden="true"></i> Validation Failed<h3>
+                            <p>{{tasks[validation_task_id].status_msg}}</p>
+                        </div>
+                        <div ng-switch-default>
+                            <h3><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Validating ...</h3>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div><!--margin30-->
+
         <div class="margin30 animate-submit" ng-if="step == 'configure'">
             <form ng-submit="openpage('/submit/submit')" class="form-horizontal">
                 <div class="fixed-top container" style="padding-left: 455px;">
@@ -239,6 +279,8 @@
         <div class="margin30">
             <h4>Debug</h4>
             <pre>{{form|json}}</pre>
+            <h5>Validation</h5>
+            <pre>{{$parent.tasks[validation_task_id]|json}}</pre>
         </div>
     </div>
 </div>

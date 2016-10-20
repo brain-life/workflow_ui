@@ -9,17 +9,17 @@
 
         <div class="subbar-list">
             <div class="subbar-list-item" 
-                ng-repeat="task in tasks"
-                ng-class="{'active': selected_main == task}"
-                ng-click="select(task)">
+                ng-repeat="job in jobs"
+                ng-class="{'active': selected_main == job}"
+                ng-click="select(job)">
 
-                <small><taskstatus status="task.status" class="pull-right"></taskstatus></small>
-                <div class="list-header">{{task.desc}}</div>
+                <small><taskstatus status="job.status" class="pull-right"></taskstatus></small>
+                <div class="list-header">{{job.desc}}</div>
                 <small>
-                    <time class="text-muted" style="position: relative; top: -4px;">{{task.create_date | date}}</time>
+                    <time class="text-muted" style="position: relative; top: -4px;">{{job.create_date | date}}</time>
                     <p>
-                        <code>dwi</code>{{task.config._form.dwi|filename}}
-                        <code>t1</code>{{task.config._form.t1|filename}}
+                        <code>dwi</code>{{job.config._form.dwi|filename}}
+                        <code>t1</code>{{job.config._form.t1|filename}}
                     </p>
                 </small>
 

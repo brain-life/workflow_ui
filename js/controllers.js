@@ -112,7 +112,6 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 app.factory('submitform', function() {
     //default
     return {
-        
         //used while processing upload /transfer
         processing: {},
 

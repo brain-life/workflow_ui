@@ -4,6 +4,10 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     scaMessage.show(toaster);
 
     $scope.form = submitform;
+            
+    //remove date used to submit various services
+    var remove_date = new Date();
+    remove_date.setDate(remove_date.getDate()+14); //remove in 14 day (long enough for large job?)
 
     $scope.samples = {
         sample1: {
@@ -43,129 +47,42 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     instance.then(function(_instance) {
         $scope.instance = _instance;
-        /*
-        if($scope.instance.config === undefined) $scope.instance.config = {
-            fibers: 5000,
-            fibers_max: 10000,
-        };
-
-        //find all diff import 
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                name: "diff import",
-                "products.type": "nifti",
-                status: "finished",
-            },
-            //find last one
-            sort: "-finish_date",
-            //limit: 1, //find the latest one
-        }})
-        .then(function(res) {
-            $scope.diffs = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.diffs.push(file);
-                });
-            });
-            if($scope.diffs.length > 0) $scope.instance.config.diff = $scope.diffs[0];
-        }, $scope.toast_error);
-
-        //find all .bvecs import
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                status: "finished",
-                name: "bvecs",
-                //"products.type": "soichih/neuro/bvecs",
-                "products.type": "raw",
-            },
-            //find the latest one
-            sort: "-finish_date",
-            //limit: 1,
-        }})
-        .then(function(res) {
-            $scope.bvecss = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.bvecss.push(file);
-                });
-            });
-            if($scope.bvecss.length > 0) $scope.instance.config.bvecs = $scope.bvecss[0];
-        }, $scope.toast_error);
-        
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                name: "bvals",
-                //"products.type": "soichih/neuro/bvals",
-                "products.type": "raw",
-                status: "finished",
-            },
-            //find the latest one
-            sort: "-finish_date",
-            //limit: 1,
-        }})
-        .then(function(res) {
-            console.log("list of all raw files");
-            $scope.bvalss = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.bvalss.push(file);
-                });
-            });
-            if($scope.bvalss.length > 0) $scope.instance.config.bvals = $scope.bvalss[0];
-        }, $scope.toast_error);
-        
-        //find all mask import
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            where: {
-                instance_id: $routeParams.instid,
-                name: "mask import",
-                "products.type": "nifti",
-                status: "finished",
-            },
-            //find the latest one
-            sort: "-finish_date",
-            //limit: 1,
-        }})
-        .then(function(res) {
-            $scope.masks = []; 
-            res.data.tasks.forEach(function(task) {
-                task.products[0].files.forEach(function(file, idx) {
-                    file.checked = true;
-                    file.id = idx;
-                    file.task_id = task._id;
-                    $scope.masks.push(file);
-                });
-            });
-            if($scope.masks.length > 0) $scope.instance.config.mask = $scope.masks[0];
-        }, $scope.toast_error);
-        */
+    
+        //handle page specific init
+        if($routeParams.step && $routeParams.step == "validate") {
+            //immediately submit validation task
+            $http.post($scope.appconf.wf_api+"/task", {
+                instance_id: $scope.instance._id,
+                name: "validation",
+                desc: "running conneval validation step",
+                service: "soichih/sca-service-conneval-validate",
+                remove_date: remove_date,
+                config: {
+                    t1: $scope.form.t1,
+                    dwi: $scope.form.dwi,
+                    bvecs: $scope.form.bvecs,
+                    bvals: $scope.form.bvals,
+                }
+            })
+            .then(function(res) {
+                console.log("submitted validation service");
+                $scope.validation_task_id = res.data.task._id;
+                $scope.$parent.tasks[$scope.validation_task_id] = res.data.task;
+            }, $scope.toast_error);
+        }
     });
 
     function submit_freesurfer() {
-        //var t1_task_id = $scope.form.t1.split("/")[1]; //grab "../##this##/t1.nii.gz"
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.instance._id,
             name: "freesurfer",
             desc: "running freesurfer for conneval process",
             service: "soichih/sca-service-freesurfer",
+            remove_date: remove_date,
             config: {
-                //"input_task_id": t1_task_id,
                 "hipposubfields": true,
                 "t1": $scope.form.t1,
             },
-            //deps: deps,
         })
         .then(function(res) {
             console.log("submitted freesurfer");
@@ -175,7 +92,6 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     }
 
     function submit_tracking(freesurfer_task) {
-
         //I need to guess the subject directory created by freesurfer - maybe I should update -neuro-tracking
         //so that I can configure it?
         var t1_filename = $scope.form.t1.split("/").pop(); //grab filename
@@ -186,6 +102,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             name: "neuro-tracking",
             desc: "running neuro tracking service for conneval process",
             service: "soichih/sca-service-neuro-tracking",
+            remove_date: remove_date,
             config: {
                 lmax: [8],
                 dwi: $scope.form.dwi,
@@ -210,6 +127,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             name: "life",
             desc: "running life service for conneval process",
             service: "soichih/sca-service-life",
+            remove_date: remove_date,
             config: {
                 diff: { dwi: $scope.form.dwi, },
                 anatomy: { t1: $scope.form.t1, },
@@ -232,6 +150,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             name: "connectome-comparison",
             desc: $scope.form.name, //"running comparison service for conneval process",
             service: "soichih/sca-service-connectome-data-comparison",
+            remove_date: remove_date,
             config: {
                 input_fe: "../"+life_task._id+"/output_fe.mat",
                 _form: $scope.form, //store form info so that UI can find more info
@@ -250,6 +169,11 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         submit_freesurfer();
     }
 
+    /*
+    $scope.$on('task_updated', function(evt, task) {
+        console.dir(task);
+    });
+    */
 });
 
 

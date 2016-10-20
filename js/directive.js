@@ -336,35 +336,6 @@ app.directive('comparisonplot', function(appconf, $http) {
                             margin: {t: 0, l: 50, b: 35}, //, l: 30, r:10, b:30},
                             background: '#f00',
                         });
-                        /*
-                        console.log("life_results.json");
-                        var rmse = res.data.out.plot[0];
-                        var w = res.data.out.plot[1];
-                        Plotly.plot('plot_life_rmse', [{
-                            x: rmse.x.vals,
-                            y: rmse.y.vals,
-                            //y: rmse, 
-                            //type: 'histogram', 
-                            //marker: { color: 'blue', }
-                        }], {
-                            title: rmse.title,
-                            xaxis: {title: rmse.x.label},
-                            yaxis: {title: rmse.y.label},
-                            //margin: {b: 15},
-                        });
-
-                        Plotly.plot('plot_life_w', [{
-                            x: w.x.vals,
-                            y: w.y.vals,
-                            //y: rmse, 
-                            //type: 'histogram', 
-                            //marker: { color: 'blue', }
-                        }], {
-                            title: w.title,
-                            xaxis: {title: w.x.label},
-                            yaxis: {title: w.y.label}
-                        });
-                        */
                     });
                 }
             });

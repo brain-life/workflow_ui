@@ -4,7 +4,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.$parent.active_menu = "tasks";
     scaMessage.show(toaster);
 
-    $scope.tasks = []; //list of all connectome-data-comparison tasks
+    $scope.jobs = []; //list of all connectome-data-comparison tasks
     $scope.selected = [];
 
     //load all comparison tasks 
@@ -20,10 +20,10 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             }
         }})
         .then(function(res) {
-            $scope.tasks = res.data.tasks;
+            $scope.jobs = res.data.tasks;
             //find task specified
             if($routeParams.taskid) {
-                $scope.tasks.forEach(function(task) {
+                $scope.jobs.forEach(function(task) {
                     if(task._id == $routeParams.taskid) {
                         $scope.select(task);
                         //$scope.selected = [task];
@@ -107,7 +107,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     $scope.$on('task_updated', function(evt, task) {
         //update tasks on the tasks list
-        $scope.tasks.forEach(function(_task) {
+        $scope.jobs.forEach(function(_task) {
             if(task._id == _task._id) for(var k in task) _task[k] = task[k];
         });
         //update tasks I am displaying
