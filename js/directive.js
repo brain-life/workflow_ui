@@ -113,7 +113,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 })
                 .then(function(res) {
                     processing.download_task_id = res.data.task._id;
-                    processing.validation_src = "../"+processing.download_task_id+"/"+filename;
+                    //processing.validation_src = "../"+processing.download_task_id+"/"+filename;
                     console.dir(res);
                 }, function(res) {
                     console.log("TODO - download request submit error");
@@ -129,7 +129,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     //filetype: file.type,
                     type: type,
                     progress: 0,
-                    validation_src: "../upload/"+file.name
+                    //validation_src: "../upload/"+file.name
                 };
                 $scope.form.processing[type] = processing;
 
@@ -154,13 +154,16 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     $scope.$apply(function() {
                         delete processing.progress;
                     });
-                    submit_validation(processing);
+                    processing.done = true;
+                    $scope.form[type] = "../upload/"+file.name;
+                    //submit_validation(processing);
                 }, false);
 
                 //all set..
                 xhr.send(file);
             }
 
+            /*
             function submit_validation(processing) {
                 //submit validation
                 $http.post(appconf.wf_api+"/task", {
@@ -168,7 +171,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     name: "data validation "+processing.type,
                     desc: "validating "+processing.name,
 
-                    //TODO - run validation and symlink to src if data looks good
+                    //TODO - run validation and copy to a bit more permanent location
                     service: "soichih/sca-product-raw",
                     remove_date: remove_date,
                     config: {
@@ -187,6 +190,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     console.log("TODO - validation request submit error");
                 });
             }
+            */
 
             //detect task finish
             $scope.$on('task_updated', function(evt, task) {
@@ -195,15 +199,15 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     var processing = $scope.form.processing[type];
                     if(!processing) return; //don't care if we don't have
 
-                    //handle validation end
-                    if(task._id == processing.validate_task_id) {
-                        $scope.form[type] = "../"+task._id+"/"+task.config.symlink[0].dest;
-                    }
                     //handle download end
                     if(task._id == processing.download_task_id) {
                         if(!processing.url) return; //downlaod complete already handled
                         delete processing.url;
-                        submit_validation(processing);
+                        console.log("done download");
+                        console.dir(task.products[0]);
+                        processing.done = true;
+                        $scope.form[type] = "../"+task._id+"/"+processing.name;
+                        //submit_validation(processing);
                     }
                 });
             });

@@ -8,6 +8,7 @@
         <hr style="margin: 0px;">
 
         <div class="subbar-list">
+            <p class="alert alert-info" ng-if="jobs.length == 0">Please submit your job first.</p>
             <div class="subbar-list-item" 
                 ng-repeat="job in jobs"
                 ng-class="{'active': selected_main == job}"
@@ -22,16 +23,17 @@
                         <code>t1</code>{{job.config._form.t1|filename}}
                     </p>
                 </small>
-
             </div>
         </div><!--workflow-->
 
     </div><!--subbar-->
     <div class="subbar-content">
+        <!--
         <div class="margin30" ng-if="!selected_main">
             <br>
             <p class="alert alert-info">Please select a job</p>
         </div>
+        -->
         <div class="margin30" ng-if="selected_main">
             <div class="fixed-top container" style="padding-left: 455px">
                 <h2>
@@ -56,13 +58,8 @@
                 <div class="workflow-item" ng-repeat="task in selected">
                     <div class="item-header"><span class="item-header-badge">{{$index+1}}</span> {{task.name}}</div>
                     <p class="workflow-detail">
-                        <button class="btn btn-xs pull-right" 
-                            ng-if="!task.show_output" 
-                            ng-click="task.show_output = true">
-                            <i class="fa fa-caret-right" aria-hidden="true"></i> Raw Outputs
-                        </button>
                         <h5 ng-click="show_progress(task)">
-                            <taskstatus status="task.status"></taskstatus><span class="label label-default">{{task.status_msg}}</span>
+                            <taskstatus status="task.status"></taskstatus><span class="label label-default">{{task.status_msg|cut:true:130:'...'}}</span>
                         </h5>
                         <div ng-switch="task.name">
                             <div ng-switch-when="freesurfer">
@@ -86,6 +83,12 @@
                             <div ng-switch-default>
                                 <p class="help-block">Unknown task..</p>
                             </div>
+
+                            <button class="btn btn-xs pull-right" type="button"
+                                ng-if="!task.show_output" 
+                                ng-click="task.show_output = true">
+                                <i class="fa fa-caret-right" aria-hidden="true"></i> Raw Outputs
+                            </button>
                             <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
                         </div>
                     </p>

@@ -153,7 +153,7 @@
                             <p class="bg-success" style="padding: 10px;"
                                 ng-if="tasks[validation_task_id].products[0].results.warnings.length == 0 &&
                                     tasks[validation_task_id].products[0].results.errors.length == 0">
-                                <b>Congratulations! Your data passed all of our checks. Please proceed.</b>
+                                Congratulations! Your data passed all of our checks. Please proceed.
                             </p>
                         </div>
                         <div ng-switch-when="failed">
@@ -163,6 +163,26 @@
                         <div ng-switch-default>
                             <h3><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Validating ...</h3>
                         </div>
+
+                        <!--
+                        <button class="btn btn-xs" type="button"
+                            ng-if="tasks[validation_task_id].products[0].results.t1_mrinfo && !tasks[validation_task_id].show_mrinfo" 
+                            ng-click="tasks[validation_task_id].show_mrinfo = true">
+                            <i class="fa fa-caret-right" aria-hidden="true"></i> Show mrinfo
+                        </button>
+                        -->
+                        <div ng-if="tasks[validation_task_id].products[0].results.t1_mrinfo">
+                            <h3>T1 mrinfo</h3>
+                            <pre>{{tasks[validation_task_id].products[0].results.t1_mrinfo}}</pre>
+                            <!--- I think pre looks better actually.. 
+                            <div ui-ace="{mode: 'text'}" ng-model="tasks[validation_task_id].products[0].results.t1_mrinfo" 
+                                style="height: 200px" readonly></div>
+                            </div>
+                            -->
+                            <h3>DWI mrinfo</h3>
+                            <pre>{{tasks[validation_task_id].products[0].results.dwi_mrinfo}}</pre>
+                        </div>
+                        
                     </div>
                 </div>
             </form>

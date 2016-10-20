@@ -17,7 +17,8 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
                 instance_id: $scope.instance._id,
                 service: "soichih/sca-service-connectome-data-comparison",
                 status: { $in: ["running", "requested", "failed", "finished"] },
-            }
+            },
+            sort: '-create_date', 
         }})
         .then(function(res) {
             $scope.jobs = res.data.tasks;
@@ -30,6 +31,9 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
                         //load_deps(task.deps); 
                     }
                 });
+            } else {
+                //select first one
+                if($scope.jobs.length > 0) $scope.select($scope.jobs[0]);    
             }
         }, $scope.toast_error);
     });

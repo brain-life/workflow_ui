@@ -1,5 +1,4 @@
 <div ng-if="detail">
-
     <!--downloading--> 
     <div ng-if="detail.url" style="padding: 5px 20px;">
         <h4>
@@ -20,31 +19,10 @@
             <span class="help-block">{{detail.name}}</span>
         </h4>
     </div>
-    <div ng-if="detail.validate_task_id" style="padding: 5px 20px;">
-        <h4>
-            <span ng-if="tasks[detail.validate_task_id].status == 'requested'">
-                <i class="fa fa-cog fa-spin" aria-hidden="true"></i> 
-                Waiting for Validation</span>
-            <span ng-if="tasks[detail.validate_task_id].status == 'running'">
-                <i class="fa fa-cog fa-spin" aria-hidden="true"></i> 
-                Validating</span>
-            <span ng-if="tasks[detail.validate_task_id].status == 'failed'">
-                <i class="fa fa-exclamation" aria-hidden="true"></i> 
-                Failed Validation</span>
-            <p ng-if="tasks[detail.validate_task_id].status == 'failed'">
-                {{tasks[detail.validate_task_id].status_msg}}
-            </p>
 
-            <!--filename dealing-->
-            <p ng-if="tasks[detail.validate_task_id].status == 'finished'" class="text-success">
-                <!--show check mark-->
-                <i class="fa fa-check" aria-hidden="true"></i> {{detail.name}}
-            </p>
-            <p ng-if="tasks[detail.validate_task_id].status != 'finished'" class="help-block">
-                {{detail.name}}
-            </p>
-        </h4>
-    </div>
+    <h4 class="bg-success" style="padding: 20px 20px; margin: 0px;" ng-if="detail.done">
+        <i class="fa fa-check" aria-hidden="true"></i> {{detail.name}}</h4>
+    </h4>
 
     <!--<pre>{{tasks[detail.validate_task_id]|json}}</pre>-->
 </div>
