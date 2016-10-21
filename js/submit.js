@@ -129,7 +129,11 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             service: "soichih/sca-service-life",
             remove_date: remove_date,
             config: {
-                diff: { dwi: $scope.form.dwi, },
+                diff: { 
+                    dwi: $scope.form.dwi, 
+                    bvecs: $scope.form.bvecs,
+                    bvals: $scope.form.bvals,
+                },
                 anatomy: { t1: $scope.form.t1, },
                 trac: { ptck: "../"+tracking_task._id+"/output.SD_PROB.8.tck" },
                 life_discretization: $scope.form.config.life.discretization,
