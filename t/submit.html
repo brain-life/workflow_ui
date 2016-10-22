@@ -157,11 +157,13 @@
                             </p>
                         </div>
                         <div ng-switch-when="failed">
-                            <h3><i class="fa fa-exclamation" aria-hidden="true"></i> Validation Failed<h3>
+                            <p class="bg-danger" style="padding: 10px">
+                                <i class="fa fa-exclamation" aria-hidden="true"></i> Validation Failed
+                            </p>
                             <p>{{tasks[validation_task_id].status_msg}}</p>
                         </div>
                         <div ng-switch-default>
-                            <h3><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Validating ...</h3>
+                            <strong> <i class="fa fa-cog fa-spin" aria-hidden="true"></i> Validating ... </strong>
                         </div>
 
                         <!--
