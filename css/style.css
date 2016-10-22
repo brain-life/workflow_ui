@@ -82,7 +82,7 @@ li.clickable:hover {
 }
 .subbar .workflow {
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
   width: 350px;
   position: fixed;
   top: 97px;
