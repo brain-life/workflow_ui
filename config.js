@@ -31,11 +31,44 @@ angular.module('app.config', [])
     */
 
     upload_task_id: "_upload", //task used to store files uploaded by sca-wf-uploader
+
+    samples: {
+        sample1: {
+            name: "STN.sub-FP.run01_fliprot_aligned_trilin",
+            desc: "Diffusion imaging data from the Stanford Data set (http://purl.stanford.edu/cs392kv3054).",
+            files: {
+                t1: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/anatomy/t1.nii.gz",
+                dwi: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/dwi/run01_fliprot_aligned_trilin.nii.gz",
+                bvecs: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/dwi/run01_fliprot_aligned_trilin.bvecs",
+                bvals: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/dwi/run01_fliprot_aligned_trilin.bvals",
+            }
+        },
+        sample2: {
+            name: "STN.sub-FP.run02_fliprot_aligned_trilin",
+            desc: "Diffusion imaging data from the Stanford Data set (http://purl.stanford.edu/cs392kv3054).",
+            files: {
+                t1: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/anatomy/t1.nii.gz",
+                dwi: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/dwi/run02_fliprot_aligned_trilin.nii.gz",
+                bvecs: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/dwi/run02_fliprot_aligned_trilin.bvecs",
+                bvals: "/N/u/hayashis/Karst/testdata/demo_data_encode/STN/sub-FP/dwi/run02_fliprot_aligned_trilin.bvals",
+            } 
+        },
+        sample3: {
+            name: "lifebid/2t1/HCP/110411",
+            desc: "Sample data from IU lifebid/2t1",
+            files: {
+                t1: "/N/u/hayashis/Karst/testdata/samples/sample3/anatomy/T1w_acpc_dc_restore_1p25.nii.gz",
+                dwi: "/N/u/hayashis/Karst/testdata/samples/sample3/diffusion_data/dwi_data_b2000.nii.gz",
+                bvecs: "/N/u/hayashis/Karst/testdata/samples/sample3/diffusion_data/dwi_data_b2000.bvecs",
+                bvals: "/N/u/hayashis/Karst/testdata/samples/sample3/diffusion_data/dwi_data_b2000.bvals",
+            } 
+        }
+    },
+
     sample_urls: {
         diff: [
             {
                 name: "Test data from Franco. lifebid/110411/diffusion_data",
-                //url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/dwi_data_b3000_aligned_trilin.nii.gz"
                 url: "http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz"
             },
         ],

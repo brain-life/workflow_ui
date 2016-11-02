@@ -135,7 +135,7 @@ li.clickable:hover {
 }
 .workflow .workflow-item {
   margin-left: 35px;
-  padding-bottom: 30px;
+  padding-bottom: 10px;
   padding-left: 35px;
   position: relative;
   color: #666;

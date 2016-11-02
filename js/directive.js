@@ -78,9 +78,6 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 if(processing.download_task_id) {
                     //TODO - submit job cancel
                 }
-                if(processing.validate_task_id) {
-                    //TODO - submit job cancel
-                }
                 delete $scope.form.processing[id];
                 delete $scope.form[id];
             }

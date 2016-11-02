@@ -84,7 +84,7 @@
                     <div ng-if="form.datatype == 'sample'" class="form-section">
                         <h3>Sample Data</h3>
                         <p class="help-block">Please choose sample data</p>
-                        <div class="radio" ng-repeat="(sample_id, sample) in samples">
+                        <div class="radio" ng-repeat="(sample_id, sample) in appconf.samples">
                             <label><input type="radio" ng-model="form.sample" value="{{sample_id}}" ng-change="select_sample()">
                                 {{sample.name}}
                                 <p class="help-block">{{sample.desc}}</p>
@@ -281,8 +281,10 @@
                     </div>
                 </h2>
                 <h2 class="page-heading">Submit</h2>
-                <h2><i>{{form.name}}</i></h2>
                 <p>We are now ready to submit your connectome evaluation process. Please verify information below and click submit button.</p>
+
+                <h3>Name</h3>
+                <p><i>{{form.name}}</i></p>
                 <submitdetail detail="form"></submitdetail>
                 
                 <h3>Processing Time</h3>
@@ -303,6 +305,8 @@
             <pre>{{form|json}}</pre>
             <h5>Validation</h5>
             <pre>{{$parent.tasks[validation_task_id]|json}}</pre>
+            <h5>Finalize</h5>
+            <pre>{{$parent.tasks[form.data_task_id]|json}}</pre>
         </div>
     </div>
 </div>

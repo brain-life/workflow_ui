@@ -38,10 +38,14 @@
     "font-awesome": "^4.6.3",
     "jquery": "^3.1.1",
     "ng-file-upload": "^12.2.12",
-    "plotly.js": "^1.18.0",
+    "plotly.js": "^1.18.1",
     "reconnectingwebsocket": "^1.0.0",
     "sca-ng-wf": "soichih/sca-ng-wf",
     "sca-product-raw": "soichih/sca-product-raw",
+    "three": "^0.81.2",
+    "stats.js": "^0.16.0"
     "ui-select": "^0.19.4"
+  },
+  "devDependencies": {
   }
 }

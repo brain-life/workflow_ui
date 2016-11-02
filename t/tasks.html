@@ -51,7 +51,28 @@
                 <h2 class="page-heading">{{selected_main.desc}}</h2>
             </div>  
             <div class="workflow" style="padding-top: 110px;">
-                <div class="well">
+                <a class="pull-right"
+                    style="color: black; position: relative; right: 10px; top: 10px;"
+                    ng-if="!selected_main.show_detail"
+                    ng-click="selected_main.show_detail = true">
+                    <i class="fa fa-caret-right" aria-hidden="true"></i> See Job Detail
+                </a>
+                <p ng-if="selected_main.status == 'requested'" class="alert alert-info">
+                    <strong><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Running Job </strong>
+                    Please see details below
+                </p>
+                <p ng-if="selected_main.status == 'running'" class="alert alert-info">
+                    <strong><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Running Job </strong>
+                    Please see details below
+                </p>
+                <p ng-if="selected_main.status == 'failed'" class="alert alert-danger">
+                    <strong>Job Failed </strong>
+                    Please see details below
+                </p>
+                <p ng-if="selected_main.status == 'finished'">
+                    <br>
+                </p>
+                <div class="well" ng-if="selected_main.show_detail">
                     <submitdetail detail="selected_main.config._form"></submitdetail>
                 </div>
 
@@ -84,11 +105,11 @@
                                 <p class="help-block">Unknown task..</p>
                             </div>
 
-                            <button class="btn btn-xs pull-right" type="button"
+                            <a style="cursor: pointer;"
                                 ng-if="!task.show_output" 
                                 ng-click="task.show_output = true">
-                                <i class="fa fa-caret-right" aria-hidden="true"></i> Raw Outputs
-                            </button>
+                                <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs</small>
+                            </a>
                             <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
                         </div>
                     </p>
