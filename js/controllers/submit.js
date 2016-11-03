@@ -134,7 +134,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             service: "soichih/sca-service-freesurfer",
             //remove_date: remove_date,
             config: {
-                hipposubfields: true,
+                hipposubfields: false, //just trying..
                 //"t1": $scope.form.t1,
                 t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
             },
@@ -168,7 +168,8 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
                 bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
                 //bvecs: $scope.form.bvecs,
 
-                freesurfer: "../"+freesurfer_task._id+"/"+t1_subject,
+                freesurfer: "../"+freesurfer_task._id+"/t1",
+                //freesurfer: "../"+freesurfer_task._id+"/"+t1_subject,
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
             },

@@ -158,10 +158,15 @@ li.clickable:hover {
         position: relative;
         color: #666;
 
-        transition: color 1s;
-
+        //workflow-item is now used in tasks and animation there interefares with how list is updated
+        //transition: color 1s;
 
         .item-header {
+            .item-header-addon {
+                position: relative;
+                left: -23px;
+                top: -4px;
+            }
 
             .item-header-badge {
                 display: block;
@@ -196,11 +201,41 @@ li.clickable:hover {
                 /*border: none;*/
             }
         }
+
+        /*default*/
+       .item-header {
+            .item-header-badge,
+            .item-header-task {
+                color: white;
+                background-color: #aaa;
+            }
+        }
+
+        .item-header-status-finished {
+            .item-header-badge,
+            .item-header-task {
+                background-color: #43ac6a;
+            }
+        }
+       .item-header-status-running {
+            .item-header-badge,
+            .item-header-task {
+                background-color: #5bc0de;
+            }
+        }
+       .item-header-status-failed {
+            .item-header-badge,
+            .item-header-task {
+                background-color: #f04124;
+            }
+        }
+
     }
     .workflow-item:not(:last-child) {
         border-left: 1px solid #ddd;
     }
 }
+
 
 .subbar-content {
     margin-left: 350px;
@@ -221,12 +256,14 @@ li.clickable:hover {
 }
 
 /*use animate.css*/
+/*
 .animate-submit.ng-enter {
     animation: fadeIn 1s; 
 }
 .animate-submit.ng-leave {
     animation: fadeOut 1s; 
 }
+*/
 
 .form-section.ng-enter {
     animation: fadeIn 0.2s; 

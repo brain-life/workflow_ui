@@ -50,71 +50,92 @@
                 </h2>
                 <h2 class="page-heading">{{selected_main.desc}}</h2>
             </div>  
-            <div class="workflow" style="padding-top: 110px;">
+            <div style="padding-top: 110px;">
+                <!--
                 <a class="pull-right"
                     style="color: black; position: relative; right: 10px; top: 10px;"
                     ng-if="!selected_main.show_detail"
                     ng-click="selected_main.show_detail = true">
                     <i class="fa fa-caret-right" aria-hidden="true"></i> See Job Detail
                 </a>
-                <p ng-if="selected_main.status == 'requested'" class="alert alert-info">
-                    <strong><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Running Job </strong>
-                    Please see details below
-                </p>
-                <p ng-if="selected_main.status == 'running'" class="alert alert-info">
-                    <strong><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Running Job </strong>
-                    Please see details below
-                </p>
-                <p ng-if="selected_main.status == 'failed'" class="alert alert-danger">
-                    <strong>Job Failed </strong>
-                    Please see details below
-                </p>
-                <p ng-if="selected_main.status == 'finished'">
-                    <br>
-                </p>
-                <div class="well" ng-if="selected_main.show_detail">
-                    <submitdetail detail="selected_main.config._form"></submitdetail>
+                -->
+                <div ng-if="selected_main.status == 'requested' || selected_main.status == 'running'">
+                    <h3 class="text-info"><strong><i class="fa fa-cog fa-spin" aria-hidden="true"></i> Processing ...</strong></h3>
+                    <p class="alert bg-info">
+                        The process should take anywhere between 10 - 24 hours depending on the availability of computing resources and the size of your input data. You may close this page and we will send you an email once the processing is completed.</p>
+                </div>
+                <div ng-if="selected_main.status == 'failed'">
+                    <h3 class="text-danger"><strong>Processing Failed</strong></h3>
+                    <p class="alert bg-danger">Sorry! Please contact the support team for more information.</p>
+                </div>
+                <div ng-if="selected_main.status == 'finished'">
+                    <h3 class="text-success"><strong>Finished!</strong></h3>
+                    <p><!--placeholder--></p>
                 </div>
 
-                <div class="workflow-item" ng-repeat="task in selected">
-                    <div class="item-header"><span class="item-header-badge">{{$index+1}}</span> {{task.name}}</div>
-                    <p class="workflow-detail">
-                        <h5 ng-click="show_progress(task)">
-                            <taskstatus status="task.status"></taskstatus><span class="label label-default">{{task.status_msg|cut:true:130:'...'}}</span>
-                        </h5>
-                        <div ng-switch="task.name">
-                            <div ng-switch-when="freesurfer">
-                                <p class="help-block">Subdivide the brain into major tissue and anatomical regions using FreeSurfer (10 h compute time).</p>
-                                <vtkview resourceid="task.resource_id" 
-                                    url="task.instance_id+'/'+task._id+'/rh.10.vtk'"></vtkview>
-                                <vtkview resourceid="task.resource_id" 
-                                    url="task.instance_id+'/'+task._id+'/lh.10.vtk'"></vtkview>
+                <div class="workflow">
+                    <div class="workflow-item" ng-repeat="task in selected">
+                        <div class="item-header" ng-class="{
+                            'item-header-status-failed': task.status == 'failed',
+                            'item-header-status-finished': task.status == 'finished',
+                            'item-header-status-running': task.status == 'running',
+                        }">
+                            <span class="item-header-badge">{{$index+1}}</span> 
+                            <div class="item-header-addon">
+                                <span class="label label-default item-header-task"> {{task.name}}</span><span class="label label-default item-header-status">
+                                    <!--<strong>{{task.status}}</strong>-->
+                                    <i ng-if="task.status == 'running'" class="fa fa-cog fa-spin text-muted" aria-hidden="true"></i>
+                                    <small>{{task.status_msg|cut:true:130:'...'}}</small>
+                                </span>
                             </div>
-                            <div ng-switch-when="neuro-tracking">
-                                <p class="help-block">Tracking white matter fascicles (1 h compute time).</p>
-                            </div>
-                            <div ng-switch-when="life">
-                                <p class="help-block">Evaluating white matter fascicles and removing false alarms (5 h compute time).</p>
-                                <lifeplot task="task"></lifeplot>
-                            </div>
-                            <div ng-switch-when="connectome-comparison">
-                                <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
-                                <comparisonplot task="task"></comparisonplot>
-                            </div>
-                            <div ng-switch-default>
-                                <p class="help-block">Unknown task..</p>
-                            </div>
-
-                            <a style="cursor: pointer;"
-                                ng-if="!task.show_output" 
-                                ng-click="task.show_output = true">
-                                <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs</small>
-                            </a>
-                            <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
                         </div>
-                    </p>
-                </div><!--workflow-item-->
+                        <p class="workflow-detail">
+                            <!--
+                            <h5 ng-click="show_progress(task)">
+                                <taskstatus status="task.status"></taskstatus><span class="label label-default">{{task.status_msg|cut:true:130:'...'}}</span>
+                            </h5>
+                            -->
+                            <div ng-switch="task.name">
+                                <div ng-switch-when="freesurfer">
+                                    <p class="help-block">Subdivide the brain into major tissue and anatomical regions using FreeSurfer (10 h compute time).</p>
+                                    <div ng-if="task.status == 'finished'">
+                                        <vtkview resourceid="task.resource_id" 
+                                            url="task.instance_id+'/'+task._id+'/rh.10.vtk'"></vtkview>
+                                        <vtkview resourceid="task.resource_id" 
+                                            url="task.instance_id+'/'+task._id+'/lh.10.vtk'"></vtkview>
+                                    </div>
+                                </div>
+                                <div ng-switch-when="neuro-tracking">
+                                    <p class="help-block">Tracking white matter fascicles (1 h compute time).</p>
+                                </div>
+                                <div ng-switch-when="life">
+                                    <p class="help-block">Evaluating white matter fascicles and removing false alarms (5 h compute time).</p>
+                                    <lifeplot task="task"></lifeplot>
+                                </div>
+                                <div ng-switch-when="connectome-comparison">
+                                    <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
+                                    <comparisonplot task="task"></comparisonplot>
+                                </div>
+                                <div ng-switch-default>
+                                    <p class="help-block">Behind the scene task..</p>
+                                </div>
+
+                                <a style="cursor: pointer;"
+                                    ng-if="!task.show_output" 
+                                    ng-click="task.show_output = true">
+                                    <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs</small>
+                                </a>
+                                <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
+                            </div>
+                        </p><!--workflow-detail-->
+                    </div><!--detail/ng-repeast workflow-item-->
+                </div><!--workflow-->
+
+                <hr>
+                <submitdetail detail="selected_main.config._form"></submitdetail>
+
             </div><!--workflow-->
+            <!--
             <br><br>
             <br><br>
             <br><br>
@@ -124,6 +145,7 @@
             <div class="task" ng-repeat="task in selected">
                 <pre>{{task|json}}</pre>
             </div>
+            -->
         </div><!--magin30-->
     </div><!--subbar-->
 </div><!--sca-sidebbar-page-->

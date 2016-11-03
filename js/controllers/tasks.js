@@ -25,11 +25,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             //find task specified
             if($routeParams.taskid) {
                 $scope.jobs.forEach(function(task) {
-                    if(task._id == $routeParams.taskid) {
-                        $scope.select(task);
-                        //$scope.selected = [task];
-                        //load_deps(task.deps); 
-                    }
+                    if(task._id == $routeParams.taskid) $scope.select(task);
                 });
             } else {
                 //select first one
@@ -40,20 +36,24 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     $scope.select = function(task) {
         //load dependencies
+        $scope.selected_main = task; //to hide the list until all dependencies are loaded
         $scope.selected = [task];
-        load_deps(task.deps); 
-        //$location.path("/tasks/"+task._id); 
+        load_deps(task.deps, function() {
+            console.log("done loading deps");
+        }); 
+
         $location.update_path("/tasks/"+task._id); 
         window.scrollTo(0,0);
-        $scope.selected_main = task;
     }
 
     $scope.show_progress = function(task) {
         document.location = $scope.appconf.progress_url+"#/detail/"+task.progress_key;
     }
 
-    function load_deps(deps) {
-        if(!deps || deps.length == 0) return;
+    function load_deps(deps, cb) {
+        if(!deps || deps.length == 0) {
+            return cb();
+        }
 
         $http.get($scope.appconf.wf_api+"/task", {params: {
             find: {
@@ -64,51 +64,12 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         .then(function(res) {
             res.data.tasks.forEach(function(task) {
                 $scope.selected.unshift(task);
-                if(task.name == "finalize") return; //don't load any further (TODO - I need to add preprocessing step)
-                load_deps(task.deps); 
+                if(task.name == "finalize") return cb(); //don't load any more previous tasks (TODO - I need to add preprocessing step)
+                load_deps(task.deps, cb); 
                 //showplots(task);
             });
         }, $scope.toast_error);
     }
-
-    /*
-    function showplots(task) {
-        if(task.status != "finished") return;
-        switch(task.name) {
-        case "conneval-life": 
-        case "life": showplot_life(task); break;
-        }
-    }
-
-    function showplot_life(task) {
-        console.log("load life_results.json");
-        var path = encodeURIComponent(task.instance_id+"/"+task._id+"/life_results.json");
-        var jwt = localStorage.getItem($scope.appconf.jwt_id);
-        $http.get($scope.appconf.wf_api+"/resource/download?r="+task.resource_id+"&p="+path)
-        .then(function(res) {
-
-            //raw data..
-            var rmse = res.data.out.life.rmse;
-            var w = res.data.out.life.w;
-
-            //preprocessed data
-            var plot1 = res.data.out.plot[0];
-            var plot2 = res.data.out.plot[1];
-            console.dir(plot1);
-
-            Plotly.plot('plot_life1', [{
-                x: plot1.x.vals,
-                y: plot1.y.vals,
-                //y: rmse, 
-                //type: 'histogram', 
-                //marker: { color: 'blue', }
-            }], {
-                xaxis: {title: plot1.x.label},
-                yaxis: {title: plot1.y.label}
-            });
-        }, $scope.toaster_error);
-    }
-    */
 
     $scope.$on('task_updated', function(evt, task) {
         //update tasks on the tasks list

@@ -361,11 +361,13 @@ app.directive('vtkview', function(appconf, $http) {
 
             //scene
             var scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xeeeeee);
+            scene.background = new THREE.Color(0x333333);
+            var scene_front = new THREE.Scene();
 
             //renderer
             var renderer = new THREE.WebGLRenderer({/*alpha: true, antialias: true*/});
             //renderer.setSize(element.width(), element.height());
+            renderer.autoClear = false;
             renderer.setSize(width, height);
             element.append(renderer.domElement);
 
@@ -382,6 +384,10 @@ app.directive('vtkview', function(appconf, $http) {
             var camlight = new THREE.PointLight(0xFFFFFF);
             camlight.position.copy(camera.position);
             scene.add(camlight);
+
+            //axishelper
+            var axisHelper = new THREE.AxisHelper(50);
+            scene_front.add(axisHelper);
            
             //control & animate
             var controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -390,7 +396,12 @@ app.directive('vtkview', function(appconf, $http) {
             });
             function animate() {
                 requestAnimationFrame( animate );
+
+                renderer.clear();
                 renderer.render( scene, camera );
+                renderer.clearDepth();
+                renderer.render( scene_front, camera );
+
                 controls.update();
             } 
             animate();
