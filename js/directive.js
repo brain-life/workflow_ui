@@ -344,4 +344,67 @@ app.directive('comparisonplot', function(appconf, $http) {
     }
 });
 
+app.directive('vtkview', function(appconf, $http) {
+    return {
+        template: '',
+        scope: { 
+            url: '<',
+            resourceid: '<' 
+        },
+        link: function(scope, element, attrs) {
+            var loader = new THREE.VTKLoader();
+            var p = encodeURIComponent(scope.url);
+            var jwt = localStorage.getItem(appconf.jwt_id);
+
+            var width = 400;
+            var height = 300;
+
+            //scene
+            var scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xeeeeee);
+
+            //renderer
+            var renderer = new THREE.WebGLRenderer({/*alpha: true, antialias: true*/});
+            //renderer.setSize(element.width(), element.height());
+            renderer.setSize(width, height);
+            element.append(renderer.domElement);
+
+            //camera
+            var camera = new THREE.PerspectiveCamera( 45, width / height, 1, 5000);
+            camera.position.z = 200;
+            
+            //light
+            var ambLight = new THREE.AmbientLight(0x606090);
+            scene.add(ambLight);
+            var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+            directionalLight.position.set( 0, 1, 0 );
+            scene.add( directionalLight );
+            var camlight = new THREE.PointLight(0xFFFFFF);
+            camlight.position.copy(camera.position);
+            scene.add(camlight);
+           
+            //control & animate
+            var controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.addEventListener('change', function() {
+                camlight.position.copy(camera.position);
+            });
+            function animate() {
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+                controls.update();
+            } 
+            animate();
+
+            loader.load(appconf.wf_api+"/resource/download?r="+scope.resourceid+"&p="+p+"&at="+jwt, function(geometry) {
+                geometry.computeFaceNormals();
+                geometry.computeVertexNormals();
+                var material = new THREE.MeshLambertMaterial( { color: 0xcc6633 } );
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.rotation.x = -Math.PI/2;
+                scene.add( mesh );
+             });
+        }
+    }
+});
+
 

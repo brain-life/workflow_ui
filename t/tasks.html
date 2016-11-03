@@ -85,6 +85,10 @@
                         <div ng-switch="task.name">
                             <div ng-switch-when="freesurfer">
                                 <p class="help-block">Subdivide the brain into major tissue and anatomical regions using FreeSurfer (10 h compute time).</p>
+                                <vtkview resourceid="task.resource_id" 
+                                    url="task.instance_id+'/'+task._id+'/rh.10.vtk'"></vtkview>
+                                <vtkview resourceid="task.resource_id" 
+                                    url="task.instance_id+'/'+task._id+'/lh.10.vtk'"></vtkview>
                             </div>
                             <div ng-switch-when="neuro-tracking">
                                 <p class="help-block">Tracking white matter fascicles (1 h compute time).</p>
@@ -92,10 +96,6 @@
                             <div ng-switch-when="life">
                                 <p class="help-block">Evaluating white matter fascicles and removing false alarms (5 h compute time).</p>
                                 <lifeplot task="task"></lifeplot>
-                                <!--
-                                <div id="plot_life1" style="width:700px;height:300px;"></div>
-                                <div id="plot_life2" style="width:700px;height:300px;"></div>
-                                --> 
                             </div>
                             <div ng-switch-when="connectome-comparison">
                                 <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
