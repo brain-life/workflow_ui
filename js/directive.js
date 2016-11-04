@@ -111,7 +111,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 .then(function(res) {
                     processing.download_task_id = res.data.task._id;
                     //processing.validation_src = "../"+processing.download_task_id+"/"+filename;
-                    console.dir(res);
+                    //console.dir(res);
                 }, function(res) {
                     console.log("TODO - download request submit error");
                 });
@@ -130,8 +130,8 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 };
                 $scope.form.processing[type] = processing;
 
-                console.log("uploading to:"+path);
-                console.dir($scope.resources);
+                //console.log("uploading to:"+path);
+                //console.dir($scope.resources);
 
                 //do upload
                 var xhr = new XMLHttpRequest();
@@ -200,8 +200,8 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     if(task._id == processing.download_task_id) {
                         if(!processing.url) return; //downlaod complete already handled
                         delete processing.url;
-                        console.log("done download");
-                        console.dir(task.products[0]);
+                        //console.log("done download");
+                        //console.dir(task.products[0]);
                         processing.done = true;
                         $scope.form[type] = "../"+task._id+"/"+processing.name;
                         //submit_validation(processing);
@@ -273,78 +273,229 @@ app.directive('lifeplot', function(appconf, $http) {
     }
 });
 
-app.directive('comparisonplot', function(appconf, $http) {
+//allows me to reuse vtk model already loaded (or loading)
+app.factory('vtk', function($q, appconf) {
+
+    var cache = {};//cache of promises
+
     return {
-        templateUrl: 't/comparisonplot.html',
-        scope: { task: '<' },
-        link: function(scope, element, attrs) {
-            scope.$watch('task', function() {
-                if(scope.task.status == "finished" && !element.loaded) {
-                    element.loaded = true;
-                    //load out.json
-                    var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/out.json");
-                    $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
-                    .then(function(res) {
-                        console.log("out.json");
-                        console.dir(res.data);
-                        var ref = res.data.reference;
-                        scope.nnz = res.data.nnz;
-                        scope.rmse = res.data.rmse;
+        get: function(path) {
+            if(cache[path]) return cache[path];
 
-                        var data = [];
-                        for(var group = 0; group < 3; ++group) {
-                            for(var subgroup = 0; subgroup < 4; ++subgroup) {
-                                data.push({
-                                    mode: 'markers',
-                                    name: 'group'+group+'-'+subgroup,
-                                    x: ref.rmse[group].mean[subgroup],
-                                    y: ref.nnz[group].mean[subgroup],
-                                    error_x: {
-                                        array: ref.rmse[group].std[subgroup],
-                                        thickness: 0.5,
-                                        width: 1,
-                                    },
-                                    error_y: {
-                                        array: ref.nnz[group].std[subgroup],
-                                        thickness: 0.5,
-                                        width: 1,
-                                    },
-                                    marker: {
-                                        sizemode: 'area',
-                                        size: 10, //ref.rmse[0].std.map(function(v) { return v*10000000}),
-                                        opacity: 0.5,
-                                        color: 'hsl('+group*60+', '+(subgroup*25+25)+'%, 30%)',
-                                    }
-                                });
-                            }
-                        }
-                        data.push({
-                            mode: 'markers',
-                            name: 'Yours',
-                            x: [res.data.rmse],
-                            y: [res.data.nnz],
-                            marker: {
-                                sizemode: 'area',
-                                size: 20, 
-                                opacity: 0.8,
-                                color: '#008cba',
-                            }
-                        });
-
-                        Plotly.plot('plot_compare', data, {
-                            xaxis: {title: "Connectome Error (r.m.s.e.)"},
-                            yaxis: {title: "Fascicles Number"},
-                            margin: {t: 0, l: 50, b: 35}, //, l: 30, r:10, b:30},
-                            background: '#f00',
-                        });
-                    });
-                }
+            //never loaded before.. create a new promise
+            var promise = $q(function(resolve, reject) {
+                console.log("loading vtk model for the first time "+path); 
+                var loader = new THREE.VTKLoader();
+                var p = encodeURIComponent(path);
+                var jwt = localStorage.getItem(appconf.jwt_id);
+                loader.load(path, function(geometry) {
+                    geometry.computeFaceNormals();
+                    geometry.computeVertexNormals();
+                    resolve(geometry);
+                }, function(progress) {}, reject);
             });
+            cache[path] = promise;
+            return promise;
         }
     }
 });
 
-app.directive('vtkview', function(appconf, $http) {
+app.directive('comparisonplot', function(appconf, $http, vtk) {
+    return {
+        templateUrl: 't/comparisonplot.html',
+        scope: { task: '<', freesurfer: '<' },
+        link: function(scope, element, attrs) {
+    
+            load_nnz(function(err, data) {
+                Plotly.plot('plot_compare', data, {
+                    xaxis: {title: "Connectome Error (r.m.s.e.)"},
+                    yaxis: {title: "Fascicles Number"},
+                    margin: {t: 0, l: 50, b: 35}, //, l: 30, r:10, b:30},
+                    background: '#f00',
+                });
+            });
+
+            init_conview();
+
+            function init_conview() {
+                var view = $("#conview");
+                var renderer = new THREE.WebGLRenderer({alpha: true/*, antialias: true*/});
+
+                //scenes - back scene for brain siluet
+                var scene_back = new THREE.Scene();
+                //scene_back.background = new THREE.Color(0x333333);
+                var scene = new THREE.Scene();
+                
+                //camera
+                var camera = new THREE.PerspectiveCamera( 45, view.width() / view.height(), 1, 5000);
+                camera.position.z = 200;
+
+                //light for back
+                //var camlight = new THREE.PointLight(0xFFFFFF);
+                //camlight.position.copy(camera.position);
+                //scene_back.add(camlight);
+
+                //load vtk brain model from freesurfer
+                var rid = scope.freesurfer.resource_id;
+                var jwt = localStorage.getItem(appconf.jwt_id);
+
+                //load left
+                var path = encodeURIComponent(scope.freesurfer.instance_id+"/"+scope.freesurfer._id+"/lh.10.vtk");
+                vtk.get(appconf.wf_api+"/resource/download?r="+rid+"&p="+path+"&at="+jwt).then(function(geometry) {
+                    //var material = new THREE.MeshLambertMaterial({color: 0xffcc99, transparent: true, opacity: 0.5});
+                    var material = new THREE.MeshBasicMaterial();
+                    var mesh = new THREE.Mesh( geometry, material );
+                    mesh.rotation.x = -Math.PI/2;
+                    scene_back.add(mesh);
+                });
+                //load right
+                var path = encodeURIComponent(scope.freesurfer.instance_id+"/"+scope.freesurfer._id+"/rh.10.vtk");
+                vtk.get(appconf.wf_api+"/resource/download?r="+rid+"&p="+path+"&at="+jwt).then(function(geometry) {
+                    //var material = new THREE.MeshLambertMaterial({color: 0xffcc99, transparent: true, opacity: 0.5});
+                    var material = new THREE.MeshBasicMaterial();
+                    var mesh = new THREE.Mesh( geometry, material );
+                    mesh.rotation.x = -Math.PI/2;
+                    scene_back.add(mesh);
+                });
+                
+                //load sample tracks (TODO - load from real life output eventually)
+                for(var i = 1;i < 21;++i) {
+                    load_tract("tracts/tracts_110411/tracts."+i+".json", function(err, mesh) {
+                        scene.add(mesh);
+                    });
+                }
+
+                renderer.autoClear = false;
+                renderer.setSize(view.width(), view.height());
+                view.append(renderer.domElement);
+
+                //use OrbitControls and make camera light follow camera position
+                var controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.addEventListener('change', function() {
+                    //camlight.position.copy(camera.position);
+                });
+                animate_conview();
+                function animate_conview() {
+                    //stats.begin();
+
+                    renderer.clear();
+                    renderer.render( scene_back, camera );
+                    renderer.clearDepth();
+                    renderer.render( scene, camera );
+
+                    //stats.end();
+
+                    requestAnimationFrame( animate_conview );
+                }
+            }
+            
+            function load_nnz(cb) {
+                //load out.json (should move nnz / rmse to products.json?)
+                var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/out.json");
+                $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
+                .then(function(res) {
+                    //console.log("out.json");
+                    //console.dir(res.data);
+                    var ref = res.data.reference;
+                    scope.nnz = res.data.nnz;
+                    scope.rmse = res.data.rmse;
+
+                    var data = [];
+                    for(var group = 0; group < 3; ++group) {
+                        for(var subgroup = 0; subgroup < 4; ++subgroup) {
+                            data.push({
+                                mode: 'markers',
+                                name: 'group'+group+'-'+subgroup,
+                                x: ref.rmse[group].mean[subgroup],
+                                y: ref.nnz[group].mean[subgroup],
+                                error_x: {
+                                    array: ref.rmse[group].std[subgroup],
+                                    thickness: 0.5,
+                                    width: 1,
+                                },
+                                error_y: {
+                                    array: ref.nnz[group].std[subgroup],
+                                    thickness: 0.5,
+                                    width: 1,
+                                },
+                                marker: {
+                                    sizemode: 'area',
+                                    size: 10, //ref.rmse[0].std.map(function(v) { return v*10000000}),
+                                    opacity: 0.5,
+                                    color: 'hsl('+group*60+', '+(subgroup*25+25)+'%, 30%)',
+                                }
+                            });
+                        }
+                    }
+
+                    data.push({
+                        mode: 'markers',
+                        name: 'Yours',
+                        x: [res.data.rmse],
+                        y: [res.data.nnz],
+                        marker: {
+                            sizemode: 'area',
+                            size: 20, 
+                            opacity: 0.8,
+                            color: '#008cba',
+                        }
+                    });
+                    cb(null, data);
+                });
+            }
+
+            function load_tract(path, cb) {
+                console.log("loading tract "+path);
+                //$scope.loading = true;
+                $http.get(path)
+                .then(function(res) {
+                    var name = res.data.name;
+                    var color = res.data.color;
+                    var bundle = res.data.coords;
+
+                    var threads_pos = [];
+                    //bundle = [bundle[0]];
+                    bundle.forEach(function(fascicle) {
+
+                        var xs = fascicle[0][0];
+                        var ys = fascicle[0][1];
+                        var zs = fascicle[0][2];
+
+                        for(var i = 1;i < xs.length;++i) {
+                            threads_pos.push(xs[i-1]);
+                            threads_pos.push(ys[i-1]);
+                            threads_pos.push(zs[i-1]);
+                            threads_pos.push(xs[i]);
+                            threads_pos.push(ys[i]);
+                            threads_pos.push(zs[i]);
+                        }
+                    });
+
+                    //now show bundle
+                    var vertices = new Float32Array(threads_pos);
+                    var geometry = new THREE.BufferGeometry();
+                    geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3 ) );
+                    var material = new THREE.LineBasicMaterial( {
+                        color: new THREE.Color(color[0], color[1], color[2]),
+                        transparent: true,
+                        opacity: 0.7,
+                        //fog: true,
+                        //blending: THREE.NormalBlending,
+                        //depthTest: true,
+                        //depthWrite: true,
+                        //linewidth: 3 ,
+                    } );
+                    var mesh = new THREE.LineSegments( geometry, material );
+                    mesh.rotation.x = -Math.PI/2;
+                    //scene.add(mesh);
+                    cb(null, mesh);
+                });
+            }
+        }
+    }
+});
+
+app.directive('vtkview', function(appconf, $http, vtk) {
     return {
         template: '',
         scope: { 
@@ -352,20 +503,18 @@ app.directive('vtkview', function(appconf, $http) {
             resourceid: '<' 
         },
         link: function(scope, element, attrs) {
-            var loader = new THREE.VTKLoader();
-            var p = encodeURIComponent(scope.url);
-            var jwt = localStorage.getItem(appconf.jwt_id);
+            //console.dir(element.height());
 
             var width = 400;
             var height = 300;
 
             //scene
             var scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x333333);
+            //scene.background = new THREE.Color(0x333333);
             var scene_front = new THREE.Scene();
 
             //renderer
-            var renderer = new THREE.WebGLRenderer({/*alpha: true, antialias: true*/});
+            var renderer = new THREE.WebGLRenderer({alpha: true/*, antialias: true*/});
             //renderer.setSize(element.width(), element.height());
             renderer.autoClear = false;
             renderer.setSize(width, height);
@@ -373,10 +522,11 @@ app.directive('vtkview', function(appconf, $http) {
 
             //camera
             var camera = new THREE.PerspectiveCamera( 45, width / height, 1, 5000);
+            camera.rotation.x = Math.PI/2;
             camera.position.z = 200;
             
             //light
-            var ambLight = new THREE.AmbientLight(0x606090);
+            var ambLight = new THREE.AmbientLight(0x303030);
             scene.add(ambLight);
             var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
             directionalLight.position.set( 0, 1, 0 );
@@ -406,14 +556,14 @@ app.directive('vtkview', function(appconf, $http) {
             } 
             animate();
 
-            loader.load(appconf.wf_api+"/resource/download?r="+scope.resourceid+"&p="+p+"&at="+jwt, function(geometry) {
-                geometry.computeFaceNormals();
-                geometry.computeVertexNormals();
-                var material = new THREE.MeshLambertMaterial( { color: 0xcc6633 } );
+            var p = encodeURIComponent(scope.url);
+            var jwt = localStorage.getItem(appconf.jwt_id);
+            vtk.get(appconf.wf_api+"/resource/download?r="+scope.resourceid+"&p="+p+"&at="+jwt).then(function(geometry) {
+                var material = new THREE.MeshLambertMaterial( { color: 0xcc9966 } );
                 var mesh = new THREE.Mesh( geometry, material );
                 mesh.rotation.x = -Math.PI/2;
                 scene.add( mesh );
-             });
+            });
         }
     }
 });

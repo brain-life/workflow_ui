@@ -64,6 +64,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         .then(function(res) {
             res.data.tasks.forEach(function(task) {
                 $scope.selected.unshift(task);
+                if(task.name == "freesurfer") $scope.freesurfer_task = task; //used by conview to draw brain model
                 if(task.name == "finalize") return cb(); //don't load any more previous tasks (TODO - I need to add preprocessing step)
                 load_deps(task.deps, cb); 
                 //showplots(task);

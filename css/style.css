@@ -111,7 +111,7 @@ li.clickable:hover {
   overflow-y: auto;
   width: 350px;
   position: fixed;
-  top: 108px;
+  top: 130px;
   bottom: 0px;
 }
 .subbar .subbar-list .subbar-list-item {
@@ -135,11 +135,10 @@ li.clickable:hover {
 }
 .workflow .workflow-item {
   margin-left: 35px;
-  padding-bottom: 10px;
+  padding-bottom: 25px;
   padding-left: 35px;
   position: relative;
   color: #666;
-  /*default*/
 }
 .workflow .workflow-item .item-header .item-header-addon {
   position: relative;
@@ -175,8 +174,8 @@ li.clickable:hover {
   background-color: #008cba;
   /*border: none;*/
 }
-.workflow .workflow-item .item-header .item-header-badge,
-.workflow .workflow-item .item-header .item-header-task {
+.workflow .workflow-item .item-header-status .item-header-badge,
+.workflow .workflow-item .item-header-status .item-header-task {
   color: white;
   background-color: #aaa;
 }
@@ -236,4 +235,15 @@ li.clickable:hover {
   text-align: center;
   background-color: #ddd;
   color: #aaa;
+}
+vtkview {
+  width: 100%;
+}
+vtkview canvas {
+  background-color: #333;
+  box-shadow: inset 0 0 15em #000;
+}
+#conview canvas {
+  background-color: #333;
+  box-shadow: inset 0 0 15em #000;
 }

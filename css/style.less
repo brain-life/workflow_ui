@@ -122,7 +122,7 @@ li.clickable:hover {
         overflow-y: auto;
         width: 350px;
         position: fixed;
-        top: 108px;
+        top: 130px;
         bottom: 0px;
         
         .subbar-list-item {
@@ -153,9 +153,10 @@ li.clickable:hover {
 .workflow {
     .workflow-item {
         margin-left: 35px;
-        padding-bottom: 10px;
+        padding-bottom: 25px;
         padding-left: 35px;
         position: relative;
+
         color: #666;
 
         //workflow-item is now used in tasks and animation there interefares with how list is updated
@@ -202,8 +203,7 @@ li.clickable:hover {
             }
         }
 
-        /*default*/
-       .item-header {
+       .item-header-status {
             .item-header-badge,
             .item-header-task {
                 color: white;
@@ -286,4 +286,15 @@ li.clickable:hover {
     text-align: center;
     background-color: #ddd;
     color: #aaa;
+}
+vtkview {
+    width: 100%;
+}
+vtkview canvas {
+    background-color: #333;
+    box-shadow: inset 0 0 15em #000;
+}
+#conview canvas {
+    background-color: #333;
+    box-shadow: inset 0 0 15em #000;
 }
