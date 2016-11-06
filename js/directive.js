@@ -118,7 +118,9 @@ app.directive('transferUi', function(appconf, toaster, $http) {
             }
 
             $scope.upload = function(file, type) {
-                if(!file) return toaster.error("Please select a correct file type");
+                if(!file) {
+                    return toaster.error("Please select a correct file type");
+                }
                 var path = $scope.instance._id+"/upload/"+file.name;
                 var processing = {
                     name: file.name,
@@ -191,20 +193,25 @@ app.directive('transferUi', function(appconf, toaster, $http) {
 
             //detect task finish
             $scope.$on('task_updated', function(evt, task) {
-                if(task.status != "finished") return; 
                 ['dwi', 'bvecs', 'bvals', 't1', 'bids'].forEach(function(type) {
                     var processing = $scope.form.processing[type];
                     if(!processing) return; //don't care if we don't have
-
-                    //handle download end
                     if(task._id == processing.download_task_id) {
-                        if(!processing.url) return; //downlaod complete already handled
-                        delete processing.url;
-                        //console.log("done download");
-                        //console.dir(task.products[0]);
-                        processing.done = true;
-                        $scope.form[type] = "../"+task._id+"/"+processing.name;
-                        //submit_validation(processing);
+                        if(task.status == "finished") {
+                            //handle download end
+                            if(!processing.url) return; //downlaod complete already handled
+                            delete processing.url;
+                            //console.log("done download");
+                            //console.dir(task.products[0]);
+                            processing.done = true;
+                            $scope.form[type] = "../"+task._id+"/"+processing.name;
+                            //submit_validation(processing);
+                        }
+                        if(task.status == "failed") {
+                            delete $scope.form.processing[type];
+                            delete $scope.form[type];
+                            toaster.error("Failed to download the file specified. Please check the URL and try again");
+                        }
                     }
                 });
             });
@@ -340,7 +347,8 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                 var jwt = localStorage.getItem(appconf.jwt_id);
 
                 //load left
-                var path = encodeURIComponent(scope.freesurfer.instance_id+"/"+scope.freesurfer._id+"/lh.10.vtk");
+                var base = scope.freesurfer.instance_id+"/"+scope.freesurfer._id;
+                var path = encodeURIComponent(base+"/lh.10.vtk");
                 vtk.get(appconf.wf_api+"/resource/download?r="+rid+"&p="+path+"&at="+jwt).then(function(geometry) {
                     //var material = new THREE.MeshLambertMaterial({color: 0xffcc99, transparent: true, opacity: 0.5});
                     var material = new THREE.MeshBasicMaterial();
@@ -349,7 +357,7 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                     scene_back.add(mesh);
                 });
                 //load right
-                var path = encodeURIComponent(scope.freesurfer.instance_id+"/"+scope.freesurfer._id+"/rh.10.vtk");
+                var path = encodeURIComponent(base+"/rh.10.vtk");
                 vtk.get(appconf.wf_api+"/resource/download?r="+rid+"&p="+path+"&at="+jwt).then(function(geometry) {
                     //var material = new THREE.MeshLambertMaterial({color: 0xffcc99, transparent: true, opacity: 0.5});
                     var material = new THREE.MeshBasicMaterial();
@@ -487,7 +495,11 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                     } );
                     var mesh = new THREE.LineSegments( geometry, material );
                     mesh.rotation.x = -Math.PI/2;
-                    //scene.add(mesh);
+                    //
+                    //temporarly hack to fit fascicles inside
+                    mesh.position.z = -20;
+                    mesh.position.y = -20;
+
                     cb(null, mesh);
                 });
             }

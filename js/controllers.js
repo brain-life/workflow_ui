@@ -9,7 +9,14 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
     $scope.tasks = {};
 
     var jwt = localStorage.getItem(appconf.jwt_id);
-    if(jwt) $scope.user = jwtHelper.decodeToken(jwt);
+    if(jwt) {
+        var expdate = jwtHelper.getTokenExpirationDate(jwt);
+        if(expdate < Date.now()) {
+            localStorage.removeItem(appconf.jwt_id);
+        } else {
+            $scope.user = jwtHelper.decodeToken(jwt);
+        }
+    }
 
     //open another page inside the app.
     $scope.openpage = function(page) {
@@ -57,7 +64,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
             }, console.dir);
         });
 
-        instance.then(function(_instance) {
+        instance.get().then(function(_instance) {
             var eventws = new ReconnectingWebSocket("wss:"+window.location.hostname+appconf.event_api+"/subscribe?jwt="+jwt);
             eventws.onopen = function(e) {
                 console.log("eventws connection opened.. binding");
@@ -100,7 +107,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
 });
 
 app.controller('HomeController', 
-function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
+function($scope, toaster, $http, jwtHelper, scaMessage, $routeParams, $location) {
     $scope.$parent.active_menu = "home";
     scaMessage.show(toaster);
 });

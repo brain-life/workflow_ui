@@ -8,7 +8,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.selected = [];
 
     //load all comparison tasks 
-    instance.then(function(_instance) { 
+    instance.get().then(function(_instance) { 
         $scope.instance = _instance; 
         
         //load previously submitted tasks

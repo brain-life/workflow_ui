@@ -16,6 +16,9 @@
             ngf-max-size="2GB">
             <i class="fa fa-cloud-upload" aria-hidden="true"></i>&nbsp;&nbsp;Upload
         </button>
+        <!--
+        <p class="alert alert-warning" ng-repeat="file in form.invalidFiles">Invalid File {{file.$errorMessages}}</p>
+        -->
     </div>
 </div><!--row-->
 <div ng-if="form.processing[id]">

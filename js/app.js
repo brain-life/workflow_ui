@@ -111,40 +111,44 @@ function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
 */
 
 //return singleton instance or create new one if it doesn't exist yet
-app.factory('instance', ['appconf', '$http', 'jwtHelper', 'toaster',
-function(appconf, $http, jwtHelper, toaster) {
+app.factory('instance', function(appconf, $http, jwtHelper, toaster, $q) {
     console.log("getting conneval instance");
     var workflow_id = "sca-wf-conneval"; //needs to match package.json/name
-    return $http.get(appconf.wf_api+'/instance', {
-        params: {
-            find: { workflow_id: workflow_id } 
-        }
-    })
-    .then(function(res) {
-        if(res.data.count != 0) {
-            console.dir(res.data.instances[0]);
-            return res.data.instances[0];
-        } else {
-            console.log("creating new instance");
-            //need to create one
-            return $http.post(appconf.wf_api+"/instance", {
-                workflow_id: workflow_id,
-                name: "test",
-                desc: "singleton",
-                config: {some: "thing"},
-            }).then(function(res) {
-                console.log("created new instance");
-                return res.data;
-            }, function(res) {
-                if(res.data && res.data.message) toaster.error(res.data.message);
-                else toaster.error(res.statusText);
+
+    var promise;
+    return {
+        get: function() {
+            if(promise) return promise;
+            promise = $q(function(resolve, reject) {
+
+                $http.get(appconf.wf_api+'/instance', {
+                    params: {
+                        find: { workflow_id: workflow_id } 
+                    }
+                })
+                .then(function(res) {
+                    if(res.data.count != 0) {
+                        //yay!
+                        resolve(res.data.instances[0]);
+                    } else {
+                        //need to create instance
+                        $http.post(appconf.wf_api+"/instance", {
+                            workflow_id: workflow_id,
+                            name: "test",
+                            desc: "singleton",
+                            config: {some: "thing"},
+                        }).then(function(res) {
+                            console.log("created new instance");
+                            resolve(res.data);
+                        }, reject);
+                    }
+                }, reject);
             });
+            return promise;
         }
-    }, function(res) {
-        if(res.data && res.data.message) toaster.error(res.data.message);
-        else toaster.error(res.statusText);
-    });
-}]);
+    }
+
+});
 
 /**
  * AngularJS default filter with the following expression:

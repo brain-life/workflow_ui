@@ -56,9 +56,9 @@
                     <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
 
-                    <span class="pull-right" ng-class="{'text-muted':!selected_app.locked}">
-                        <button type="button" class="btn" ng-model="selected_app.locked">
-                            <i class="fa fa-play" aria-hidden="true"></i> Stop
+                    <span class="pull-right">
+                        <button ng-if="selected_main.status == 'running' || selected_main.status == 'requested'" type="button" class="btn" ng-model="selected_app.locked">
+                            <i class="fa fa-stop" aria-hidden="true"></i> Stop
                         </button>
                     </span>
                 </h2>

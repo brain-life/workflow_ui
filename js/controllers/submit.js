@@ -50,7 +50,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }
     }, 0);
 
-    instance.then(function(_instance) {
+    instance.get().then(function(_instance) {
         $scope.instance = _instance;
     
         //handle page specific init steps.
