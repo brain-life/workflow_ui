@@ -242,6 +242,8 @@ app.directive('lifeplot', function(appconf, $http) {
                     //var jwt = localStorage.getItem(appconf.jwt_id);
                     $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
                     .then(function(res) {
+                        if(scope.destroyed) return; 
+
                         //console.log("life_results.json");
                         //console.dir(res.data);
                         var rmse = res.data.out.plot[0];
@@ -273,6 +275,10 @@ app.directive('lifeplot', function(appconf, $http) {
                             yaxis: {title: w.y.label},
                             margin: {t: 0, b: 35, r: 0},
                         });
+                    });
+                    
+                    element.on('$destroy', function() {
+                        scope.destroyed = true;
                     });
                 }
             });
@@ -310,8 +316,11 @@ app.factory('vtk', function($q, appconf) {
 app.directive('comparisonplot', function(appconf, $http, vtk) {
     return {
         templateUrl: 't/comparisonplot.html',
-        scope: { task: '<', freesurfer: '<' },
+        scope: { task: '<', },
         link: function(scope, element, attrs) {
+            element.on('$destroy', function() {
+                scope.destroyed = true;
+            });
     
             load_nnz(function(err, data) {
                 Plotly.plot('plot_compare', data, {
@@ -321,9 +330,77 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                     background: '#f00',
                 });
             });
+            
+            function load_nnz(cb) {
+                //load out.json (should move nnz / rmse to products.json?)
+                var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/out.json");
+                $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
+                .then(function(res) {
+                    if(scope.destroyed) return;
+                    //console.log("out.json");
+                    //console.dir(res.data);
+                    var ref = res.data.reference;
+                    scope.nnz = res.data.nnz;
+                    scope.rmse = res.data.rmse;
 
+                    var data = [];
+                    for(var group = 0; group < 3; ++group) {
+                        for(var subgroup = 0; subgroup < 4; ++subgroup) {
+                            data.push({
+                                mode: 'markers',
+                                name: 'group'+group+'-'+subgroup,
+                                x: ref.rmse[group].mean[subgroup],
+                                y: ref.nnz[group].mean[subgroup],
+                                error_x: {
+                                    array: ref.rmse[group].std[subgroup],
+                                    thickness: 0.5,
+                                    width: 1,
+                                },
+                                error_y: {
+                                    array: ref.nnz[group].std[subgroup],
+                                    thickness: 0.5,
+                                    width: 1,
+                                },
+                                marker: {
+                                    sizemode: 'area',
+                                    size: 10, //ref.rmse[0].std.map(function(v) { return v*10000000}),
+                                    opacity: 0.5,
+                                    color: 'hsl('+group*60+', '+(subgroup*25+25)+'%, 30%)',
+                                }
+                            });
+                        }
+                    }
+
+                    data.push({
+                        mode: 'markers',
+                        name: 'Yours',
+                        x: [res.data.rmse],
+                        y: [res.data.nnz],
+                        marker: {
+                            sizemode: 'area',
+                            size: 20, 
+                            opacity: 0.8,
+                            color: '#008cba',
+                        }
+                    });
+                    cb(null, data);
+                });
+            }
+
+        }
+    }
+});
+
+app.directive('tractsview', function(appconf, $http, vtk) {
+    return {
+        templateUrl: 't/tractsview.html',
+        scope: { task: '<', freesurfer: '<' },
+        link: function(scope, element, attrs) {
+            element.on('$destroy', function() {
+                scope.destroyed = true;
+            });
+    
             init_conview();
-
             function init_conview() {
                 var view = $("#conview");
                 var renderer = new THREE.WebGLRenderer({alpha: true/*, antialias: true*/});
@@ -397,66 +474,13 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                 }
             }
             
-            function load_nnz(cb) {
-                //load out.json (should move nnz / rmse to products.json?)
-                var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/out.json");
-                $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
-                .then(function(res) {
-                    //console.log("out.json");
-                    //console.dir(res.data);
-                    var ref = res.data.reference;
-                    scope.nnz = res.data.nnz;
-                    scope.rmse = res.data.rmse;
-
-                    var data = [];
-                    for(var group = 0; group < 3; ++group) {
-                        for(var subgroup = 0; subgroup < 4; ++subgroup) {
-                            data.push({
-                                mode: 'markers',
-                                name: 'group'+group+'-'+subgroup,
-                                x: ref.rmse[group].mean[subgroup],
-                                y: ref.nnz[group].mean[subgroup],
-                                error_x: {
-                                    array: ref.rmse[group].std[subgroup],
-                                    thickness: 0.5,
-                                    width: 1,
-                                },
-                                error_y: {
-                                    array: ref.nnz[group].std[subgroup],
-                                    thickness: 0.5,
-                                    width: 1,
-                                },
-                                marker: {
-                                    sizemode: 'area',
-                                    size: 10, //ref.rmse[0].std.map(function(v) { return v*10000000}),
-                                    opacity: 0.5,
-                                    color: 'hsl('+group*60+', '+(subgroup*25+25)+'%, 30%)',
-                                }
-                            });
-                        }
-                    }
-
-                    data.push({
-                        mode: 'markers',
-                        name: 'Yours',
-                        x: [res.data.rmse],
-                        y: [res.data.nnz],
-                        marker: {
-                            sizemode: 'area',
-                            size: 20, 
-                            opacity: 0.8,
-                            color: '#008cba',
-                        }
-                    });
-                    cb(null, data);
-                });
-            }
-
             function load_tract(path, cb) {
                 console.log("loading tract "+path);
                 //$scope.loading = true;
                 $http.get(path)
                 .then(function(res) {
+                    if(scope.destroyed) return;
+
                     var name = res.data.name;
                     var color = res.data.color;
                     var bundle = res.data.coords;
