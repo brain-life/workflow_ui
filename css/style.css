@@ -20,6 +20,9 @@ h3 {
   font-size: 18px;
   font-weight: bold;
 }
+i[onclick] {
+  cursor: hover;
+}
 .fixed-top {
   position: fixed;
   top: 0px;

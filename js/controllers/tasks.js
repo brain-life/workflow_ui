@@ -50,6 +50,22 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         document.location = $scope.appconf.progress_url+"#/detail/"+task.progress_key;
     }
 
+    $scope.delete = function() {
+        if(!$scope.selected_main) return;
+
+        //TODO - popup confirmation dialog first? 
+        $scope.selected.forEach(function(task) {
+            $http.delete($scope.appconf.wf_api+"/task/"+task._id)
+            .then(function(res) {
+                console.log("Successfully removed a task: "+task._id);
+            }, $scope.toast_error);
+        });
+
+        $scope.jobs.splice($scope.jobs.indexOf($scope.selected_main), 1);
+        $scope.selected_main = null;
+        $scope.selected = [];
+    }
+
     function load_deps(deps, cb) {
         if(!deps || deps.length == 0) {
             return cb();
