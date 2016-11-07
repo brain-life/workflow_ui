@@ -326,7 +326,7 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                 Plotly.plot('plot_compare', data, {
                     xaxis: {title: "Connectome Error (r.m.s.e.)"},
                     yaxis: {title: "Fascicles Number"},
-                    margin: {t: 0, l: 50, b: 35}, //, l: 30, r:10, b:30},
+                    margin: {t: 20, l: 50, b: 35}, //, l: 30, r:10, b:30},
                     background: '#f00',
                 });
             });
@@ -344,20 +344,23 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                     scope.rmse = res.data.rmse;
 
                     var data = [];
-                    for(var group = 0; group < 3; ++group) {
-                        for(var subgroup = 0; subgroup < 4; ++subgroup) {
+                    var gid = 0;
+                    ["HCP3T", "STN", "HCP7T"].forEach(function(group) {
+                        var subgid = 0;
+                        //["Deterministic", "Probabilistic", "XXX", "Tensor1", "Tensor2"].forEach(function(subgroup) {
+                        ["Subj1", "Subj2", "Subj3", "Subj4"].forEach(function(subgroup) {
                             data.push({
                                 mode: 'markers',
-                                name: 'group'+group+'-'+subgroup,
-                                x: ref.rmse[group].mean[subgroup],
-                                y: ref.nnz[group].mean[subgroup],
+                                name: group+' - '+subgroup,
+                                x: ref.rmse[gid].mean[subgid],
+                                y: ref.nnz[gid].mean[subgid],
                                 error_x: {
-                                    array: ref.rmse[group].std[subgroup],
+                                    array: ref.rmse[gid].std[subgid],
                                     thickness: 0.5,
                                     width: 1,
                                 },
                                 error_y: {
-                                    array: ref.nnz[group].std[subgroup],
+                                    array: ref.nnz[gid].std[subgid],
                                     thickness: 0.5,
                                     width: 1,
                                 },
@@ -365,11 +368,13 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                                     sizemode: 'area',
                                     size: 10, //ref.rmse[0].std.map(function(v) { return v*10000000}),
                                     opacity: 0.5,
-                                    color: 'hsl('+group*60+', '+(subgroup*25+25)+'%, 30%)',
+                                    color: 'hsl('+gid*60+', '+(100-(subgid*25+25))+'%, 30%)',
                                 }
                             });
-                        }
-                    }
+                            subgid++;
+                        });
+                        gid++;
+                    });
 
                     data.push({
                         mode: 'markers',

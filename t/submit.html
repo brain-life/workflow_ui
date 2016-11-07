@@ -71,13 +71,13 @@
                     <div class="form-section">
                         <h3>Data Format</h3>
                         <div class="radio"> 
-                            <label><input type="radio" ng-model="form.datatype" value="sample">Use sample data</label>
-                        </div>
-                        <div class="radio"> 
-                            <label><input type="radio" ng-model="form.datatype" value="bids">BIDS (.tar)</label>
-                        </div>
-                        <div class="radio"> 
                             <label><input type="radio" ng-model="form.datatype" value="ind">Anatomy(.nii.gz) / Diffusion(.dwi.nii.gz) / bvecs / bvals</label>
+                        </div>
+                        <div class="radio"> 
+                            <label><input type="radio" ng-model="form.datatype" value="bids">BIDS - Brain Imaging Data Structure(.tar)</label>
+                        </div>
+                        <div class="radio"> 
+                            <label><input type="radio" ng-model="form.datatype" value="sample">Use sample data</label>
                         </div>
                     </div>
 
@@ -168,6 +168,23 @@
                         </div>
                         <div ng-switch-default>
                             <strong> <i class="fa fa-cog fa-spin" aria-hidden="true"></i></strong> Validating ... 
+                            <p class="help-block">Performing validations to check for following, and more...</p>
+                            <ul class="help-block">
+                                <li>All required input files are entered</li>
+                                <li>Make sure mrinfo runs successfully on specified dwi file</li>
+                                <li>Make sure dwi is 4d</li>
+                                <li>Maise warning if dwi transformation matrix isn't unit matrix (identity matrix)</li>
+
+                                <li>Make sure mrinfo runs successfully on specified t1 file</li>
+                                <li>Make sure t1 is 3d</li>
+                                <li>Check to see t1 transformation matrix isn't unit matrix (identity matrix)</li>
+                            
+                                <li>Make sure bvecs and bvals can be read</li>
+                                <li>Make sure bvecs's cols count matches dwi's 4th dimension number</li>
+                                <li>Make sure bvecs has 3 rows</li>
+                                <li>Make sure bvals's cols count matches dwi's 4th dimension number</li>
+                                <li>Make sure bvals has 1 row</li>
+                            </ul>
                         </div>
 
                         <!--
