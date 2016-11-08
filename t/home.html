@@ -9,51 +9,12 @@
 <div class="container" style="margin-top: 160px">
     <div class="static-content">
         <p>
-            Standard tractography can use diffusion measurements from a living brain to generate a large collection of candidate white-matter fascicles; the connectome. Linear Fascicle Evaluation (LiFE) takes any connectome and uses a forward modelling approach to predict diffusion measurements in the same brain. LiFE predicts the measured diffusion signal using the orientation of the fascicles present in a connectome. LiFE uses the difference between the measured and predicted diffusion signals to measure prediction error. The connectome model prediction error is used to compute two metrics to evaluate the evidence supporting properties of the connectome. One metric -the strength of evidence - compares the mean prediction error between alternative hypotheses. The second metric - the earth movers distance - compares full distributions of prediction error. These metrics can be used for: 1. Comparing tractography algorithms 2. Evaluating the quality of tractography solutions for individual brains or group of brains and 3. Testing hypotheses about white-matter tracts and connections.
+            Standard tractography uses diffusion measurements from living brains to generate large collections of white-matter fascicles; the connectome. 
+            Connectomes mapped in individual brains can be used to study the properties of the brain connections as well as those of the white matter tissue to characterize variabilty across individuals, the process of development, aging as well as disease progression. 
+            To date, several tractography methods and diffusion data types exist and often times investigators have no principled ways to choose among the many options. We provide few quantitative estimates of connectome quality given a sample data set provided by an investigator. 
         </p>
-        <p>TODO. We can enter content which explains what this application does, how it works, why it exists,
-            who can use it, who developed it, etc.. In here, We can use bootstrap css styles like <code>code blocks</code> or
-            <span class="label label-default">labeles</span>. We can also use all the fontawesome icons like
-            <i class="fa fa-font-awesome" aria-hidden="true"></i>
-        </p>
+         <p class="alert alert-info">This service takes as input Diffusion-weighted MRI data (DWI), T1-weighted anatomical data and returns as output a full brain connectome mapped with modern tractography methods. In addition to that it also returns a few quantitative measures of to inform the investigator that colelcted the data the quality of the expected results that can be achived with such data. We compare the results to those optained with a few sample subjects from the human connectome data, the Stanford data set.</p>
         <img src="img/rms.png" align="left" style="width: 200px; margin-right: 20px;">
-        <p>We can add images of course. Ullamco magna mollit exercitation proident reprehenderit velit exercitation
-            qui dolor sunt mollit et nulla cillum nisi proident cillum. Quis fugiat
-            proident reprehenderit ad <code>fugiat elit</code> in dolor qui ipsum culpa voluptate
-            anim duis esse cupidatat. Eiusmod labore amet elit <code>labore Lorem</code> aute
-            fugiat esse nostrud est cillum anim mollit sunt. Tempor pariatur consectetur
-            dolor ut labore ea eu incididunt elit cupidatat velit ex fugiat ex incididunt
-            qui. Officia culpa aute labore ut cupidatat et reprehenderit. Veniam
-            laborum amet aliqua aliquip sunt <code>mollit Lorem</code> cupidatat consectetur duis
-            cupidatat. Voluptate excepteur velit deserunt in non et occaecat excepteur
-            nulla ea ex qui enim.</p>
-        <p>Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id.
-            Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi
-            cillum consequat sunt ea pariatur. Adipisicing esse magna consectetur
-            ad dolor dolore velit id anim non laboris aliqua ullamco proident aliqua
-            cupidatat aliqua.</p>
-        <p class="alert alert-info">Here is alert-info. Just to show how to use it..</p>
-        <blockquote>
-            <p>You can also use blockquote.</p>
-            <p>Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id.
-            Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi
-            cillum consequat sunt ea pariatur.</p>
-        </blockquote>
-        <p>Laborum in aliqua mollit cillum qui irure nostrud. Nostrud anim tempor pariatur
-            nostrud anim culpa dolor ipsum velit fugiat. Tempor pariatur labore ullamco
-            labore proident esse pariatur ullamco ad ullamco dolore exercitation
-            ut veniam elit est deserunt. Pariatur ad esse amet cupidatat culpa laboris
-            nisi aute ad magna nulla labore eu sunt.</p>
-        <p>Dolore esse ad laboris aliquip magna laborum qui nostrud ullamco irure. Ad
-            deserunt aliquip cillum labore magna amet ullamco aliquip elit nisi culpa
-            ex pariatur voluptate tempor minim eiusmod. Id aliqua consectetur irure
-            aliqua eiusmod nulla reprehenderit in occaecat dolore aute dolore est.
-            Consectetur eu exercitation labore ad ex anim exercitation eiusmod nostrud
-            ad aute et deserunt amet eiusmod consequat officia. Exercitation est
-            cillum ex ex quis anim eiusmod laboris nostrud ad. Adipisicing fugiat
-            deserunt exercitation consectetur nulla qui laboris occaecat pariatur
-            occaecat incididunt laborum id deserunt.</p>
-
         <center>
             <button type="button" class="btn btn-lg btn-primary" ng-click="openpage('submit')">Start</button>
         </center>
@@ -66,3 +27,14 @@ setTimeout(function() {
     $(".start-button").addClass("animated wobble");
 }, 5000);
 </script>
+
+##<p><code></code> or
+##            <span class="label label-default">labeles</span>. We can also use all the fontawesome icons like
+##            <i class="fa fa-font-awesome" aria-hidden="true"></i>
+##        </p>
+##         <blockquote>
+##            <p>You can also use blockquote.</p>
+##            <p>Mollit esse tempor qui labore nulla culpa esse proident minim culpa sit id.
+##            Sit do aute enim consectetur deserunt ipsum sunt in non ullamco nisi
+##            cillum consequat sunt ea pariatur.</p>
+##        </blockquote>
