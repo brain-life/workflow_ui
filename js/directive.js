@@ -378,7 +378,7 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
 
                     data.push({
                         mode: 'markers',
-                        name: 'Yours',
+                        name: 'Your Data',
                         x: [res.data.rmse],
                         y: [res.data.nnz],
                         marker: {
@@ -499,10 +499,10 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                         var zs = fascicle[0][2];
 
                         for(var i = 1;i < xs.length;++i) {
-                            threads_pos.push(xs[i-1]);
+                            threads_pos.push(-xs[i-1]);
                             threads_pos.push(ys[i-1]);
                             threads_pos.push(zs[i-1]);
-                            threads_pos.push(xs[i]);
+                            threads_pos.push(-xs[i]);
                             threads_pos.push(ys[i]);
                             threads_pos.push(zs[i]);
                         }
@@ -525,9 +525,13 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                     var mesh = new THREE.LineSegments( geometry, material );
                     mesh.rotation.x = -Math.PI/2;
                     //
+                    //
                     //temporarly hack to fit fascicles inside
                     mesh.position.z = -20;
                     mesh.position.y = -20;
+                    mesh.scale.x = 1.02;
+                    mesh.scale.y = 1.02;
+                    mesh.scale.z = 1.02;
 
                     cb(null, mesh);
                 });
