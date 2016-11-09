@@ -114,9 +114,11 @@
                                 <p class="help-block">Subdivide the brain into major tissue and anatomical regions using FreeSurfer (2 to 10h compute time).</p>
 
                                 <div ng-if="task.status == 'finished'">
-                                    <a style="cursor: pointer;"
-                                        ng-if="!task.show_vtk" ng-click="task.show_vtk = true">
+                                    <a style="cursor: pointer;" ng-if="!task.show_vtk" ng-click="task.show_vtk = true">
                                         <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Model (lh/rh.piel / .vtk)</small>
+                                    </a>
+                                    <a style="cursor: pointer;" ng-if="task.show_vtk" ng-click="task.show_vtk = false">
+                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide 3D Model (lh/rh.piel / .vtk)</small>
                                     </a>
                                     <div class="row" ng-if="task.show_vtk">
                                     <div class="col-md-6">
@@ -141,9 +143,11 @@
                             <div ng-switch-when="life">
                                 <p class="help-block">Evaluating white matter fascicles and removing false alarms (5 h compute time).</p>
                                 <div ng-if="task.status == 'finished'">
-                                    <a style="cursor: pointer;"
-                                        ng-if="!task.show_lifeplot" ng-click="task.show_lifeplot = true">
+                                    <a style="cursor: pointer;" ng-if="!task.show_lifeplot" ng-click="task.show_lifeplot = true">
                                         <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Life Plots</small>
+                                    </a>
+                                    <a style="cursor: pointer;" ng-if="task.show_lifeplot" ng-click="task.show_lifeplot = false">
+                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide Life Plots</small>
                                     </a>
                                     <lifeplot ng-if="task.show_lifeplot" task="task"></lifeplot>
                                 </div>
@@ -153,9 +157,11 @@
                                 <div ng-if="task.status == 'finished' && freesurfer_task.status == 'finished'">
                                     <comparisonplot task="task"></comparisonplot>
 
-                                    <a style="cursor: pointer;"
-                                        ng-if="!task.show_tracts" ng-click="task.show_tracts = true">
+                                    <a style="cursor: pointer;" ng-if="!task.show_tracts" ng-click="task.show_tracts = true">
                                         <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Tracts</small>
+                                    </a>
+                                    <a style="cursor: pointer;" ng-if="task.show_tracts" ng-click="task.show_tracts = false">
+                                        <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide 3D Tracts</small>
                                     </a>
                                     <tractsview ng-if="task.show_tracts" task="task" freesurfer="freesurfer_task"></tractsview>
                                 </div>
@@ -165,10 +171,11 @@
                             </div>
                         </div><!--task.name switch-->
 
-                        <a style="cursor: pointer;"
-                            ng-if="!task.show_output" 
-                            ng-click="task.show_output = true">
+                        <a style="cursor: pointer;" ng-if="!task.show_output" ng-click="task.show_output = true">
                             <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs</small>
+                        </a>
+                        <a style="cursor: pointer;" ng-if="task.show_output" ng-click="task.show_output = false">
+                            <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide Raw Outputs</small>
                         </a>
                         <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
                     </div><!--detail/ng-repeast workflow-item-->
