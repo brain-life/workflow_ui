@@ -271,7 +271,7 @@ app.directive('lifeplot', function(appconf, $http) {
                             //marker: { color: 'blue', }
                         }], {
                             //title: w.title,
-                            xaxis: {title: w.x.label},
+                            xaxis: {title: 'beta weight' /*w.x.label*/}, //TODO - life.m is currently wrong
                             yaxis: {title: w.y.label},
                             margin: {t: 0, b: 35, r: 0},
                         });
