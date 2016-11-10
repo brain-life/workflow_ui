@@ -49,7 +49,7 @@
         </div>
         -->
         <div class="margin30" ng-if="selected_main">
-            <div class="fixed-top container" style="padding-left: 455px">
+            <div class="fixed-top">
                 <h2>
                     <i class="fa fa-trash-o" aria-hidden="true" ng-click="delete()"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -121,12 +121,12 @@
                                         <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide 3D Model (lh/rh.piel / .vtk)</small>
                                     </a>
                                     <div class="row" ng-if="task.show_vtk">
-                                    <div class="col-md-6">
+                                    <div class="col-lg-6">
                                         <h4>Left Hemisphere</h4>
                                         <vtkview resourceid="task.resource_id" 
                                             url="task.instance_id+'/'+task._id+'/lh.10.vtk'"></vtkview>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-lg-6">
                                         <h4>Right Hemishpere</h4>
                                         <vtkview resourceid="task.resource_id" 
                                             url="task.instance_id+'/'+task._id+'/rh.10.vtk'"></vtkview>
@@ -155,16 +155,14 @@
                             <div ng-switch-when="connectome-comparison">
                                 <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
                                 <div ng-if="task.status == 'finished' && freesurfer_task.status == 'finished'">
-                                    <comparisonplot task="task"></comparisonplot>
-
                                     <a style="cursor: pointer;" ng-if="!task.show_tracts" ng-click="task.show_tracts = true">
                                         <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Tracts</small>
                                     </a>
                                     <a style="cursor: pointer;" ng-if="task.show_tracts" ng-click="task.show_tracts = false">
                                         <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide 3D Tracts</small>
                                     </a>
-                                    <tractsview ng-if="task.show_tracts" task="task" freesurfer="freesurfer_task"></tractsview>
                                 </div>
+
                             </div>
                             <div ng-switch-default>
                                 <p class="help-block">Behind the scene task..</p>
@@ -178,7 +176,16 @@
                             <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide Raw Outputs</small>
                         </a>
                         <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
+
+                        <!-- displaying comparision result outside of workflow area for more space-->
+                        <div ng-if="task.name == 'connectome-comparison'" style="margin-left: -55px;">
+                            <br>
+                            <tractsview ng-if="task.show_tracts" task="task" freesurfer="freesurfer_task"></tractsview>
+                            <comparisonplot task="task"></comparisonplot>
+                        </div>
+
                     </div><!--detail/ng-repeast workflow-item-->
+
                 </div><!--workflow-->
 
                 <hr>

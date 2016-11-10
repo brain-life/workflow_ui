@@ -28,11 +28,11 @@ i[onclick] {
 .fixed-top {
     position: fixed;
     top: 0px;
-    left: 0px;
     z-index: 100;
-    width: 100%;
+    right: 20px;
     background-color: white;
 }
+
 .static-content {
     h1 {
         background-color: #555;
@@ -67,20 +67,6 @@ i[onclick] {
     }
 }
 
-/*
-.container {
-    .page {
-        background-color: white;
-        box-shadow: 0 0 5px #ccc;
-        padding: 20px;
-    }
-}
-li.clickable:hover {
-    cursor: pointer;
-    background-color: #ddd !important;
-}
-*/
-
 .subbar {
     position: fixed;
     top: 0;
@@ -95,22 +81,14 @@ li.clickable:hover {
         overflow-y: auto;
         width: 350px;
         position: fixed;
-        top: 97px;
+        top: 110px;
         bottom: 0px;
 
         padding-right: 10px;
         padding-top: 20px;
 
         .workflow-item {
-            /*
-            &:hover {
-                cursor: pointer;
-                color: #008cba;
-                .item-header-badge {
-                    color: #008bca;
-                }
-            }
-            */
+            margin-left: 35px;
         }
 
         .item-header {
@@ -154,8 +132,9 @@ li.clickable:hover {
 }
 
 .workflow {
+
     .workflow-item {
-        margin-left: 35px;
+        margin-left: 25px;
         padding-bottom: 25px;
         padding-left: 35px;
         position: relative;
@@ -237,12 +216,22 @@ li.clickable:hover {
     .workflow-item:not(:last-child) {
         border-left: 1px solid #ddd;
     }
+    /*
+    .workflow-item:last-child {
+        margin-left: 0px;
+        padding-left: 0px;
+    }
+    */
 }
 
 
 .subbar-content {
     margin-left: 350px;
     overflow-x: hidden;
+
+    .fixed-top {
+        left: 450px;
+    }
     
     .workflow {
         .workflow-item {
@@ -255,7 +244,7 @@ li.clickable:hover {
     }
 }
 .margin30 {
-    margin: 0px 30px;
+    margin: 0px 20px;
 }
 
 /*use animate.css*/
@@ -297,7 +286,49 @@ vtkview canvas {
     background-color: #333;
     box-shadow: inset 0 0 15em #000;
 }
-#conview canvas {
-    background-color: #333;
-    box-shadow: inset 0 0 15em #000;
+
+#conview {
+    width: 100%;
+    height: 400px;
+    canvas {
+        background-color: #333;
+        box-shadow: inset 0 0 15em #000;
+    }
 }
+
+@media screen and (max-width: 1200px) {
+    .sca-sidebar {
+        .menu {
+            width: 40px;
+        }
+        .label {
+            display: none;
+        }
+        .bottom {
+            width: 40px;
+        }
+    }
+
+    .subbar {
+        display: none;
+    }
+    .subbar-content {
+        margin-left: 0px;
+        .fixed-top {
+            left: 55px;
+            right: 15px;
+        }
+    }
+    .margin30 {
+        margin: 0px 15px;
+    }
+    .sca-sidebar-page {
+        padding-left: 40px;
+    }
+
+    #conview {
+        height: 300px;
+    }
+ }
+
+

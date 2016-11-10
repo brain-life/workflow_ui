@@ -548,10 +548,9 @@ app.directive('vtkview', function(appconf, $http, vtk) {
             resourceid: '<' 
         },
         link: function(scope, element, attrs) {
-            //console.dir(element.height());
 
-            var width = 400;
-            var height = 300;
+            var width = 375;
+            var height = 275;
 
             //scene
             var scene = new THREE.Scene();

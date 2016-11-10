@@ -11,19 +11,23 @@
     </div>
     -->
     <div class="menu" ng-class="{'active':  active_menu == 'submit'}" ng-click="openpage('/submit')">
-        <h3><i class="fa fa-play-circle" aria-hidden="true"></i></h3> Submit
+        <h3><i class="fa fa-play-circle" aria-hidden="true"></i></h3> 
+        <span class="label">Submit</span>
     </div>
     <div class="menu" ng-class="{'active':  active_menu == 'tasks'}" ng-click="openpage('/tasks')">
-        <h3><i class="fa fa-list-alt" aria-hidden="true"></i></h3> Jobs
+        <h3><i class="fa fa-list-alt" aria-hidden="true"></i></h3> 
+        <span class="label">Jobs</span>
     </div>
 
     <div class="bottom">
         <div class="menu" ng-click="relocate('https://github.com/soichih/sca-wf-conneval/wiki/Help')">
-            <h3><i class="fa fa-question" aria-hidden="true"></i></h3> Help
+            <h3><i class="fa fa-question" aria-hidden="true"></i></h3> 
+            <span class="label">Help</span>
         </div>
         <hr>
         <div class="menu" ng-click="relocate('/profile')">
-            <h3><i class="fa fa-cog" aria-hidden="true"></i></h3> Settings
+            <h3><i class="fa fa-cog" aria-hidden="true"></i></h3> 
+            <span class="label">Settings</span>
         </div>
     </div>
 
