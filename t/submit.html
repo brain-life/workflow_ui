@@ -31,24 +31,23 @@
         <div class="margin30 animate-submit" ng-if="step == 'diffusion'">
             <form ng-submit="openpage('/submit/validate')" class="form-horizontal">
                 <div class="fixed-top">
+                    <!--
                     <h2>
-                        <br>
-                        <!--
                         <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                         <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                         <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                        -->
 
                         <div class="pull-right">
                             <button type="button" class="btn" ng-click="back()">Back</button>
                             <button type="submit" class="btn btn-primary" ng-show-dis="form.dwi">Next</button>
                         </div>
                     </h2>
+                    -->
                     <h2 class="page-heading">Enter You Data</h2>
                 </div>
-                <div style="padding-top: 110px;">
+                <div style="padding-top: 70px;">
                     <!--<p class="help-block">Let's start by preparing your diffusion data. Diffusion data is ...brah.. </p>-->
-                    <h3>Name</h3>
+                    <h3 style="margin-top: 0px;">Name</h3>
                     <input type="text" class="form-control" ng-model="form.name" placeholder="Name for this evaluation" required></input>
 
                     <!--
@@ -128,12 +127,19 @@
                         <p class="help-block">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
                     </div>
                 </div><!--container-->
+
+                <hr>
+                <div class="pull-right">
+                    <button type="button" class="btn" ng-click="back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
             </form>
         </div>
 
         <div class="margin30 animate-submit" ng-if="step == 'validate'">
             <form ng-submit="openpage('/submit/configure')" class="form-horizontal">
                 <div class="fixed-top">
+                    <!--
                     <h2>
                         <br>
                         <div class="pull-right">
@@ -141,9 +147,10 @@
                             <button type="submit" class="btn btn-primary">Next</button>
                         </div>
                     </h2>
+                    -->
                     <h2 class="page-heading">Validate Data</h2>
                 </div>
-                <div style="padding-top: 110px;">
+                <div style="padding-top: 70px;">
                     <div ng-switch="tasks[validation_task_id].status">
                         <div ng-switch-when="finished">
                             <p class="bg-warning" style="padding: 10px;" 
@@ -167,26 +174,7 @@
                             <p>{{tasks[validation_task_id].status_msg}}</p>
                         </div>
                         <div ng-switch-default>
-                            <strong> <i class="fa fa-cog fa-spin" aria-hidden="true"></i></strong> Validating ... 
-                            <p class="help-block">Performing validations to check for following, and more...</p>
-                            <div class="well">
-                                <ul class="help-block">
-                                    <li>All required input files are entered</li>
-                                    <li>Make sure mrinfo runs successfully on specified dwi file</li>
-                                    <li>Make sure dwi is 4d</li>
-                                    <li>Maise warning if dwi transformation matrix isn't unit matrix (identity matrix)</li>
-
-                                    <li>Make sure mrinfo runs successfully on specified t1 file</li>
-                                    <li>Make sure t1 is 3d</li>
-                                    <li>Check to see t1 transformation matrix isn't unit matrix (identity matrix)</li>
-                                
-                                    <li>Make sure bvecs and bvals can be read</li>
-                                    <li>Make sure bvecs's cols count matches dwi's 4th dimension number</li>
-                                    <li>Make sure bvecs has 3 rows</li>
-                                    <li>Make sure bvals's cols count matches dwi's 4th dimension number</li>
-                                    <li>Make sure bvals has 1 row</li>
-                                </ul>
-                            </div>
+                            <h3><strong> <i class="fa fa-cog fa-spin" aria-hidden="true"></i></strong> Validating ... </h3>
                         </div>
 
                         <!--
@@ -196,19 +184,46 @@
                             <i class="fa fa-caret-right" aria-hidden="true"></i> Show mrinfo
                         </button>
                         -->
-                        <div ng-if="tasks[validation_task_id].products[0].results.t1_mrinfo">
-                            <h3>T1 mrinfo</h3>
-                            <pre>{{tasks[validation_task_id].products[0].results.t1_mrinfo}}</pre>
-                            <!--- I think pre looks better actually.. 
-                            <div ui-ace="{mode: 'text'}" ng-model="tasks[validation_task_id].products[0].results.t1_mrinfo" 
-                                style="height: 200px" readonly></div>
-                            </div>
-                            -->
-                            <h3>DWI mrinfo</h3>
-                            <pre>{{tasks[validation_task_id].products[0].results.dwi_mrinfo}}</pre>
-                        </div>
                         
                     </div>
+
+                    <div ng-if="tasks[validation_task_id].products[0].results.t1_mrinfo">
+                        <h3>T1 mrinfo</h3>
+                        <pre>{{tasks[validation_task_id].products[0].results.t1_mrinfo}}</pre>
+                        <!--- I think pre looks better actually.. 
+                        <div ui-ace="{mode: 'text'}" ng-model="tasks[validation_task_id].products[0].results.t1_mrinfo" 
+                            style="height: 200px" readonly></div>
+                        </div>
+                        -->
+                        <h3>DWI mrinfo</h3>
+                        <pre>{{tasks[validation_task_id].products[0].results.dwi_mrinfo}}</pre>
+                    </div>
+
+                    <div class="well">
+                        <p>We perform validation including following items..</p>
+                        <ul class="help-block">
+                            <li>All required input files are entered</li>
+                            <li>Make sure mrinfo runs successfully on specified dwi file</li>
+                            <li>Make sure dwi is 4d</li>
+                            <li>Maise warning if dwi transformation matrix isn't unit matrix (identity matrix)</li>
+
+                            <li>Make sure mrinfo runs successfully on specified t1 file</li>
+                            <li>Make sure t1 is 3d</li>
+                            <li>Check to see t1 transformation matrix isn't unit matrix (identity matrix)</li>
+                        
+                            <li>Make sure bvecs and bvals can be read</li>
+                            <li>Make sure bvecs's cols count matches dwi's 4th dimension number</li>
+                            <li>Make sure bvecs has 3 rows</li>
+                            <li>Make sure bvals's cols count matches dwi's 4th dimension number</li>
+                            <li>Make sure bvals has 1 row</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="pull-right">
+                    <button type="button" class="btn" ng-click="back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
                 </div>
             </form>
         </div><!--margin30-->
@@ -216,22 +231,21 @@
         <div class="margin30 animate-submit" ng-if="step == 'configure'">
             <form ng-submit="openpage('/submit/submit')" class="form-horizontal">
                 <div class="fixed-top">
+                    <!--
                     <h2>
                         <br>
-                        <!--
                         <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                         <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                         <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                        -->
-
                         <div class="pull-right">
                             <button type="button" class="btn" ng-click="back()">Back</button>
                             <button type="submit" class="btn btn-primary">Next</button>
                         </div>
                     </h2>
+                    -->
                     <h2 class="page-heading">Configure</h2>
                 </div>
-                <div style="padding-top: 110px;">
+                <div style="padding-top: 70px;">
                     <p class="help-block">Please specify configuration used to run your evaluation.</p>
                     <br>
                     <h3 style="margin-top: 0px;">Streamlines Tracking</h3>
@@ -282,23 +296,28 @@
                         </div>
                     </div>
                 </div>
+
+                <hr>
+                <div class="pull-right">
+                    <button type="button" class="btn" ng-click="back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Next</button>
+                </div>
             </form>
         </div>
         <div class="margin30 animate-submit" ng-if="step == 'submit'">
             <form ng-submit="submit()" class="form-horizontal">
+                <!--
                 <h2>
                     <br>
-                    <!--
                     <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                    -->
 
                     <div class="pull-right">
                         <button type="button" class="btn" ng-click="back()">Back</button>
-                        <!--<button type="submit" class="btn btn-primary">Next</button>-->
                     </div>
                 </h2>
+                -->
                 <h2 class="page-heading">Submit</h2>
                 <p>We are now ready to submit your connectome evaluation process. Please verify information below and click submit button.</p>
 
@@ -310,7 +329,10 @@
                 <p>Once submitted, the process should take about a day, and you will receive a notification once all processing is completed.</p>
 
                 <hr>
-                <button type="submit" class="btn btn-lg btn-primary pull-right">Submit</button>
+                <div class="pull-right">
+                    <button type="button" class="btn" ng-click="back()">Back</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
             </form>
         </div>
 
