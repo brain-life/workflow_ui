@@ -42,6 +42,11 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             console.log("done loading deps");
         }); 
 
+        //hide subbar if it's hidden optionally for narrow view
+        if($(".subbar").hasClass("subbar-shown")) {
+            $(".subbar").toggle().removeClass("subbar-shown");
+        }
+
         $location.update_path("/tasks/"+task._id); 
         window.scrollTo(0,0);
     }

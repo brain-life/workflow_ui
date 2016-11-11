@@ -76,6 +76,7 @@ i[onclick] {
     height: 100%;
     border-right: 1px solid #ddd;
 
+
     .workflow {
         overflow-x: hidden;
         overflow-y: auto;
@@ -129,6 +130,7 @@ i[onclick] {
             }
         }
     }
+
 }
 
 .workflow {
@@ -296,6 +298,10 @@ vtkview canvas {
     }
 }
 
+.subbar-opener {
+    display: none;
+}
+
 @media screen and (max-width: 1200px) {
     .sca-sidebar {
         .menu {
@@ -311,6 +317,8 @@ vtkview canvas {
 
     .subbar {
         display: none;
+        background-color: #fcfcfc;
+        left: 40px;
     }
     .subbar-content {
         margin-left: 0px;
@@ -318,6 +326,9 @@ vtkview canvas {
             left: 55px;
             right: 15px;
         }
+    }
+    .subbar-opener {
+        display: block;
     }
     .margin30 {
         margin: 0px 15px;

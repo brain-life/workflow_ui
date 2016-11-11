@@ -20,17 +20,29 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
 
     //open another page inside the app.
     $scope.openpage = function(page) {
+        //hide subbar if it's hidden optionally for narrow view
+        if($(".subbar").hasClass("subbar-shown")) {
+            $(".subbar").toggle().removeClass("subbar-shown");
+        }
+
         console.log("path to "+page);
         $location.path(page);
         window.scrollTo(0,0);
+
     }
     $scope.back = function() {
         window.history.back();
     }
 
     //relocate out of the app..
-    $scope.relocate = function(url) {
+    $scope.relocate = function(url, newtab) {
+        if(newtab) window.open(url, '_blank');
         document.location = url;
+    }
+
+    //when page is narrow, this button shows up and allows sidebar to be displayed
+    $scope.opensubbar = function() {
+        $(".subbar").toggle().toggleClass('animated slideInLeft subbar-shown');
     }
 
     //load resources that user has access

@@ -1,4 +1,9 @@
 <div class="sca-sidebar">
+
+    <div class="menu subbar-opener" ng-click="opensubbar()">
+        <h3><i class="fa fa-bars"></i></h3> 
+    </div>
+
     <h2 class="text-muted" ng-click="openpage('/home');" style="margin-top: 43px; cursor: pointer;">
         <i class="fa fa-flask" aria-hidden="true"></i>
     </h2>
@@ -25,7 +30,7 @@
             <span class="label">Help</span>
         </div>
         <hr>
-        <div class="menu" ng-click="relocate('/profile')">
+        <div class="menu" ng-click="relocate('/profile', true)">
             <h3><i class="fa fa-cog" aria-hidden="true"></i></h3> 
             <span class="label">Settings</span>
         </div>
