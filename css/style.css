@@ -261,6 +261,9 @@ vtkview canvas {
     background-color: #fcfcfc;
     left: 40px;
   }
+  .subbar.subbar-shown {
+    display: block;
+  }
   .subbar-content {
     margin-left: 0px;
   }

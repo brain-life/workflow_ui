@@ -76,7 +76,6 @@ i[onclick] {
     height: 100%;
     border-right: 1px solid #ddd;
 
-
     .workflow {
         overflow-x: hidden;
         overflow-y: auto;
@@ -319,6 +318,10 @@ vtkview canvas {
         display: none;
         background-color: #fcfcfc;
         left: 40px;
+
+        &.subbar-shown {
+            display: block;
+        }
     }
     .subbar-content {
         margin-left: 0px;

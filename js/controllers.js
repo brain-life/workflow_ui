@@ -22,7 +22,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
     $scope.openpage = function(page) {
         //hide subbar if it's hidden optionally for narrow view
         if($(".subbar").hasClass("subbar-shown")) {
-            $(".subbar").toggle().removeClass("subbar-shown");
+            $(".subbar").removeClass("subbar-shown");
         }
 
         console.log("path to "+page);
@@ -42,7 +42,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
 
     //when page is narrow, this button shows up and allows sidebar to be displayed
     $scope.opensubbar = function() {
-        $(".subbar").toggle().toggleClass('animated slideInLeft subbar-shown');
+        $(".subbar").toggleClass('animated slideInLeft subbar-shown');
     }
 
     //load resources that user has access
