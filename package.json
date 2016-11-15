@@ -43,7 +43,7 @@
     "sca-ng-wf": "soichih/sca-ng-wf",
     "sca-product-raw": "soichih/sca-product-raw",
     "three": "^0.81.2",
-    "stats.js": "^0.16.0"
+    "stats.js": "^0.16.0",
     "ui-select": "^0.19.4"
   },
   "devDependencies": {
