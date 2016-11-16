@@ -31,41 +31,12 @@
         <div class="margin30 animate-submit" ng-if="step == 'diffusion'">
             <form ng-submit="openpage('/submit/validate')" class="form-horizontal">
                 <div class="fixed-top">
-                    <!--
-                    <h2>
-                        <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                        <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                        <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-
-                        <div class="pull-right">
-                            <button type="button" class="btn" ng-click="back()">Back</button>
-                            <button type="submit" class="btn btn-primary" ng-show-dis="form.dwi">Next</button>
-                        </div>
-                    </h2>
-                    -->
                     <h2 class="page-heading">Enter You Data</h2>
                 </div>
                 <div style="padding-top: 70px;">
                     <!--<p class="help-block">Let's start by preparing your diffusion data. Diffusion data is ...brah.. </p>-->
                     <h3 style="margin-top: 0px;">Name</h3>
                     <input type="text" class="form-control" ng-model="form.name" placeholder="Name for this evaluation" required></input>
-
-                    <!--
-                    <h3>Input Method</h3>
-                    <div class="radio"> 
-                        <label><input type="radio" ng-model="form.method" value="upload">Upload from my computer
-                            <p class="help-block">You can only upload data files up to 2G in size.</p>
-                        </label>
-                    </div>
-                    <div class="radio"> 
-                        <label><input type="radio" ng-model="form.method" value="url">Load from public URL
-                            <p class="help-block">Use diffusion data publically available via a web URL.</p>
-                        </label>
-                    </div>
-                    <div class="radio"> 
-                        <label><input type="radio" ng-model="form.method" value="sample">Use sample data</label>
-                    </div>
-                    -->
 
                     <div class="form-section">
                         <h3>Data Format</h3>
@@ -95,10 +66,6 @@
                     <div ng-if="form.datatype == 'bids'" class="form-section">
                         <h3>BIDS (.tar)</h3>     
                         <p class="alert alert-warning">TODO - not yet implemented</p>
-                        <!--
-                        <transfer_ui form="form" instance="instance" resources="resources"
-                            id="'bids'" ngfpattern="'.tar'" tasks="$parent.tasks"></transfer_ui>
-                        -->
                     </div>
 
                     <div ng-if="form.datatype == 'ind'" class="form-section">
@@ -131,7 +98,8 @@
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
-                    <button type="submit" class="btn btn-primary">Next</button>
+                    <button type="submit" class="btn btn-primary" 
+                        ng-disabled="!form.t1 || !form.dwi || !form.bvecs || !form.bvals">Next</button>
                 </div>
             </form>
         </div>
@@ -139,31 +107,25 @@
         <div class="margin30 animate-submit" ng-if="step == 'validate'">
             <form ng-submit="openpage('/submit/configure')" class="form-horizontal">
                 <div class="fixed-top">
-                    <!--
-                    <h2>
-                        <br>
-                        <div class="pull-right">
-                            <button type="button" class="btn" ng-click="back()">Back</button>
-                            <button type="submit" class="btn btn-primary">Next</button>
-                        </div>
-                    </h2>
-                    -->
                     <h2 class="page-heading">Validate Data</h2>
                 </div>
                 <div style="padding-top: 70px;">
                     <div ng-switch="tasks[validation_task_id].status">
                         <div ng-switch-when="finished">
-                            <p class="bg-warning" style="padding: 10px;" 
-                                ng-repeat="warning in tasks[validation_task_id].products[0].results.warnings">
-                                <b><i class="fa fa-exclamation text-warning" aria-hidden="true"></i> {{warning}}</b>
+                            <!--
+                            <p class="alert alert-danger" style="padding: 10px;" ng-if="!form.validated">
+                                Validation failed. Please see go back and check your input files.
                             </p>
+                            -->
                             <p class="bg-danger" style="padding: 10px;" 
                                 ng-repeat="error in tasks[validation_task_id].products[0].results.errors">
                                 <b><i class="fa fa-exclamation" aria-hidden="true"></i> {{error}}</b>
                             </p>
-                            <p class="bg-success" style="padding: 10px;"
-                                ng-if="tasks[validation_task_id].products[0].results.warnings.length == 0 &&
-                                    tasks[validation_task_id].products[0].results.errors.length == 0">
+                            <p class="bg-warning" style="padding: 10px;" 
+                                ng-repeat="warning in tasks[validation_task_id].products[0].results.warnings">
+                                <b><i class="fa fa-exclamation text-warning" aria-hidden="true"></i> {{warning}}</b>
+                            </p>
+                            <p class="bg-success" style="padding: 10px;" ng-if="form.validated">
                                 Congratulations! Your data passed all of our checks. Please proceed.
                             </p>
                         </div>
@@ -176,25 +138,12 @@
                         <div ng-switch-default>
                             <h3><strong> <i class="fa fa-cog fa-spin" aria-hidden="true"></i></strong> Validating ... </h3>
                         </div>
-
-                        <!--
-                        <button class="btn btn-xs" type="button"
-                            ng-if="tasks[validation_task_id].products[0].results.t1_mrinfo && !tasks[validation_task_id].show_mrinfo" 
-                            ng-click="tasks[validation_task_id].show_mrinfo = true">
-                            <i class="fa fa-caret-right" aria-hidden="true"></i> Show mrinfo
-                        </button>
-                        -->
                         
                     </div>
 
                     <div ng-if="tasks[validation_task_id].products[0].results.t1_mrinfo">
                         <h3>T1 mrinfo</h3>
                         <pre>{{tasks[validation_task_id].products[0].results.t1_mrinfo}}</pre>
-                        <!--- I think pre looks better actually.. 
-                        <div ui-ace="{mode: 'text'}" ng-model="tasks[validation_task_id].products[0].results.t1_mrinfo" 
-                            style="height: 200px" readonly></div>
-                        </div>
-                        -->
                         <h3>DWI mrinfo</h3>
                         <pre>{{tasks[validation_task_id].products[0].results.dwi_mrinfo}}</pre>
                     </div>
@@ -223,7 +172,8 @@
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
-                    <button type="submit" class="btn btn-primary">Next</button>
+                    <button type="submit" class="btn btn-primary"
+                        ng-disabled="!form.validated">Next</button>
                 </div>
             </form>
         </div><!--margin30-->
@@ -231,18 +181,6 @@
         <div class="margin30 animate-submit" ng-if="step == 'configure'">
             <form ng-submit="openpage('/submit/submit')" class="form-horizontal">
                 <div class="fixed-top">
-                    <!--
-                    <h2>
-                        <br>
-                        <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                        <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                        <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-                        <div class="pull-right">
-                            <button type="button" class="btn" ng-click="back()">Back</button>
-                            <button type="submit" class="btn btn-primary">Next</button>
-                        </div>
-                    </h2>
-                    -->
                     <h2 class="page-heading">Configure</h2>
                 </div>
                 <div style="padding-top: 70px;">
@@ -300,6 +238,7 @@
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
+                    <!-- TODO do some validation on the config? -->
                     <button type="submit" class="btn btn-primary">Next</button>
                 </div>
             </form>
@@ -321,7 +260,7 @@
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Submit !</button>
                 </div>
             </form>
         </div>

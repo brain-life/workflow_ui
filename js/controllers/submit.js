@@ -11,7 +11,7 @@ app.factory('submitform', function() {
         dwi: null,
         bvecs: null,
         bvals: null,
-
+        
         //config for various services
         config: {
             tracking: {
@@ -237,11 +237,21 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         }, $scope.toast_error);
     }
 
-    /*
     $scope.$on('task_updated', function(evt, task) {
-        console.dir(task);
+
+        //check to see if validation is successful
+        if($scope.validation_task_id) {
+            var validation_task = $scope.$parent.tasks[$scope.validation_task_id];
+            if( validation_task && validation_task.status == 'finished') {
+                $scope.form.validated = false;
+                if( validation_task.products[0].results.warnings.length == 0 &&
+                    validation_task.products[0].results.errors.length == 0) {
+                    $scope.form.validated = true;
+                }
+            }
+        }
+
     });
-    */
 });
 
 
