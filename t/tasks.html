@@ -28,7 +28,7 @@
                 ng-class="{'active': selected_main == job}"
                 ng-click="select(job)">
 
-                <small><taskstatus status="job.status" class="pull-right"></taskstatus></small>
+                <taskstatus status="job.status" class="pull-right"></taskstatus>
                 <div class="list-header">{{job.desc}}</div>
                 <small>
                     <time class="text-muted" style="position: relative; top: -4px;">{{job.create_date | date}}</time>

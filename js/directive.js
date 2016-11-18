@@ -31,22 +31,27 @@ app.directive('uploadingStatus', function() {
 
 app.directive('taskstatus', function() {
     return {
-        template: '<span class="label" ng-class="c">{{status|uppercase}}</span>',
+        template: '<h3 style="margin-top: 0px;" ng-class="hc"><i class="fa" ng-class="c"></i> {{label}}</h3>',
         scope: { status: '<' },
         controller: function($scope) {
             $scope.$watch('status', function() {
                 switch($scope.status) {
                 case "requested":
-                    $scope.c = "label-info"; break;
+                    $scope.hc = "text-info";
+                    $scope.c = "fa-cog fa-spin"; break;
                 case "running":
                 case "running_sync":
-                    $scope.c = "label-primary"; break;
+                    $scope.hc = "text-info";
+                    $scope.c = "fa-cog fa-spin"; break;
                 case "failed":
-                    $scope.c = "label-danger"; break;
+                    $scope.hc = "text-danger";
+                    $scope.c = "fa-exclamation-circle"; break;
                 case "finished":
-                    $scope.c = "label-success"; break;
+                    $scope.hc = "text-success";
+                    $scope.c = "fa-check"; break;
                 default:
-                    $scope.c = "label-warning";
+                    $scope.hc = "text-warning";
+                    $scope.c = "fa-question-circle";
                 }
             });
         }
