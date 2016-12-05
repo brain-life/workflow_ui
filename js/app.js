@@ -16,7 +16,6 @@ var app = angular.module('app', [
     'ui.ace',
     'ngSanitize', //used by ui-select?
     'sca-ng-wf',
-    'sca-shared',
     'sca-product-raw',
     'yaru22.angular-timeago',
     'ngLocationUpdate'

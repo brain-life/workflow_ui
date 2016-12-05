@@ -27,9 +27,9 @@ app.factory('submitform', function() {
 });
 
 app.controller('SubmitController', 
-function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout, submitform) {
+function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $timeout, submitform) {
     $scope.$parent.active_menu = "submit";
-    scaMessage.show(toaster);
+    //scaMessage.show(toaster);
 
     $scope.form = submitform;
             

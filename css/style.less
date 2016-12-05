@@ -68,14 +68,6 @@ i[onclick] {
 }
 
 .subbar {
-    position: fixed;
-    top: 0;
-    left: 80px;
-    z-index: 998;
-    width: 350px;
-    height: 100%;
-    border-right: 1px solid #ddd;
-
     .workflow {
         overflow-x: hidden;
         overflow-y: auto;
@@ -97,43 +89,9 @@ i[onclick] {
             margin-bottom: 10px;
         }
     }
-
-    .subbar-list {
-        overflow-x: hidden;
-        overflow-y: auto;
-        width: 350px;
-        position: fixed;
-        top: 130px;
-        bottom: 0px;
-        
-        .subbar-list-item {
-            padding: 5px 20px;
-            box-sizing: border-box;
-            border: 3px solid transparent;
-            /*box-shadow: 0px -1px 1px #eee;*/
-
-            .list-header {
-                font-size: 16px;
-                font-weight: 400;
-                color: #333;
-                margin-bottom: 0px;
-
-            }
-
-            &:hover {
-                cursor: pointer;
-                background-color: #eee;
-            }
-            &.active {
-                border: 3px solid #ddd;
-            }
-        }
-    }
-
 }
 
 .workflow {
-
     .workflow-item {
         margin-left: 25px;
         padding-bottom: 25px;
@@ -297,51 +255,11 @@ vtkview canvas {
     }
 }
 
-.subbar-opener {
-    display: none;
-}
-
 @media screen and (max-width: 1200px) {
-    .sca-sidebar {
-        .menu {
-            width: 40px;
-        }
-        .label {
-            display: none;
-        }
-        .bottom {
-            width: 40px;
-        }
-    }
-
-    .subbar {
-        display: none;
-        background-color: #fcfcfc;
-        left: 40px;
-
-        &.subbar-shown {
-            display: block;
-        }
-    }
-    .subbar-content {
-        margin-left: 0px;
-        .fixed-top {
-            left: 55px;
-            right: 15px;
-        }
-    }
-    .subbar-opener {
-        display: block;
-    }
-    .margin30 {
-        margin: 0px 15px;
-    }
     .sca-sidebar-page {
-        padding-left: 40px;
-    }
-
-    #conview {
-        height: 300px;
+        #conview {
+            height: 300px;
+        }
     }
  }
 

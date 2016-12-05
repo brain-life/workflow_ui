@@ -1,8 +1,8 @@
 
 app.controller('TasksController', 
-function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout, submitform) {
+function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $timeout, submitform) {
     $scope.$parent.active_menu = "tasks";
-    scaMessage.show(toaster);
+    //scaMessage.show(toaster);
 
     $scope.jobs = []; //list of all connectome-data-comparison tasks
     $scope.selected = [];

@@ -119,39 +119,9 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
 });
 
 app.controller('HomeController', 
-function($scope, toaster, $http, jwtHelper, scaMessage, $routeParams, $location) {
+function($scope, toaster, $http, jwtHelper, $routeParams, $location) {
     $scope.$parent.active_menu = "home";
-    scaMessage.show(toaster);
+    //scaMessage.show(toaster);
 });
-
-/*
-app.controller('TaskController', 
-function($scope, scaMessage, toaster, jwtHelper, $http, $window, $routeParams, scaTask, scaResource) {
-
-    scaMessage.show(toaster);
-    $scope.menu_active = "finished";
-
-    $scope.taskid = $routeParams.taskid;
-    $scope.jwt = localStorage.getItem($scope.appconf.jwt_id);
-    $scope.activetab = 0; //raw (TODO is this still used?)
-
-    $scope.task = scaTask.get($routeParams.taskid);
-
-    $scope.resource = null; //resource where this task is running/ran
-    
-    //not sure if we need this? 
-    $scope.$watchCollection('task', function(task) {
-       //also load resource info
-        if(task.resource_id && !$scope.resource) {
-            $scope.resource = {}; //prevent double loading if task gets updated while waiting
-            $scope.resource = scaResource.get(task.resource_id);
-        }
-    });
-
-    $scope.back = function() {
-        $window.history.back();
-    }
-});
-*/
 
 

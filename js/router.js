@@ -61,19 +61,18 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
         redirectTo: '/home'
     });
     //console.dir($routeProvider);
-}]).run(['$rootScope', '$location', 'toaster', 'jwtHelper', 'appconf', '$http', 'scaMessage',
-function($rootScope, $location, toaster, jwtHelper, appconf, $http, scaMessage) {
+}]).run(function($rootScope, $location, toaster, jwtHelper, appconf, $http) {
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
         //redirect to /login if user hasn't authenticated yet
         if(next.requiresLogin) {
             var jwt = localStorage.getItem(appconf.jwt_id);
             if(jwt == null || jwtHelper.isTokenExpired(jwt)) {
-                scaMessage.info("Please login first");
+                //scaMessage.info("Please login first");
                 sessionStorage.setItem('auth_redirect', window.location.toString());
                 window.location = appconf.auth_url;
                 event.preventDefault();
             }
         }
     });
-}]);
+});
 
