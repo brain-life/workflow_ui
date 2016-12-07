@@ -31,7 +31,7 @@ app.directive('uploadingStatus', function() {
 
 app.directive('taskstatus', function() {
     return {
-        template: '<h3 style="margin-top: 0px;" ng-class="hc"><i class="fa" ng-class="c"></i> {{label}}</h3>',
+        template: '<h3 style="margin-top: 0px;font-size: 150%;" ng-class="hc"><i class="fa" ng-class="c"></i> {{label}}</h3>',
         scope: { status: '<' },
         controller: function($scope) {
             $scope.$watch('status', function() {
