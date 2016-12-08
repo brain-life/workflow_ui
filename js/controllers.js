@@ -37,7 +37,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
     //relocate out of the app..
     $scope.relocate = function(url, newtab) {
         if(newtab) window.open(url, '_blank');
-        document.location = url;
+        else document.location = url;
     }
 
     //when page is narrow, this button shows up and allows sidebar to be displayed
