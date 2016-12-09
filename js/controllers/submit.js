@@ -3,6 +3,7 @@
 app.factory('submitform', function() {
     //default
     return {
+        name: "Untitled",
         //used while processing upload /transfer
         processing: {},
 
@@ -114,16 +115,40 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             deps: [validation_task._id]
         })
         .then(function(res) {
-            $scope.form.data_task_id = res.data.task._id; //needs to go to form so that id will be persisted across page switch
-            $scope.$parent.tasks[$scope.form.data_task_id] = res.data.task;
             console.log("data finalization task submitted");
             console.log($scope.form.data_task_id);
             console.log(res.data.task._id);
+            $scope.$parent.tasks[$scope.form.data_task_id] = res.data.task;
+            //needs to go to form so that id will be persisted across page switch
+            $scope.form.data_task_id = res.data.task._id; 
         }, $scope.toast_error);
     }
 
+    $scope.tasks = {}; //stores tasks submitted
     $scope.submit = function() {
-        submit_freesurfer();
+        submit_dtiinit();
+    }
+
+    function submit_dtiinit() {
+        $http.post($scope.appconf.wf_api+"/task", {
+            instance_id: $scope.instance._id,
+            name: "dtiinit",
+            desc: "running dtiinit preprocessing",
+            service: "soichih/sca-service-dtiinit",
+            config: {
+                t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
+                dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
+                bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
+                bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
+            },
+            deps: [$scope.form.data_task_id],
+        })
+        .then(function(res) {
+            console.log("submitted dtiinit");
+            console.dir(res.data.task);
+            $scope.tasks.dtiinit = res.data.task;
+            submit_freesurfer();
+        }, $scope.toast_error);
     }
 
     function submit_freesurfer() {
@@ -143,11 +168,13 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
         .then(function(res) {
             console.log("submitted freesurfer");
             console.dir(res.data.task);
-            submit_tracking(res.data.task);
+            $scope.tasks.freesurfer = res.data.task;
+            submit_tracking();
         }, $scope.toast_error);
     }
 
-    function submit_tracking(freesurfer_task) {
+
+    function submit_tracking() {
         //I need to guess the subject directory created by freesurfer - maybe I should update -neuro-tracking
         //so that I can configure it?
         var t1_filename = $scope.form.t1.split("/").pop(); //grab filename
@@ -162,27 +189,24 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             config: {
                 lmax: [8],
                 dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
-                //dwi: $scope.form.dwi,
                 bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
-                //bvals: $scope.form.bvals,
                 bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
-                //bvecs: $scope.form.bvecs,
 
-                freesurfer: "../"+freesurfer_task._id+"/t1",
-                //freesurfer: "../"+freesurfer_task._id+"/"+t1_subject,
+                freesurfer: "../"+$scope.tasks.freesurfer._id+"/t1",
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
             },
-            deps: [freesurfer_task._id],
+            deps: [$scope.tasks.freesurfer._id],
         })
         .then(function(res) {
             console.log("submitted tracking");
             console.dir(res.data.task);
-            submit_life(res.data.task);
+            $scope.tasks.tracking = res.data.task;
+            submit_life();
         }, $scope.toast_error);
     }
 
-    function submit_life(tracking_task) {
+    function submit_life() {
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.instance._id,
             name: "life",
@@ -203,20 +227,42 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                     t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
                     //t1: $scope.form.t1, 
                 },
-                trac: { ptck: "../"+tracking_task._id+"/output.SD_PROB.8.tck" },
+                trac: { ptck: "../"+$scope.tasks.tracking._id+"/output.SD_PROB.8.tck" },
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
             },
-            deps: [tracking_task._id],
+            deps: [$scope.tasks.tracking._id],
         })
         .then(function(res) {
             console.log("submitted life");
             console.dir(res.data.task);
-            submit_eval(res.data.task);
+            $scope.tasks.life = res.data.task;
+            submit_faq();
         }, $scope.toast_error);
     }
 
-    function submit_eval(life_task) {
+    function submit_faq() {
+        $http.post($scope.appconf.wf_api+"/task", {
+            instance_id: $scope.instance._id,
+            name: "faq",
+            desc: $scope.form.name, //"running comparison service for conneval process",
+            service: "brain-life/sca-service-tractclassification",
+            config: {
+                fe: "../"+$scope.tasks.life._id+"/output_fe.mat",
+                dt6: "../"+$scope.tasks.dtiinit._id+"/dti90trilin/dt6.mat",
+                //_form: $scope.form, //store form info so that UI can find more info
+            },
+            deps: [$scope.tasks.life._id, $scope.tasks.dtiinit._id],
+        })
+        .then(function(res) {
+            console.log("submitted faq");
+            console.dir(res.data.task);
+            $scope.tasks.faq = res.data.task;
+            submit_eval();
+        }, $scope.toast_error);
+    }
+
+    function submit_eval() {
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.instance._id,
             name: "connectome-comparison",
@@ -224,14 +270,17 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             service: "soichih/sca-service-connectome-data-comparison",
             //remove_date: remove_date,
             config: {
-                input_fe: "../"+life_task._id+"/output_fe.mat",
+                input_fe: "../"+$scope.tasks.life._id+"/output_fe.mat",
                 _form: $scope.form, //store form info so that UI can find more info
             },
-            deps: [life_task._id],
+            deps: [$scope.tasks.faq._id, $scope.tasks.dtiinit],
         })
         .then(function(res) {
             console.log("submitted eval");
             console.dir(res.data.task);
+            $scope.tasks.compare = res.data.task;
+
+            //all done submitting!
             $scope.openpage('/tasks/'+res.data.task._id);
             toaster.success("Task submitted successfully!");
         }, $scope.toast_error);

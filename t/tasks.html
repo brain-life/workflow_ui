@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="workflow">
-                    <div class="workflow-item" ng-repeat="task in selected">
+                    <div class="workflow-item" ng-repeat="task in selected | orderBy:'_id'">
                         <div class="item-header item-header-status" ng-class="{
                             'item-header-status-failed': task.status == 'failed',
                             'item-header-status-finished': task.status == 'finished',
@@ -110,6 +110,12 @@
 
                         <!--task specific details-->
                         <div ng-switch="task.name">
+                            <div ng-switch-when="dtiinit">
+                                <p class="help-block">Perform various preprocessing using vistasoft/dtiInit</p>
+                                <div ng-if="task.status == 'finished'">
+                                    <!--nothing to show for now-->
+                                </div>
+                            </div>
                             <div ng-switch-when="freesurfer">
                                 <p class="help-block">Subdivide the brain into major tissue and anatomical regions using FreeSurfer (2 to 10h compute time).</p>
 
@@ -150,6 +156,12 @@
                                         <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide Life Plots</small>
                                     </a>
                                     <lifeplot ng-if="task.show_lifeplot" task="task"></lifeplot>
+                                </div>
+                            </div>
+                            <div ng-switch-when="faq">
+                                <p class="help-block">Generate tracts segments from fe structure and dt6</p>
+                                <div ng-if="task.status == 'finished'">
+                                    <!--nothing to show for now-->
                                 </div>
                             </div>
                             <div ng-switch-when="connectome-comparison">

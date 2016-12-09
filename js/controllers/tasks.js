@@ -84,7 +84,12 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
         }})
         .then(function(res) {
             res.data.tasks.forEach(function(task) {
-                $scope.selected.unshift(task);
+                //don't add if we know about this task already
+                var already = false;
+                $scope.selected.forEach(function(t) {
+                    if(t._id == task._id) already = true;
+                });
+                if(!already) $scope.selected.unshift(task);
                 if(task.name == "freesurfer") $scope.freesurfer_task = task; //used by conview to draw brain model
                 if(task.name == "finalize") return cb(); //don't load any more previous tasks (TODO - I need to add preprocessing step)
                 load_deps(task.deps, cb); 
