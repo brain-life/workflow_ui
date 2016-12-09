@@ -237,14 +237,14 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             console.log("submitted life");
             console.dir(res.data.task);
             $scope.tasks.life = res.data.task;
-            submit_faq();
+            submit_afq();
         }, $scope.toast_error);
     }
 
-    function submit_faq() {
+    function submit_afq() {
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.instance._id,
-            name: "faq",
+            name: "afq",
             desc: $scope.form.name, //"running comparison service for conneval process",
             service: "brain-life/sca-service-tractclassification",
             config: {
@@ -255,9 +255,9 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             deps: [$scope.tasks.life._id, $scope.tasks.dtiinit._id],
         })
         .then(function(res) {
-            console.log("submitted faq");
+            console.log("submitted afq");
             console.dir(res.data.task);
-            $scope.tasks.faq = res.data.task;
+            $scope.tasks.afq = res.data.task;
             submit_eval();
         }, $scope.toast_error);
     }
@@ -273,7 +273,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 input_fe: "../"+$scope.tasks.life._id+"/output_fe.mat",
                 _form: $scope.form, //store form info so that UI can find more info
             },
-            deps: [$scope.tasks.faq._id, $scope.tasks.dtiinit],
+            deps: [$scope.tasks.afq._id, $scope.tasks.dtiinit],
         })
         .then(function(res) {
             console.log("submitted eval");
