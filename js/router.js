@@ -35,7 +35,7 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     .when('/test', {
         templateUrl: 't/test.html',
         controller: 'TestController',
-        requiresLogin: true
+        //requiresLogin: true
     })
 
     /*
@@ -68,11 +68,25 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
             var jwt = localStorage.getItem(appconf.jwt_id);
             if(jwt == null || jwtHelper.isTokenExpired(jwt)) {
                 //scaMessage.info("Please login first");
-                sessionStorage.setItem('auth_redirect', window.location.toString());
+                sessionStorage.setItem('auth_redirect', $location.absUrl());
                 window.location = appconf.auth_url;
                 event.preventDefault();
             }
         }
     });
 });
+
+function getPathFromRoute(routeObj) {
+    var path = routeObj.$$route.originalPath;
+    var keys = routeObj.$$route.keys;
+    var value;       
+    for (var i = 0; i < keys.length; i++) {
+        if(angular.isDefined(keys[i]) && angular.isDefined(keys[i].name)){
+            value = routeObj.pathParams[keys[i].name];
+            var regEx = new RegExp(":" + keys[i].name, "gi");
+            path = path.replace(regEx, value.toString());            
+        }
+    }     
+    return path;
+} 
 

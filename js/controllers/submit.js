@@ -30,9 +30,8 @@ app.factory('submitform', function() {
 app.controller('SubmitController', 
 function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $timeout, submitform) {
     $scope.$parent.active_menu = "submit";
-    //scaMessage.show(toaster);
-
     $scope.form = submitform;
+    //if($scope.check_user()) return;
             
     //remove date used to submit various services
     var remove_date = new Date();
@@ -124,9 +123,30 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
         }, $scope.toast_error);
     }
 
-    $scope.tasks = {}; //stores tasks submitted
+    var submit_tasks = {}; //stores tasks submitted
     $scope.submit = function() {
-        submit_dtiinit();
+        submit_align();
+    }
+
+    function submit_align() {
+        $http.post($scope.appconf.wf_api+"/task", {
+            instance_id: $scope.instance._id,
+            name: "align",
+            desc: "running acpc alignment",
+            service: "brain-life/sca-service-autoalignacpc",
+            config: {
+                t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
+                t1_out: "t1_acpc_aligned.nii.gz",
+                coords: [ [0,0,0], [0, -16, 0], [0, -8, 40] ]
+            },
+            deps: [$scope.form.data_task_id],
+        })
+        .then(function(res) {
+            console.log("submitted acpc align");
+            console.dir(res.data.task);
+            submit_tasks.align = res.data.task;
+            submit_dtiinit();
+        }, $scope.toast_error);
     }
 
     function submit_dtiinit() {
@@ -141,12 +161,12 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
                 bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
             },
-            deps: [$scope.form.data_task_id],
+            deps: [submit_tasks.align],
         })
         .then(function(res) {
             console.log("submitted dtiinit");
             console.dir(res.data.task);
-            $scope.tasks.dtiinit = res.data.task;
+            submit_tasks.dtiinit = res.data.task;
             submit_freesurfer();
         }, $scope.toast_error);
     }
@@ -161,18 +181,17 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             config: {
                 hipposubfields: false, //just trying..
                 //"t1": $scope.form.t1,
-                t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
+                t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
             },
-            deps: [$scope.form.data_task_id],
+            deps: [submit_tasks.align],
         })
         .then(function(res) {
             console.log("submitted freesurfer");
             console.dir(res.data.task);
-            $scope.tasks.freesurfer = res.data.task;
+            submit_tasks.freesurfer = res.data.task;
             submit_tracking();
         }, $scope.toast_error);
     }
-
 
     function submit_tracking() {
         //I need to guess the subject directory created by freesurfer - maybe I should update -neuro-tracking
@@ -192,16 +211,16 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
                 bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
 
-                freesurfer: "../"+$scope.tasks.freesurfer._id+"/t1",
+                freesurfer: "../"+submit_tasks.freesurfer._id+"/t1_acpc_aligned",
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
             },
-            deps: [$scope.tasks.freesurfer._id],
+            deps: [submit_tasks.freesurfer._id],
         })
         .then(function(res) {
             console.log("submitted tracking");
             console.dir(res.data.task);
-            $scope.tasks.tracking = res.data.task;
+            submit_tasks.tracking = res.data.task;
             submit_life();
         }, $scope.toast_error);
     }
@@ -224,19 +243,18 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
                 },
                 anatomy: { 
-                    t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
-                    //t1: $scope.form.t1, 
+                    t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
                 },
-                trac: { ptck: "../"+$scope.tasks.tracking._id+"/output.SD_PROB.8.tck" },
+                trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.8.tck" },
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
             },
-            deps: [$scope.tasks.tracking._id],
+            deps: [submit_tasks.tracking._id],
         })
         .then(function(res) {
             console.log("submitted life");
             console.dir(res.data.task);
-            $scope.tasks.life = res.data.task;
+            submit_tasks.life = res.data.task;
             submit_afq();
         }, $scope.toast_error);
     }
@@ -248,16 +266,16 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             desc: $scope.form.name, //"running comparison service for conneval process",
             service: "brain-life/sca-service-tractclassification",
             config: {
-                fe: "../"+$scope.tasks.life._id+"/output_fe.mat",
-                dt6: "../"+$scope.tasks.dtiinit._id+"/dti90trilin/dt6.mat",
+                fe: "../"+submit_tasks.life._id+"/output_fe.mat",
+                dt6: "../"+submit_tasks.dtiinit._id+"/dti90trilin/dt6.mat",
                 //_form: $scope.form, //store form info so that UI can find more info
             },
-            deps: [$scope.tasks.life._id, $scope.tasks.dtiinit._id],
+            deps: [submit_tasks.life._id, submit_tasks.dtiinit._id],
         })
         .then(function(res) {
             console.log("submitted afq");
             console.dir(res.data.task);
-            $scope.tasks.afq = res.data.task;
+            submit_tasks.afq = res.data.task;
             submit_eval();
         }, $scope.toast_error);
     }
@@ -270,15 +288,15 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             service: "soichih/sca-service-connectome-data-comparison",
             //remove_date: remove_date,
             config: {
-                input_fe: "../"+$scope.tasks.life._id+"/output_fe.mat",
+                input_fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 _form: $scope.form, //store form info so that UI can find more info
             },
-            deps: [$scope.tasks.afq._id, $scope.tasks.dtiinit],
+            deps: [submit_tasks.afq._id, submit_tasks.dtiinit],
         })
         .then(function(res) {
             console.log("submitted eval");
             console.dir(res.data.task);
-            $scope.tasks.compare = res.data.task;
+            submit_tasks.compare = res.data.task;
 
             //all done submitting!
             $scope.openpage('/tasks/'+res.data.task._id);

@@ -110,8 +110,14 @@
 
                         <!--task specific details-->
                         <div ng-switch="task.name">
+                            <div ng-switch-when="align">
+                                <p class="help-block">Align brains to the AC-PC plane by guessing their location given MNI coordinates</p>
+                                <div ng-if="task.status == 'finished'">
+                                    <!--nothing to show for now-->
+                                </div>
+                            </div>
                             <div ng-switch-when="dtiinit">
-                                <p class="help-block">Perform various preprocessing using vistasoft/dtiInit</p>
+                                <p class="help-block">Perform various preprocessing using vistasoft/mrDiffusion/dtiInit</p>
                                 <div ng-if="task.status == 'finished'">
                                     <!--nothing to show for now-->
                                 </div>

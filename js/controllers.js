@@ -18,6 +18,18 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
         }
     }
 
+    /*
+    //make sure user object is set, if not, redirect to auth service
+    $scope.check_user = function() {
+        if(!$scope.user) {
+            sessionStorage.setItem('auth_redirect', window.location.toString());
+            window.location = appconf.auth_url;
+            return false;
+        }
+        return true;
+    }
+    */
+
     //open another page inside the app.
     $scope.openpage = function(page) {
         //hide subbar if it's hidden optionally for narrow view

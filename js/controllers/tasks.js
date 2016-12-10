@@ -90,8 +90,9 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                     if(t._id == task._id) already = true;
                 });
                 if(!already) $scope.selected.unshift(task);
+
                 if(task.name == "freesurfer") $scope.freesurfer_task = task; //used by conview to draw brain model
-                if(task.name == "finalize") return cb(); //don't load any more previous tasks (TODO - I need to add preprocessing step)
+                if(task.name == "align") return cb(); //don't load any more previous tasks 
                 load_deps(task.deps, cb); 
                 //showplots(task);
             });
