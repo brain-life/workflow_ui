@@ -212,7 +212,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
                 bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
 
-                freesurfer: "../"+submit_tasks.freesurfer._id+"/t1_acpc_aligned",
+                freesurfer: "../"+submit_tasks.freesurfer._id+"/output",
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
             },

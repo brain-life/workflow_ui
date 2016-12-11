@@ -56,15 +56,17 @@
                     <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
 
+                    <!--
                     <span class="pull-right">
                         <button ng-if="selected_main.status == 'running' || selected_main.status == 'requested'" type="button" class="btn" ng-model="selected_app.locked">
                             <i class="fa fa-stop" aria-hidden="true"></i> Stop
                         </button>
                     </span>
+                    -->
                 </h2>
                 <h2 class="page-heading">{{selected_main.desc}}</h2>
             </div>  
-            <div style="padding-top: 50px;">
+            <div style="padding-top: 70px;">
                 <!--
                 <a class="pull-right"
                     style="color: black; position: relative; right: 10px; top: 10px;"
@@ -73,8 +75,12 @@
                     <i class="fa fa-caret-right" aria-hidden="true"></i> See Job Detail
                 </a>
                 -->
+                <div class="pull-right text-muted" title="Submitted Date">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                    <time>{{selected_main.create_date | date:'medium'}}</time>
+                </div>
                 <div ng-if="selected_main.status == 'requested' || selected_main.status == 'running'">
-                    <h3 class="text-info"><strong><i style="font-size: 200%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Processing ...</strong></h3>
+                    <h3 class="text-info" style="margin-top: 0px;"><strong><i style="font-size: 150%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Processing ...</strong></h3>
                     <p class="alert bg-info">
                         The process should take anywhere between 10 - 24 hours depending on the availability of computing resources and the size of your input data. You may close this page and we will send you an email once the processing is completed.</p>
                 </div>
@@ -102,11 +108,6 @@
                                 </span>
                             </div>
                         </div>
-                        <!--
-                        <h5 ng-click="show_progress(task)">
-                            <taskstatus status="task.status"></taskstatus><span class="label label-default">{{task.status_msg|cut:true:130:'...'}}</span>
-                        </h5>
-                        -->
 
                         <!--task specific details-->
                         <div ng-switch="task.name">
@@ -210,7 +211,7 @@
                 <submitdetail detail="selected_main.config._form"></submitdetail>
 
             </div><!--workflow-->
-            <!--
+
             <br><br>
             <br><br>
             <br><br>
@@ -220,7 +221,6 @@
             <div class="task" ng-repeat="task in selected">
                 <pre>{{task|json}}</pre>
             </div>
-            -->
         </div><!--magin30-->
     </div><!--subbar-content-->
 </div><!--sca-sidebbar-page-->
