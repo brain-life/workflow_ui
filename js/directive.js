@@ -404,7 +404,7 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
 app.directive('tractsview', function(appconf, $http, vtk) {
     return {
         templateUrl: 't/tractsview.html',
-        scope: { task: '<', freesurfer: '<' },
+        scope: { task: '<', freesurfer: '<', afq: '<' },
         link: function(scope, element, attrs) {
             element.on('$destroy', function() {
                 scope.destroyed = true;
@@ -453,9 +453,13 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                     scene_back.add(mesh);
                 });
                 
-                //load sample tracks (TODO - load from real life output eventually)
+                //TODO - 21 might not be the correct number of tracts
+                var afq_rid = scope.afq.resource_id;
+                var afq_base = scope.afq.instance_id+"/"+scope.afq._id;
                 for(var i = 1;i < 21;++i) {
-                    load_tract("tracts/tracts_110411/tracts."+i+".json", function(err, mesh) {
+                    //load_tract("tracts/tracts_110411/tracts."+i+".json", function(err, mesh) {
+                    var path = encodeURIComponent(afq_base+"/tracts/"+i+".json");
+                    load_tract(appconf.wf_api+"/resource/download?r="+afq_rid+"&p="+path+"&at="+jwt, function(err, mesh) {
                         scene.add(mesh);
                     });
                 }
@@ -479,7 +483,6 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                     renderer.render( scene, camera );
 
                     //stats.end();
-
                     requestAnimationFrame( animate_conview );
                 }
             }
@@ -530,13 +533,12 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                     var mesh = new THREE.LineSegments( geometry, material );
                     mesh.rotation.x = -Math.PI/2;
                     //
-                    //
                     //temporarly hack to fit fascicles inside
                     mesh.position.z = -20;
                     mesh.position.y = -20;
-                    mesh.scale.x = 1.02;
-                    mesh.scale.y = 1.02;
-                    mesh.scale.z = 1.02;
+                    mesh.scale.x = 1.08;
+                    mesh.scale.y = 1.08;
+                    mesh.scale.z = 1.08;
 
                     cb(null, mesh);
                 });

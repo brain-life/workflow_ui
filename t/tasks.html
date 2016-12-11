@@ -173,7 +173,7 @@
                             </div>
                             <div ng-switch-when="connectome-comparison">
                                 <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
-                                <div ng-if="task.status == 'finished' && freesurfer_task.status == 'finished'">
+                                <div ng-if="task.status == 'finished' && tasks.freesurfer.status == 'finished'">
                                     <a style="cursor: pointer;" ng-if="!task.show_tracts" ng-click="task.show_tracts = true">
                                         <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Tracts</small>
                                     </a>
@@ -199,7 +199,10 @@
                         <!-- displaying comparision result outside of workflow area for more space-->
                         <div ng-if="task.name == 'connectome-comparison' && task.status == 'finished'" style="margin-left: -55px;">
                             <br>
-                            <tractsview ng-if="task.show_tracts" task="task" freesurfer="freesurfer_task"></tractsview>
+                            <tractsview ng-if="task.show_tracts" 
+                                task="task" 
+                                freesurfer="tasks.freesurfer"
+                                afq="tasks.afq"></tractsview>
                             <comparisonplot task="task"></comparisonplot>
                         </div>
 

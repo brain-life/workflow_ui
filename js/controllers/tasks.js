@@ -6,6 +6,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
     $scope.jobs = []; //list of all connectome-data-comparison tasks
     $scope.selected = [];
+    $scope.tasks = {};
 
     //load all comparison tasks 
     instance.get().then(function(_instance) { 
@@ -91,7 +92,8 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 });
                 if(!already) $scope.selected.unshift(task);
 
-                if(task.name == "freesurfer") $scope.freesurfer_task = task; //used by conview to draw brain model
+                $scope.tasks[task.name] = task;
+                //if(task.name == "freesurfer") $scope.freesurfer_task = task; //used by conview to draw brain model
                 if(task.name == "align") return cb(); //don't load any more previous tasks 
                 load_deps(task.deps, cb); 
                 //showplots(task);
