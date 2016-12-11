@@ -156,7 +156,8 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             desc: "running dtiinit preprocessing",
             service: "soichih/sca-service-dtiinit",
             config: {
-                t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
+                t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
+                //t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
                 dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
                 bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
                 bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
@@ -267,7 +268,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             service: "brain-life/sca-service-tractclassification",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
-                dt6: "../"+submit_tasks.dtiinit._id+"/dti90trilin/dt6.mat",
+                dt6: "../"+submit_tasks.dtiinit._id+"/dti_trilin/dt6.mat",
                 //_form: $scope.form, //store form info so that UI can find more info
             },
             deps: [submit_tasks.life._id, submit_tasks.dtiinit._id],
