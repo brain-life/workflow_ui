@@ -21,6 +21,13 @@ var app = angular.module('app', [
     'ngLocationUpdate'
 ]);
 
+app.run(function($templateCache) {
+    //$templateCache.remove('t/submit.html');
+    //$templateCache.remove('t/tasks.html');
+    $templateCache.removeAll();
+    console.log("removed template cache");
+});
+
 //can't quite do the slidedown animation through pure angular/css.. borrowing slideDown from jQuery..
 app.animation('.slide-down', ['$animateCss', function($animateCss) {
     return {

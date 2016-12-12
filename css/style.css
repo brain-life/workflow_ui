@@ -23,13 +23,6 @@ h3 {
 i[onclick] {
   cursor: hover;
 }
-.fixed-top {
-  position: fixed;
-  top: 0px;
-  z-index: 100;
-  right: 20px;
-  background-color: white;
-}
 .static-content h1 {
   background-color: #555;
   /*background-color: #008cba;*/
@@ -87,7 +80,7 @@ i[onclick] {
     */
 }
 .workflow .workflow-item {
-  margin-left: 25px;
+  margin-left: 15px;
   padding-bottom: 25px;
   padding-left: 35px;
   position: relative;
@@ -146,13 +139,6 @@ i[onclick] {
 }
 .workflow .workflow-item:not(:last-child) {
   border-left: 1px solid #ddd;
-}
-.subbar-content {
-  margin-left: 350px;
-  overflow-x: hidden;
-}
-.subbar-content .fixed-top {
-  left: 450px;
 }
 .subbar-content .workflow .workflow-item .item-header {
   font-size: 20px;
