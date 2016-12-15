@@ -536,9 +536,9 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                     //temporarly hack to fit fascicles inside
                     mesh.position.z = -20;
                     mesh.position.y = -20;
-                    mesh.scale.x = 1.08;
-                    mesh.scale.y = 1.08;
-                    mesh.scale.z = 1.08;
+                    //mesh.scale.x = 1.08;
+                    //mesh.scale.y = 1.08;
+                    //mesh.scale.z = 1.08;
 
                     cb(null, mesh);
                 });

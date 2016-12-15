@@ -244,7 +244,8 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
                 },
                 anatomy: { 
-                    t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
+                    //t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
+                    t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
                 },
                 trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.8.tck" },
                 life_discretization: $scope.form.config.life.discretization,

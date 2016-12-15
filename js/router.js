@@ -58,7 +58,7 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     */
 
     .otherwise({
-        redirectTo: '/home'
+        redirectTo: '/submit'
     });
     //console.dir($routeProvider);
 }]).run(function($rootScope, $location, toaster, jwtHelper, appconf, $http) {

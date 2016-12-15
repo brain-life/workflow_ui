@@ -168,20 +168,19 @@
                             <div ng-switch-when="afq">
                                 <p class="help-block">Generate tracts segments from fe structure and dt6</p>
                                 <div ng-if="task.status == 'finished'">
-                                    <!--nothing to show for now-->
+                                    <a style="cursor: pointer;" ng-if="!task.show_tracts" ng-click="task.show_tracts = true">
+                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Tracts (below)</small>
+                                    </a>
+                                    <a style="cursor: pointer;" ng-if="task.show_tracts" ng-click="task.show_tracts = false">
+                                        <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide 3D Tracts (below)</small>
+                                    </a>
                                 </div>
                             </div>
                             <div ng-switch-when="connectome-comparison">
                                 <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
                                 <div ng-if="task.status == 'finished' && tasks.freesurfer.status == 'finished'">
-                                    <a style="cursor: pointer;" ng-if="!task.show_tracts" ng-click="task.show_tracts = true">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Tracts</small>
-                                    </a>
-                                    <a style="cursor: pointer;" ng-if="task.show_tracts" ng-click="task.show_tracts = false">
-                                        <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide 3D Tracts</small>
-                                    </a>
+                                    <!--nothing to show for now-->
                                 </div>
-
                             </div>
                             <div ng-switch-default>
                                 <p class="help-block">Behind the scene task..</p>
@@ -196,19 +195,18 @@
                         </a>
                         <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
 
-                        <!-- displaying comparision result outside of workflow area for more space-->
-                        <div ng-if="task.name == 'connectome-comparison' && task.status == 'finished'" style="margin-left: -55px;">
-                            <br>
-                            <tractsview ng-if="task.show_tracts" 
-                                task="task" 
-                                freesurfer="tasks.freesurfer"
-                                afq="tasks.afq"></tractsview>
-                            <comparisonplot task="task"></comparisonplot>
-                        </div>
-
                     </div><!--detail/ng-repeast workflow-item-->
 
                 </div><!--workflow-->
+
+                <!-- displaying comparision result outside of workflow area for more space-->
+                <div>
+                    <tractsview ng-if="tasks.afq.show_tracts" 
+                        task="task" 
+                        freesurfer="tasks.freesurfer"
+                        afq="tasks.afq"></tractsview>
+                    <comparisonplot ng-if="selected_main.status == 'finished'" task="selected_main"></comparisonplot>
+                </div>
 
                 <hr>
                 <submitdetail detail="selected_main.config._form"></submitdetail>
@@ -221,7 +219,8 @@
             <br><br>
             <br><br>
             <h4>Debug</h4>
-            <div class="task" ng-repeat="task in selected">
+            <div class="task" ng-repeat="(name, task) in tasks">
+                <b>{{name}}</b>
                 <pre>{{task|json}}</pre>
             </div>
         </div><!--magin30-->
