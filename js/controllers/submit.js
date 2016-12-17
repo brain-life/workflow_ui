@@ -120,6 +120,22 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             $scope.$parent.tasks[$scope.form.data_task_id] = res.data.task;
             //needs to go to form so that id will be persisted across page switch
             $scope.form.data_task_id = res.data.task._id; 
+
+        }, $scope.toast_error);
+    }
+
+    function submit_notification(task_id) {
+        var url = document.location;
+        $http.post($scope.appconf.event_api+"/notification", {
+            event: "wf.task.finished",
+            handler: "email",
+            config: {
+                task_id: task_id,
+                subject: "[brain-life.org] Connectome Evaluator - Workflow completed",
+                message: "Hello!\n\nI'd like to inform you that your connectome evaluator workflow has completed.\n\nPlease visit "+url+" and view your evaluation result.\n\nIf you have any questions/comments, please let us know!\n\nBrain-life.org Administrator"
+            },
+        })
+        .then(function(res) {
         }, $scope.toast_error);
     }
 
@@ -300,6 +316,9 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             console.dir(res.data.task);
             submit_tasks.compare = res.data.task;
 
+            //the last thing to submit..
+            submit_notification(res.data.task._id);
+            
             //all done submitting!
             $scope.openpage('/tasks/'+res.data.task._id);
             toaster.success("Task submitted successfully!");

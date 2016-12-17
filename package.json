@@ -40,12 +40,11 @@
     "ng-file-upload": "^12.2.12",
     "plotly.js": "^1.18.1",
     "reconnectingwebsocket": "^1.0.0",
-    "sca-ng-wf": "soichih/sca-ng-wf",
-    "sca-product-raw": "soichih/sca-product-raw",
-    "three": "^0.81.2",
+    "sca-ng-wf": "^1.0.13",
+    "sca-product-raw": "^1.0.4",
     "stats.js": "^0.16.0",
+    "three": "^0.81.2",
     "ui-select": "^0.19.4"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

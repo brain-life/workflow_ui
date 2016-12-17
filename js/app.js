@@ -22,9 +22,8 @@ var app = angular.module('app', [
 ]);
 
 app.run(function($templateCache) {
-    //$templateCache.remove('t/submit.html');
-    //$templateCache.remove('t/tasks.html');
-    $templateCache.removeAll();
+    $templateCache.remove('t/*'); //not sure *(wilcard) will work..
+    //$templateCache.removeAll(); //this removed toast.html as well.
     console.log("removed template cache");
 });
 
