@@ -125,7 +125,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
     }
 
     function submit_notification(task_id) {
-        var url = document.location;
+        var url = document.location.origin+document.location.pathname+"#!/tasks/"+task_id;
         $http.post($scope.appconf.event_api+"/notification", {
             event: "wf.task.finished",
             handler: "email",
