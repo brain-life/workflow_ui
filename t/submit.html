@@ -142,7 +142,7 @@
                         <pre>{{tasks[validation_task_id].products[0].results.dwi_mrinfo}}</pre>
                     </div>
 
-                    <div class="well">
+                    <div ng-if="tasks[validation_task_id].products[0].results">
                         <p>We perform following validations..</p>
                         <ul class="help-block">
                             <li>All required input files are entered</li>
