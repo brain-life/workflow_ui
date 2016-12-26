@@ -413,7 +413,7 @@ app.directive('tractsview', function(appconf, $http, vtk) {
             init_conview();
             function init_conview() {
                 var view = $("#conview");
-                var renderer = new THREE.WebGLRenderer({alpha: true/*, antialias: true*/});
+                var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 
                 //scenes - back scene for brain siluet
                 var scene_back = new THREE.Scene();

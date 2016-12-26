@@ -36,12 +36,11 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
     });
 
     $scope.select = function(task) {
+        console.log("selecting "+task._id);
         //load dependencies
         $scope.selected_main = task; //to hide the list until all dependencies are loaded
         $scope.selected = [task];
-        load_deps(task.deps, function() {
-            console.log("done loading deps");
-        }); 
+        load_deps(task.deps);
 
         //hide subbar if it's hidden optionally for narrow view
         if($(".subbar").hasClass("subbar-shown")) {
@@ -72,10 +71,8 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
         $scope.selected = [];
     }
 
-    function load_deps(deps, cb) {
-        if(!deps || deps.length == 0) {
-            return cb();
-        }
+    function load_deps(deps) {
+        if(!deps || deps.length == 0) return;
 
         $http.get($scope.appconf.wf_api+"/task", {params: {
             find: {
@@ -93,10 +90,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 if(!already) $scope.selected.unshift(task);
 
                 $scope.tasks[task.name] = task;
-                //if(task.name == "freesurfer") $scope.freesurfer_task = task; //used by conview to draw brain model
-                if(task.name == "align") return cb(); //don't load any more previous tasks 
-                load_deps(task.deps, cb); 
-                //showplots(task);
+                if(task.name != "align") load_deps(task.deps); //keep loading until align service
             });
         }, $scope.toast_error);
     }
