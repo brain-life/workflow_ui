@@ -323,16 +323,21 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
         templateUrl: 't/comparisonplot.html',
         scope: { task: '<', },
         link: function(scope, element, attrs) {
+            var view = $(element);
+
             element.on('$destroy', function() {
                 scope.destroyed = true;
             });
     
             load_nnz(function(err, data) {
-                Plotly.plot('plot_compare', data, {
+                p = Plotly.plot('comparisonplot', data, {
                     xaxis: {title: "Connectome Error (r.m.s.e.)"},
                     yaxis: {title: "Fascicles Number"},
                     margin: {t: 20, l: 50, b: 35}, //, l: 30, r:10, b:30},
                     background: '#f00',
+                });
+                $(window).on('resize', function() {
+                   Plotly.relayout('comparisonplot', {width: view.width(), height: 400});
                 });
             });
             
@@ -551,6 +556,7 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                 });
             }
         }
+
     }
 });
 

@@ -200,3 +200,10 @@ vtkview canvas {
     height: 300px;
   }
 }
+/*
+comparisonplot {
+    .plot {
+        width: 100%;
+    }
+}
+*/
