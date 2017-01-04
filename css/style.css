@@ -180,6 +180,8 @@ i[onclick] {
 }
 vtkview {
   width: 100%;
+  height: 250px;
+  display: block;
 }
 vtkview canvas {
   background-color: #333;

@@ -424,6 +424,13 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                 var camera = new THREE.PerspectiveCamera( 45, view.width() / view.height(), 1, 5000);
                 camera.position.z = 200;
 
+                //resize view
+                $(window).on('resize', function() {
+                    camera.aspect = view.width() / view.height();
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(view.width(), view.height());
+                });
+
                 //light for back
                 //var camlight = new THREE.PointLight(0xFFFFFF);
                 //camlight.position.copy(camera.position);
@@ -556,8 +563,7 @@ app.directive('vtkview', function(appconf, $http, vtk) {
         },
         link: function(scope, element, attrs) {
 
-            var width = 375;
-            var height = 275;
+            var view = $(element);
 
             //scene
             var scene = new THREE.Scene();
@@ -566,15 +572,22 @@ app.directive('vtkview', function(appconf, $http, vtk) {
 
             //renderer
             var renderer = new THREE.WebGLRenderer({alpha: true/*, antialias: true*/});
-            //renderer.setSize(element.width(), element.height());
             renderer.autoClear = false;
-            renderer.setSize(width, height);
+            renderer.setSize(view.width(), view.height());
             element.append(renderer.domElement);
 
             //camera
-            var camera = new THREE.PerspectiveCamera( 45, width / height, 1, 5000);
+            var camera = new THREE.PerspectiveCamera( 45, view.width() / view.height(), 1, 5000);
             camera.rotation.x = Math.PI/2;
             camera.position.z = 200;
+                
+            //resize view
+            $(window).on('resize', function() {
+                console.dir(view);
+                camera.aspect = view.width() / view.height();
+                camera.updateProjectionMatrix();
+                renderer.setSize(view.width(), view.height());
+            });
             
             //light
             var ambLight = new THREE.AmbientLight(0x303030);
