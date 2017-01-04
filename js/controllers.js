@@ -90,11 +90,11 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
 
         instance.get().then(function(_instance) {
             var url = "wss://"+window.location.hostname+appconf.event_api+"/subscribe?jwt="+jwt;
-            console.log("connecting to websocket.. "+url);
+            //console.log("connecting to websocket.. "+url);
             var eventws = new ReconnectingWebSocket(url, null, {debug: true, reconnectInterval: 3000});
             console.dir(eventws);
             eventws.onopen = function(e) {
-                console.log("eventws connection opened.. binding");
+                //console.log("eventws connection opened.. binding");
                 eventws.send(JSON.stringify({
                     bind: {
                         ex: "wf.task",
