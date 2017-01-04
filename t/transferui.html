@@ -1,5 +1,5 @@
 <div class="row" ng-if="!form.processing[id]">
-    <div class="col-md-9">
+    <div class="col-md-8">
         <div class="input-group">
             <input type="text" class="form-control" ng-model="form[id+'_url']" placeholder="Enter URL"></input>
             <span class="input-group-btn">
@@ -7,10 +7,11 @@
             </span>
         </div>
     </div>
+    <div class="col-md-1">
+        <span class="text-muted">Or</span>
+    </div>
     <div class="col-md-3">
-        <span class="text-muted" style="margin: 0px 20px;">Or</span>&nbsp;
         <button type="file" class="btn btn-default"
-            ng-if="!form.processing[id]"
             ngf-pattern="ngfpattern" 
             ngf-select="upload($file, id)"
             ngf-max-size="2GB">

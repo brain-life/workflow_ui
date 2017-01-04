@@ -92,9 +92,8 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
             var url = "wss://"+window.location.hostname+appconf.event_api+"/subscribe?jwt="+jwt;
             //console.log("connecting to websocket.. "+url);
             var eventws = new ReconnectingWebSocket(url, null, {debug: true, reconnectInterval: 3000});
-            console.dir(eventws);
             eventws.onopen = function(e) {
-                //console.log("eventws connection opened.. binding");
+                console.log("eventws connection opened.. binding");
                 eventws.send(JSON.stringify({
                     bind: {
                         ex: "wf.task",
@@ -106,16 +105,14 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
                 var e = JSON.parse(json.data);
                 if(e.msg) {
                     var task = e.msg;
-                    $scope.$broadcast("task_updated", task);
-                    
-                    console.log("task update:"+task._id+" "+task.name+" "+task.status+"/"+task.status_msg);
+                    //console.log("task update:"+task._id+" "+task.name+" "+task.status+"/"+task.status_msg);
                     $scope.$apply(function() {
                         if(!$scope.tasks[task._id]) $scope.tasks[task._id] = task; //new task
                         else { 
                             for(var k in task) $scope.tasks[task._id][k] = task[k]; //update all fields
                         }
                     });
-                    //console.dir(task);
+                    $scope.$broadcast("task_updated", task);
                 } else {
                     console.log("unknown message from eventws");
                     console.dir(e);

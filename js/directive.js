@@ -22,7 +22,7 @@ app.factory('tasks', function(appconf, $http, jwtHelper, toaster) {
 app.directive('uploadingStatus', function() {
   return {
     templateUrl: 't/uploading_status.html',
-    scope: { detail: '<', tasks: '=' },
+    scope: { detail: '=', tasks: '=' },
     controller: function($scope) {
         console.log("init uploading status");
     }
@@ -66,7 +66,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
             instance: '=',
             resources: '=',
             tasks: '=',
-            id: '<',
+            id: '=',
             ngfpattern: '<',
         },
         link: function($scope, element, attrs) {
@@ -115,8 +115,6 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 })
                 .then(function(res) {
                     processing.download_task_id = res.data.task._id;
-                    //processing.validation_src = "../"+processing.download_task_id+"/"+filename;
-                    //console.dir(res);
                 }, function(res) {
                     console.log("TODO - download request submit error");
                 });
@@ -124,6 +122,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
 
             $scope.upload = function(file, type) {
                 if(!file) {
+                    console.dir(type);
                     return toaster.error("Please select a correct file type");
                 }
                 var path = $scope.instance._id+"/upload/"+file.name;
@@ -136,9 +135,6 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     //validation_src: "../upload/"+file.name
                 };
                 $scope.form.processing[type] = processing;
-
-                //console.log("uploading to:"+path);
-                //console.dir($scope.resources);
 
                 //do upload
                 var xhr = new XMLHttpRequest();
@@ -157,44 +153,15 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     //console.log("uploaded");
                     $scope.$apply(function() {
                         delete processing.progress;
+                        processing.done = true;
+                        $scope.form[type] = "../upload/"+file.name;
                     });
-                    processing.done = true;
-                    $scope.form[type] = "../upload/"+file.name;
                     //submit_validation(processing);
                 }, false);
 
                 //all set..
                 xhr.send(file);
             }
-
-            /*
-            function submit_validation(processing) {
-                //submit validation
-                $http.post(appconf.wf_api+"/task", {
-                    instance_id: $scope.instance._id,
-                    name: "data validation "+processing.type,
-                    desc: "validating "+processing.name,
-
-                    //TODO - run validation and copy to a bit more permanent location
-                    service: "soichih/sca-product-raw",
-                    remove_date: remove_date,
-                    config: {
-                        symlink: [ 
-                            {
-                                src: processing.validation_src,
-                                dest: processing.name,
-                            }
-                        ]
-                    },
-                    //deps: deps,
-                })
-                .then(function(res) {
-                    processing.validate_task_id = res.data.task._id;
-                }, function(res) {
-                    console.log("TODO - validation request submit error");
-                });
-            }
-            */
 
             //detect task finish
             $scope.$on('task_updated', function(evt, task) {
@@ -206,11 +173,8 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                             //handle download end
                             if(!processing.url) return; //downlaod complete already handled
                             delete processing.url;
-                            //console.log("done download");
-                            //console.dir(task.products[0]);
                             processing.done = true;
                             $scope.form[type] = "../"+task._id+"/"+processing.name;
-                            //submit_validation(processing);
                         }
                         if(task.status == "failed") {
                             delete $scope.form.processing[type];
@@ -435,11 +399,6 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                     camera.updateProjectionMatrix();
                     renderer.setSize(view.width(), view.height());
                 });
-
-                //light for back
-                //var camlight = new THREE.PointLight(0xFFFFFF);
-                //camlight.position.copy(camera.position);
-                //scene_back.add(camlight);
 
                 //load vtk brain model from freesurfer
                 var rid = scope.freesurfer.resource_id;
