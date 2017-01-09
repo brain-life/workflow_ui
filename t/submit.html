@@ -41,7 +41,7 @@
                     <div class="form-section">
                         <h3>Data Format</h3>
                         <div class="radio"> 
-                            <label><input type="radio" ng-model="form.datatype" value="ind">Anatomy(.nii.gz) / Diffusion(.dwi.nii.gz) / bvecs / bvals</label>
+                            <label><input type="radio" ng-model="form.datatype" value="ind">T1 Anatomy(.nii.gz) / Diffusion(.dwi.nii.gz/bvecs/bvals)</label>
                         </div>
                         <div class="radio"> 
                             <label><input type="radio" ng-model="form.datatype" value="bids">BIDS - Brain Imaging Data Structure(.tar)</label>
@@ -142,7 +142,7 @@
                         <pre>{{tasks[validation_task_id].products[0].results.dwi_mrinfo}}</pre>
                     </div>
 
-                    <div ng-if="tasks[validation_task_id].products[0].results">
+                    <div ng-if="!tasks[validation_task_id].products[0].results">
                         <p>We perform following validations..</p>
                         <ul class="help-block">
                             <li>All required input files are entered</li>

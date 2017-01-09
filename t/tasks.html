@@ -89,11 +89,12 @@
                     <p class="alert bg-danger">Sorry! Please contact the support team for more information.</p>
                 </div>
                 <div ng-if="selected_main.status == 'finished'">
-                    <h3 class="text-success"><strong>Finished!</strong></h3>
-                    <p><!--placeholder-->&nbsp;</p>
+                    <!--<h3 class="text-success"><strong>Finished!</strong></h3>-->
+                    <comparisonplot task="selected_main"></comparisonplot>
                 </div>
 
                 <div class="workflow">
+                    <p><!--placeholder-->&nbsp;</p>
                     <div class="workflow-item" ng-repeat="task in selected | orderBy:'_id'">
                         <div class="item-header item-header-status" ng-class="{
                             'item-header-status-failed': task.status == 'failed',
@@ -196,16 +197,13 @@
                         <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
                     </div><!--detail/ng-repeast workflow-item-->
 
-                </div><!--workflow-->
-
-                <!-- displaying comparision result outside of workflow area for more space-->
-                <div>
                     <tractsview ng-if="tasks.afq.show_tracts" 
                         task="task" 
                         freesurfer="tasks.freesurfer"
                         afq="tasks.afq"></tractsview>
-                    <comparisonplot ng-if="selected_main.status == 'finished'" task="selected_main"></comparisonplot>
-                </div>
+
+                </div><!--workflow-->
+
 
                 <hr>
                 <submitdetail detail="selected_main.config._form"></submitdetail>
