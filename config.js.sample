@@ -3,6 +3,8 @@
 angular.module('app.config', [])
 .constant('appconf', {
 
+    debug: true,
+
     api: '/api/sca-wf-life',
 
     shared_api: '/api/shared',

@@ -4,24 +4,22 @@
         <h3><i class="fa fa-bars"></i></h3> 
     </div>
 
-    <h2 class="text-muted" ng-click="relocate('http://www.brain-life.org/evaluator');" style="margin-top: 43px; cursor: pointer;">
+    <h2 class="text-muted" ng-click="relocate('http://www.brain-life.org/evaluator');" 
+        title="Connectome Evaluator Home Page"
+        style="margin-top: 43px; cursor: pointer;">
         <i class="fa fa-flask" aria-hidden="true"></i>
     </h2>
     <br>
     <br>
 
-    <!--
-    <div class="menu" ng-class="{'active':  active_menu == 'home'}" ng-click="openpage('/home');">
-        <h3><i class="fa fa-home" aria-hidden="true"></i></h3> Home
-    </div>
-    -->
     <div class="menu" ng-class="{'active':  active_menu == 'submit'}" ng-click="openpage('/submit')">
-        <h3><i class="fa fa-play-circle" aria-hidden="true"></i></h3> 
-        <span class="label">Submit</span>
+        <h3><i class="fa fa-plus" aria-hidden="true"></i></h3> 
+        <span class="label">New</span>
     </div>
+
     <div class="menu" ng-class="{'active':  active_menu == 'tasks'}" ng-click="openpage('/tasks')">
         <h3><i class="fa fa-list-alt" aria-hidden="true"></i></h3> 
-        <span class="label">Jobs</span>
+        <span class="label">Evaluations</span>
     </div>
 
     <div class="bottom">
@@ -35,10 +33,4 @@
             <span class="label">Settings</span>
         </div>
     </div>
-
-    <!--
-    <div id="settings-menu" ng-if="show_settings">
-        <a href="/profile" class="menu">Profile</a>
-    </div>
-    -->
 </div>

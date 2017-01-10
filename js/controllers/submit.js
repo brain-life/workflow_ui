@@ -332,7 +332,8 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             var validation_task = $scope.$parent.tasks[$scope.validation_task_id];
             if( validation_task && validation_task.status == 'finished') {
                 $scope.form.validated = false;
-                if( validation_task.products[0].results.warnings.length == 0 &&
+                //let warning be ok..
+                if( /*validation_task.products[0].results.warnings.length == 0 &&*/
                     validation_task.products[0].results.errors.length == 0) {
                     $scope.form.validated = true;
                 }

@@ -2,8 +2,8 @@
 <div class="sca-sidebar-page">
     <div class="subbar">
         <div style="padding-left: 20px; margin-bottom: 10px;">
-            <h2>Jobs</h2>
-            <p class="help-block">Show all jobs that you have submitted</p>
+            <h2>Submitted Evaluations</h2>
+            <p class="help-block">Shows all evaluations you have submitted previously</p>
             <br>
             <div class="btn-group pull-right" style="left: -20px;top: -5px;">
                 <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -215,10 +215,12 @@
             <br><br>
             <br><br>
             <br><br>
-            <h4>Debug</h4>
-            <div class="task" ng-repeat="(name, task) in tasks">
-                <b>{{name}}</b>
-                <pre>{{task|json}}</pre>
+            <div ng-if="appconf.debug">
+                <h4>Debug</h4>
+                <div class="task" ng-repeat="(name, task) in tasks">
+                    <b>{{name}}</b>
+                    <pre>{{task|json}}</pre>
+                </div>
             </div>
         </div><!--magin30-->
     </div><!--subbar-content-->

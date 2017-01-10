@@ -2,8 +2,8 @@
 <div class="sca-sidebar-page">
     <div class="subbar">
         <div style="padding-left: 20px; margin-bottom: 25px;">
-            <h2>Submit</h2>
-            <p class="help-block">Guide you through submitting connectome evaluator</p>
+            <h2>New Evaluation</h2>
+            <p class="help-block">Guides you through submitting connectome evaluator</p>
         </div>
         <hr style="margin: 0px;">
 
@@ -73,7 +73,7 @@
                         <h4>T1 (.NII.GZ)</h4>
                         <transfer_ui form="form" instance="instance" resources="resources"
                             id="'t1'" ngfpattern="'.nii.gz'" tasks="$parent.tasks"></transfer_ui>
-                        <p class="help-block">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/t1.nii.gz</p>
+                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/t1.nii.gz</p>
 
                         <hr>
 
@@ -81,17 +81,17 @@
                         <h4>DWI (.nii.gz)</h4>     
                         <transfer_ui form="form" instance="instance" resources="resources"
                             id="'dwi'" ngfpattern="'.nii.gz'" tasks="$parent.tasks"></transfer_ui>
-                        <p class="help-block">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz</p>
+                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz</p>
 
                         <h4>bvecs (.bvecs)</h4>     
                         <transfer_ui form="form" instance="instance" resources="resources"
                             id="'bvecs'" ngfpattern="'.bvecs'" tasks="$parent.tasks"></transfer_ui>
-                        <p class="help-block">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs</p>
+                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs</p>
 
                         <h4>bvals (.bvals)</h4>     
                         <transfer_ui form="form" instance="instance" resources="resources"
                             id="'bvals'" ngfpattern="'.bvals'" tasks="$parent.tasks"></transfer_ui>
-                        <p class="help-block">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
+                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
                     </div>
                 </div><!--container-->
 
@@ -148,7 +148,7 @@
                             <li>All required input files are entered</li>
                             <li>Make sure mrinfo runs successfully on specified dwi file</li>
                             <li>Make sure dwi is 4d</li>
-                            <li>Maise warning if dwi transformation matrix isn't unit matrix (identity matrix)</li>
+                            <li>Raise warning if dwi transformation matrix isn't unit matrix (identity matrix)</li>
 
                             <li>Make sure mrinfo runs successfully on specified t1 file</li>
                             <li>Make sure t1 is 3d</li>
@@ -166,8 +166,8 @@
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
-                    <button type="submit" class="btn btn-primary"
-                        ng-disabled="!form.validated">Next</button>
+                    <button type="submit" class="btn btn-warning" ng-if="!form.validated">Skip</button>
+                    <button type="submit" class="btn btn-primary" ng-if="form.validated">Next</button>
                 </div>
             </form>
         </div><!--margin30-->
@@ -260,13 +260,14 @@
                 </div>
             </form>
         </div>
+        <br><br>
+        <br><br>
+        <br><br>
+        <br><br>
+        <br><br>
 
-        <br><br>
-        <br><br>
-        <br><br>
-        <br><br>
-        <br><br>
-        <div class="margin30">
+        <div class="margin30" ng-if="appconf.debug">
+
             <h4>Debug</h4>
             <pre>{{form|json}}</pre>
             <h5>Validation</h5>
