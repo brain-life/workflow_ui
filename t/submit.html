@@ -166,7 +166,7 @@
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
-                    <button type="submit" class="btn btn-warning" ng-if="!form.validated">Skip</button>
+                    <button type="submit" class="btn btn-warning" ng-if="validation_task_id && !form.validated">Skip</button>
                     <button type="submit" class="btn btn-primary" ng-if="form.validated">Next</button>
                 </div>
             </form>

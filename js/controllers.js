@@ -18,18 +18,6 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
         }
     }
 
-    /*
-    //make sure user object is set, if not, redirect to auth service
-    $scope.check_user = function() {
-        if(!$scope.user) {
-            sessionStorage.setItem('auth_redirect', window.location.toString());
-            window.location = appconf.auth_url;
-            return false;
-        }
-        return true;
-    }
-    */
-
     //open another page inside the app.
     $scope.openpage = function(page) {
         //hide subbar if it's hidden optionally for narrow view
@@ -65,6 +53,8 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
         upload: null, //used to upload files
     };
     if($scope.user) {
+
+        //I am not sure if I am using this now..
         $http.get($scope.appconf.wf_api+"/resource/best", {params: {
             service: "_upload", //needs to be registered
         }}).then(function(res) {
@@ -72,19 +62,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
             $http.get($scope.appconf.wf_api+"/resource/best", {params: {
                 service: "soichih/sca-service-neuro-tracking",
             }}).then(function(res) {
-                $scope.resources.tracking = res.data.resource;
-                $http.get($scope.appconf.wf_api+"/resource/best", {params: {
-                    service: "soichih/life-1",
-                }}).then(function(res) {
-                    $scope.resources.life = res.data.resource;
-                    $http.get($scope.appconf.wf_api+"/resource", {params: {
-                        where: {type: 'hpss'},
-                    }})
-                    .then(function(res) {
-                        $scope.resources.hpss = res.data.resources[0];
-                        $scope.$broadcast("resources", $scope.resources);
-                    });
-                });
+                $scope.$broadcast("resources", $scope.resources);
             }, console.dir);
         });
 

@@ -1,28 +1,40 @@
 
 //store submit form across page
 app.factory('submitform', function() {
-    //default
-    return {
-        name: "Untitled",
-        //used while processing upload /transfer
-        processing: {},
+    var form;
+    function reset() {
+        form = angular.copy({
+            name: "Untitled",
+            //used while processing upload /transfer
+            processing: {},
 
-        //temp path for data (the will be finalized to a standard name)
-        t1: null,
-        dwi: null,
-        bvecs: null,
-        bvals: null,
-        
-        //config for various services
-        config: {
-            tracking: {
-                fibers: 500000,  
-                fibers_max: 1000000,  
-            },
-            life: {
-                discretization: 360,  
-                num_iteration: 500,  
+            //temp path for data (the will be finalized to a standard name)
+            t1: null,
+            dwi: null,
+            bvecs: null,
+            bvals: null,
+            
+            //config for various services
+            config: {
+                tracking: {
+                    fibers: 500000,  
+                    fibers_max: 1000000,  
+                },
+                life: {
+                    discretization: 360,  
+                    num_iteration: 500,  
+                }
             }
+        });
+    }
+    reset();
+
+    return {
+        get: function() {
+            return form;
+        },
+        reset: function() {
+            reset();
         },
     }
 });
@@ -30,8 +42,7 @@ app.factory('submitform', function() {
 app.controller('SubmitController', 
 function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $timeout, submitform) {
     $scope.$parent.active_menu = "submit";
-    $scope.form = submitform;
-    //if($scope.check_user()) return;
+    $scope.form = submitform.get();
             
     //remove date used to submit various services
     var remove_date = new Date();
@@ -80,15 +91,6 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             //console.log("submitted validation service");
             $scope.validation_task_id = res.data.task._id;
             $scope.$parent.tasks[$scope.validation_task_id] = res.data.task;
-
-            /*
-            if($scope.form.datatype == "sample") {
-                //use validation task was data task
-                $scope.data_task_id = res.data.task._id;
-            } else {
-                submit_finalize(res.data.task);
-            }
-            */
             submit_finalize(res.data.task);
         }, $scope.toast_error);
     }
@@ -274,7 +276,6 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             console.dir(res.data.task);
             submit_tasks.life = res.data.task;
             submit_afq();
-            submit_eval(); 
         }, $scope.toast_error);
     }
 
@@ -295,6 +296,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             console.log("submitted afq");
             console.dir(res.data.task);
             submit_tasks.afq = res.data.task;
+            submit_eval(); 
         }, $scope.toast_error);
     }
 
@@ -309,7 +311,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 input_fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 _form: $scope.form, //store form info so that UI can find more info
             },
-            deps: [submit_tasks.dtiinit],
+            deps: [submit_tasks.life._id, submit_tasks.afq._id], //afq isn't needed, but necessary for load-deps purpose
         })
         .then(function(res) {
             console.log("submitted eval");
@@ -322,11 +324,12 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             //all done submitting!
             $scope.openpage('/tasks/'+res.data.task._id);
             toaster.success("Task submitted successfully!");
+
+            submitform.reset();
         }, $scope.toast_error);
     }
 
     $scope.$on('task_updated', function(evt, task) {
-
         //check to see if validation is successful
         if($scope.validation_task_id) {
             var validation_task = $scope.$parent.tasks[$scope.validation_task_id];
@@ -339,7 +342,6 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 }
             }
         }
-
     });
 });
 
