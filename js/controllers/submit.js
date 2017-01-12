@@ -274,6 +274,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             console.dir(res.data.task);
             submit_tasks.life = res.data.task;
             submit_afq();
+            submit_eval(); 
         }, $scope.toast_error);
     }
 
@@ -294,7 +295,6 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             console.log("submitted afq");
             console.dir(res.data.task);
             submit_tasks.afq = res.data.task;
-            submit_eval();
         }, $scope.toast_error);
     }
 
@@ -309,7 +309,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
                 input_fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 _form: $scope.form, //store form info so that UI can find more info
             },
-            deps: [submit_tasks.afq._id, submit_tasks.dtiinit],
+            deps: [submit_tasks.dtiinit],
         })
         .then(function(res) {
             console.log("submitted eval");

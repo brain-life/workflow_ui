@@ -83,14 +83,14 @@
                             id="'dwi'" ngfpattern="'.nii.gz'" tasks="$parent.tasks"></transfer_ui>
                         <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz</p>
 
-                        <h4>bvecs (.bvecs)</h4>     
+                        <h4>bvecs</h4>     
                         <transfer_ui form="form" instance="instance" resources="resources"
-                            id="'bvecs'" ngfpattern="'.bvecs'" tasks="$parent.tasks"></transfer_ui>
+                            id="'bvecs'" ngfpattern-dis="'.bvecs'" tasks="$parent.tasks"></transfer_ui>
                         <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs</p>
 
-                        <h4>bvals (.bvals)</h4>     
+                        <h4>bvals</h4>     
                         <transfer_ui form="form" instance="instance" resources="resources"
-                            id="'bvals'" ngfpattern="'.bvals'" tasks="$parent.tasks"></transfer_ui>
+                            id="'bvals'" ngfpattern-dis="'.bvals'" tasks="$parent.tasks"></transfer_ui>
                         <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
                     </div>
                 </div><!--container-->

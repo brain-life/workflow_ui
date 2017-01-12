@@ -341,7 +341,7 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                                 marker: {
                                     sizemode: 'area',
                                     size: 10, //ref.rmse[0].std.map(function(v) { return v*10000000}),
-                                    opacity: 0.5,
+                                    opacity: 0.25,
                                     color: 'hsl('+gid*60+', '+(100-(subgid*25+25))+'%, 30%)',
                                 }
                             });
@@ -358,7 +358,7 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                         marker: {
                             sizemode: 'area',
                             size: 20, 
-                            opacity: 0.8,
+                            opacity: 0.9,
                             color: '#008cba',
                         }
                     });
