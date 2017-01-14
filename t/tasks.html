@@ -17,24 +17,25 @@
                 <li><a href>Separated link</a></li>
                 </ul>
             </div>
-            <span class="text-muted">{{jobs.length}} Jobs</span>
+            <span class="text-muted">{{instances.length}} Evaluations</span>
         </div>
         <hr style="margin: 0px;">
 
         <div class="subbar-list">
-            <p class="alert alert-info" ng-if="jobs.length == 0">Please submit your job first.</p>
+            <p class="alert alert-info" ng-if="instances.length == 0">Please submit an new evaluation.</p>
             <div class="subbar-list-item" 
-                ng-repeat="job in jobs"
-                ng-class="{'active': selected_main == job}"
-                ng-click="select(job)">
+                ng-repeat="instance in instances"
+                ng-class="{'active': selected == instance}"
+                ng-click="select(instance)">
 
-                <taskstatus status="job.status" class="pull-right"></taskstatus>
-                <div class="list-header">{{job.desc}}</div>
+                <!--<taskstatus status="instance.status" class="pull-right"></taskstatus>-->
+                <div class="list-header">{{instance.name}}</div>
                 <small>
-                    <time class="text-muted" style="position: relative; top: -4px;">{{job.create_date | date}}</time>
+                    <time class="text-muted" style="position: relative; top: -4px;">{{instance.create_date | date}}</time>
                     <p>
-                        <code>dwi</code>{{job.config._form.dwi|filename}}
-                        <code>t1</code>{{job.config._form.t1|filename}}
+                        <code>dwi</code>{{instance.config._form.dwi|filename}}
+                        <code>t1</code>{{instance.config._form.t1|filename}}
+                        <!--{{instance.desc}}-->
                     </p>
                 </small>
             </div>
@@ -42,60 +43,38 @@
 
     </div><!--subbar-->
     <div class="subbar-content">
-        <!--
-        <div class="margin30" ng-if="!selected_main">
-            <br>
-            <p class="alert alert-info">Please select a job</p>
-        </div>
-        -->
-        <div class="margin30" ng-if="selected_main">
+        <div class="margin30" ng-if="selected">
             <div class="fixed-top">
                 <h2 class="pull-right">
                     <i class="fa fa-trash-o" aria-hidden="true" ng-click="delete()"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
-
-                    <!--
-                    <span class="pull-right">
-                        <button ng-if="selected_main.status == 'running' || selected_main.status == 'requested'" type="button" class="btn" ng-model="selected_app.locked">
-                            <i class="fa fa-stop" aria-hidden="true"></i> Stop
-                        </button>
-                    </span>
-                    -->
                 </h2>
-                <h2 class="page-heading">{{selected_main.desc}}</h2>
+                <h2 class="page-heading">{{selected.name}}</h2>
             </div>  
             <div style="padding-top: 70px;">
-                <!--
-                <a class="pull-right"
-                    style="color: black; position: relative; right: 10px; top: 10px;"
-                    ng-if="!selected_main.show_detail"
-                    ng-click="selected_main.show_detail = true">
-                    <i class="fa fa-caret-right" aria-hidden="true"></i> See Job Detail
-                </a>
-                -->
                 <div class="pull-right text-muted" title="Submitted Date">
                     <i class="fa fa-clock-o" aria-hidden="true"></i>
-                    <time>{{selected_main.create_date | date:'medium'}}</time>
+                    <time>{{selected.create_date | date:'medium'}}</time>
                 </div>
-                <div ng-if="selected_main.status == 'requested' || selected_main.status == 'running'">
+                <div ng-if="instance_status == 'requested' || instance_status == 'running'">
                     <h3 class="text-info" style="margin-top: 0px;"><strong><i style="font-size: 150%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Processing ...</strong></h3>
                     <p class="alert bg-info">
                         The process should take anywhere between 10 - 24 hours depending on the availability of computing resources and the size of your input data. You may close this page and we will send you an email once the processing is completed.</p>
                 </div>
-                <div ng-if="selected_main.status == 'failed'">
+                <div ng-if="instance_status == 'failed'">
                     <h3 class="text-danger"><strong>Processing Failed</strong></h3>
                     <p class="alert bg-danger">Sorry! Please contact the support team for more information.</p>
                 </div>
-                <div ng-if="selected_main.status == 'finished'">
+                <div ng-if="instance_status == 'finished'">
                     <!--<h3 class="text-success"><strong>Finished!</strong></h3>-->
-                    <comparisonplot task="selected_main"></comparisonplot>
+                    <comparisonplot task="taskbyname['connectome-comparison']"></comparisonplot>
                 </div>
 
                 <div class="workflow">
                     <p><!--placeholder-->&nbsp;</p>
-                    <div class="workflow-item" ng-repeat="task in selected | orderBy:'_id'">
+                    <div class="workflow-item" ng-repeat="task in tasks">
                         <div class="item-header item-header-status" ng-class="{
                             'item-header-status-failed': task.status == 'failed',
                             'item-header-status-finished': task.status == 'finished',
@@ -197,16 +176,13 @@
                         <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
                     </div><!--detail/ng-repeast workflow-item-->
 
-                    <tractsview ng-if="tasks.afq.show_tracts" 
-                        task="task" 
-                        freesurfer="tasks.freesurfer"
-                        afq="tasks.afq"></tractsview>
+                    <tractsview ng-if="taskbyname.afq.show_tracts" task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
 
                 </div><!--workflow-->
 
 
                 <hr>
-                <submitdetail detail="selected_main.config._form"></submitdetail>
+                <submitdetail detail="selected.config._form"></submitdetail>
 
             </div><!--workflow-->
 
@@ -217,10 +193,7 @@
             <br><br>
             <div ng-if="appconf.debug">
                 <h4>Debug</h4>
-                <div class="task" ng-repeat="(name, task) in tasks">
-                    <b>{{name}}</b>
-                    <pre>{{task|json}}</pre>
-                </div>
+                <pre>{{taskbyname|json}}</pre>
             </div>
         </div><!--magin30-->
     </div><!--subbar-content-->

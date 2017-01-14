@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('PageController', function($scope, appconf, jwtHelper, $location, $http, instance) {
+app.controller('PageController', function($scope, appconf, jwtHelper, $location, $http) {
     $scope.appconf = appconf;
     $scope.title = appconf.title;
     $scope.active_menu = "unknown";
@@ -54,7 +54,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
     };
     if($scope.user) {
 
-        //I am not sure if I am using this now..
+        //TODO I am not sure if I am using this now..
         $http.get($scope.appconf.wf_api+"/resource/best", {params: {
             service: "_upload", //needs to be registered
         }}).then(function(res) {
@@ -66,6 +66,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
             }, console.dir);
         });
 
+        /*
         instance.get().then(function(_instance) {
             var url = "wss://"+window.location.hostname+appconf.event_api+"/subscribe?jwt="+jwt;
             //console.log("connecting to websocket.. "+url);
@@ -103,6 +104,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
             console.error("failed to load instance");
             console.error(err);
         });
+        */
     }
 
     $scope.toast_error = function(res) {

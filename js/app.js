@@ -115,6 +115,8 @@ function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
 }]);
 */
 
+/*
+
 //return singleton instance or create new one if it doesn't exist yet
 app.factory('instance', function(appconf, $http, jwtHelper, toaster, $q) {
     console.log("getting conneval instance");
@@ -154,6 +156,7 @@ app.factory('instance', function(appconf, $http, jwtHelper, toaster, $q) {
     }
 
 });
+*/
 
 /**
  * AngularJS default filter with the following expression:

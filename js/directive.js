@@ -11,14 +11,6 @@ app.directive('uiSelectRequired', function() {
   };
 });
 
-/*
-//stores inventory of all tasks (updated by PageController through WebSocket)
-app.factory('tasks', function(appconf, $http, jwtHelper, toaster) {
-    var tasks = {};
-    return tasks;
-});
-*/
-
 app.directive('uploadingStatus', function() {
   return {
     templateUrl: 't/uploading_status.html',
@@ -65,7 +57,6 @@ app.directive('transferUi', function(appconf, toaster, $http) {
             form: '=',
             instance: '=',
             resources: '=',
-            tasks: '=',
             id: '=',
             ngfpattern: '<',
         },
@@ -129,10 +120,8 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 var processing = {
                     name: file.name,
                     size: file.size,
-                    //filetype: file.type,
                     type: type,
                     progress: 0,
-                    //validation_src: "../upload/"+file.name
                 };
                 $scope.form.processing[type] = processing;
 
@@ -143,20 +132,16 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 var jwt = localStorage.getItem(appconf.jwt_id);
                 xhr.setRequestHeader("Authorization", "Bearer "+jwt);
                 xhr.upload.addEventListener("progress", function(evt) {
-                    //console.log("process");
-                    //console.dir(evt);
                     $scope.$apply(function() {
                         processing.progress = evt.loaded / evt.total;
                     });
                 }, false);
                 xhr.addEventListener("load", function(evt) {
-                    //console.log("uploaded");
                     $scope.$apply(function() {
                         delete processing.progress;
                         processing.done = true;
                         $scope.form[type] = "../upload/"+file.name;
                     });
-                    //submit_validation(processing);
                 }, false);
 
                 //all set..
@@ -441,21 +426,25 @@ app.directive('tractsview', function(appconf, $http, vtk) {
 
                 //use OrbitControls and make camera light follow camera position
                 var controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.autoRotate = true;
                 controls.addEventListener('change', function() {
-                    //camlight.position.copy(camera.position);
+                    //rotation changes
                 });
-                animate_conview();
+                controls.addEventListener('start', function(){
+                    //use interacting with control
+                    controls.autoRotate = false;
+                });
                 function animate_conview() {
-                    //stats.begin();
+                    controls.update();
 
                     renderer.clear();
                     renderer.render( scene_back, camera );
                     renderer.clearDepth();
                     renderer.render( scene, camera );
 
-                    //stats.end();
                     requestAnimationFrame( animate_conview );
                 }
+                animate_conview();
             }
             
             function load_tract(path, cb) {
@@ -570,18 +559,23 @@ app.directive('vtkview', function(appconf, $http, vtk) {
            
             //control & animate
             var controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.autoRotate = true;
             controls.addEventListener('change', function() {
                 camlight.position.copy(camera.position);
             });
+            controls.addEventListener('start', function(){
+                //use interacting with control
+                controls.autoRotate = false;
+            });
             function animate() {
-                requestAnimationFrame( animate );
+                controls.update();
 
                 renderer.clear();
                 renderer.render( scene, camera );
                 renderer.clearDepth();
                 renderer.render( scene_front, camera );
 
-                controls.update();
+                requestAnimationFrame( animate );
             } 
             animate();
 

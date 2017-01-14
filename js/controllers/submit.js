@@ -1,6 +1,6 @@
 
 //store submit form across page
-app.factory('submitform', function() {
+app.factory('submitform', function($http, appconf, toaster) {
     var form;
     function reset() {
         form = angular.copy({
@@ -13,6 +13,8 @@ app.factory('submitform', function() {
             dwi: null,
             bvecs: null,
             bvals: null,
+
+            instance: null,
             
             //config for various services
             config: {
@@ -26,21 +28,18 @@ app.factory('submitform', function() {
                 }
             }
         });
+        
     }
     reset();
 
     return {
-        get: function() {
-            return form;
-        },
-        reset: function() {
-            reset();
-        },
+        get: function() { return form; },
+        reset: reset,
     }
 });
 
 app.controller('SubmitController', 
-function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $timeout, submitform) {
+function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, submitform) {
     $scope.$parent.active_menu = "submit";
     $scope.form = submitform.get();
             
@@ -56,27 +55,77 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
     //timeout to force initial page ng-animate
     $timeout(function() {
         if($routeParams.step) $scope.step = $routeParams.step;
-        else {
-            $scope.step = "diffusion"; //current step
-        }
+        else $scope.step = "diffusion"; //first page
     }, 0);
 
-    instance.get().then(function(_instance) {
-        $scope.instance = _instance;
-    
-        //handle page specific init steps.
-        if($routeParams.step) switch($routeParams.step) {
-        case "validate": 
-            //immediately submit validation task
-            submit_validate();
-            break;
+    if(!$scope.form.instance) {
+        //create new temporary instance 
+        $http.post($scope.appconf.wf_api+"/instance", {
+            workflow_id: "sca-wf-conneval",
+            name: "tdb",
+            desc: "tdb",
+            //config: {},
+        }).then(function(res) {
+            $scope.form.instance = res.data;
+            console.dir("created new instance");
+            console.dir($scope.form.instance);
+            post_inst();
+        }, $scope.toast_error);
+    }
+
+    post_inst();
+    $scope.tasks = {}; //keep up with transfer/validation task status
+
+    function post_inst() {
+        if(!$scope.form.instance) return;
+
+        //connect to eventws
+        var jwt = localStorage.getItem($scope.appconf.jwt_id);
+        var url = "wss://"+window.location.hostname+$scope.appconf.event_api+"/subscribe?jwt="+jwt;
+        console.log("connecting eventws "+url);
+        var eventws = new ReconnectingWebSocket(url, null, {debug: $scope.appconf.debug, reconnectInterval: 3000});
+        eventws.onerror = function(e) { console.error(e); } //not sure if this works..
+        eventws.onopen = function(e) {
+            console.log("eventws connection opened.. binding");
+            eventws.send(JSON.stringify({
+                bind: {
+                    ex: "wf.task",
+                    key: $scope.user.sub+"."+$scope.form.instance._id+".#",
+                }
+            }));
+            
+            //handle page specific init steps.
+            if($routeParams.step) switch($routeParams.step) {
+            case "validate": 
+                //immediately submit validation task
+                submit_validate();
+                break;
+            }
         }
-    });
+        eventws.onmessage = function(json) {
+            var e = JSON.parse(json.data);
+            if(!e.msg) return;
+            var task = e.msg;
+            $scope.$apply(function() {
+                $scope.tasks[task.name] = task;
+                
+                //handle validation finish event
+                if(task.name == "validation") {
+                    //compute validation status only check for errors
+                    if(task.status == 'finished' && task.products[0].results.errors.length == 0) { 
+                        $scope.form.validated = true;
+                    }
+                }
+
+                $scope.$broadcast("task_updated", task);
+            });
+        }
+    }
 
     function submit_validate() {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
-            name: "validation",
+            instance_id: $scope.form.instance._id,
+            name: "validation", //have to match in eventwm.onmessage
             desc: "running conneval validation step",
             service: "soichih/sca-service-conneval-validate",
             remove_date: remove_date,
@@ -88,9 +137,6 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             }
         })
         .then(function(res) {
-            //console.log("submitted validation service");
-            $scope.validation_task_id = res.data.task._id;
-            $scope.$parent.tasks[$scope.validation_task_id] = res.data.task;
             submit_finalize(res.data.task);
         }, $scope.toast_error);
     }
@@ -100,7 +146,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
     //2 - keep dwi/bvecs/bvals in a single directory. life/encode/vistasoft requires bvecs/bvals to be in a same directory as dwi
     function submit_finalize(validation_task) {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "finalize",
             desc: "running conneval data finalization step",
             service: "soichih/sca-product-raw",
@@ -119,7 +165,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             console.log("data finalization task submitted");
             console.log($scope.form.data_task_id);
             console.log(res.data.task._id);
-            $scope.$parent.tasks[$scope.form.data_task_id] = res.data.task;
+            //$scope.tasks[$scope.form.data_task_id] = res.data.task;
             //needs to go to form so that id will be persisted across page switch
             $scope.form.data_task_id = res.data.task._id; 
 
@@ -127,7 +173,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
     }
 
     function submit_notification(task_id) {
-        var url = document.location.origin+document.location.pathname+"#!/tasks/"+task_id;
+        var url = document.location.origin+document.location.pathname+"#!/tasks/"+$scope.form.instance._id;
         $http.post($scope.appconf.event_api+"/notification", {
             event: "wf.task.finished",
             handler: "email",
@@ -148,7 +194,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
     function submit_align() {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "align",
             desc: "running acpc alignment",
             service: "brain-life/sca-service-autoalignacpc",
@@ -169,13 +215,12 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
     function submit_dtiinit() {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "dtiinit",
             desc: "running dtiinit preprocessing",
             service: "soichih/sca-service-dtiinit",
             config: {
                 t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
-                //t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
                 dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
                 bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
                 bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
@@ -192,7 +237,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
     function submit_freesurfer() {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "freesurfer",
             desc: "running freesurfer for conneval process",
             service: "soichih/sca-service-freesurfer",
@@ -219,7 +264,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
         var t1_subject = t1_filename.substr(0, t1_filename.length-7); //trim ".nii.gz"
 
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "neuro-tracking",
             desc: "running neuro tracking service for conneval process",
             service: "soichih/sca-service-neuro-tracking",
@@ -246,7 +291,7 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
     function submit_life() {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "life",
             desc: "running life service for conneval process",
             service: "soichih/sca-service-life",
@@ -254,12 +299,8 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
             config: {
                 diff: { 
                     dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
-                    //dwi: $scope.form.dwi,
                     bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
-                    //bvals: $scope.form.bvals,
                     bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
-                    //bvecs: $scope.form.bvecs,
-
                 },
                 anatomy: { 
                     //t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
@@ -281,14 +322,13 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
     function submit_afq() {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "afq",
             desc: $scope.form.name, //"running comparison service for conneval process",
             service: "brain-life/sca-service-tractclassification",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 dt6: "../"+submit_tasks.dtiinit._id+"/dti_trilin/dt6.mat",
-                //_form: $scope.form, //store form info so that UI can find more info
             },
             deps: [submit_tasks.life._id, submit_tasks.dtiinit._id],
         })
@@ -302,16 +342,14 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
     function submit_eval() {
         $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.instance._id,
+            instance_id: $scope.form.instance._id,
             name: "connectome-comparison",
-            desc: $scope.form.name, //"running comparison service for conneval process",
             service: "soichih/sca-service-connectome-data-comparison",
             //remove_date: remove_date,
             config: {
                 input_fe: "../"+submit_tasks.life._id+"/output_fe.mat",
-                _form: $scope.form, //store form info so that UI can find more info
             },
-            deps: [submit_tasks.life._id, submit_tasks.afq._id], //afq isn't needed, but necessary for load-deps purpose
+            deps: [submit_tasks.life._id],
         })
         .then(function(res) {
             console.log("submitted eval");
@@ -320,29 +358,23 @@ function($scope, toaster, $http, jwtHelper, instance, $routeParams, $location, $
 
             //the last thing to submit..
             submit_notification(res.data.task._id);
-            
-            //all done submitting!
-            $scope.openpage('/tasks/'+res.data.task._id);
-            toaster.success("Task submitted successfully!");
 
-            submitform.reset();
+            //update instance
+            $http.put($scope.appconf.wf_api+"/instance/"+$scope.form.instance._id, {
+                name: $scope.form.name, 
+                desc: "todo..",
+                config: {
+                    submitted: true,
+                    _form: $scope.form, //store form info so that UI can find more info
+                }
+            }).then(function(res) {
+                //all done submitting!
+                submitform.reset();
+                $scope.openpage('/tasks/'+$scope.form.instance._id);
+                toaster.success("Task submitted successfully!");
+            }, $scope.toast_error);
         }, $scope.toast_error);
     }
-
-    $scope.$on('task_updated', function(evt, task) {
-        //check to see if validation is successful
-        if($scope.validation_task_id) {
-            var validation_task = $scope.$parent.tasks[$scope.validation_task_id];
-            if( validation_task && validation_task.status == 'finished') {
-                $scope.form.validated = false;
-                //let warning be ok..
-                if( /*validation_task.products[0].results.warnings.length == 0 &&*/
-                    validation_task.products[0].results.errors.length == 0) {
-                    $scope.form.validated = true;
-                }
-            }
-        }
-    });
 });
 
 

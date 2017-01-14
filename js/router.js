@@ -13,54 +13,14 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
         controller: 'SubmitController',
         requiresLogin: true,
     })
-    .when('/tasks/:taskid?', {
+    .when('/tasks/:instanceid?', {
         templateUrl: 't/tasks.html',
         controller: 'TasksController',
         requiresLogin: true,
     })
-
-    /*
-    .when('/running', {
-        templateUrl: 't/tasks.html',
-        controller: 'RunningController',
-        requiresLogin: true
-    })
-    .when('/finished', {
-        templateUrl: 't/tasks.html',
-        controller: 'FinishedController',
-        requiresLogin: true
-    })
-    */
-
-    .when('/test', {
-        templateUrl: 't/test.html',
-        controller: 'TestController',
-        //requiresLogin: true
-    })
-
-    /*
-    .when('/task/:taskid', {
-        templateUrl: 't/task.html',
-        controller: 'TaskController',
-        requiresLogin: true
-    })
-
-    .when('/input/:type', {
-        templateUrl: 't/input.html',
-        controller: 'InputController',
-        requiresLogin: true
-    })
-    .when('/import/:taskid', {
-        templateUrl: 't/import.html',
-        controller: 'ImportController',
-        requiresLogin: true
-    })
-    */
-
     .otherwise({
         redirectTo: '/submit'
     });
-    //console.dir($routeProvider);
 }]).run(function($rootScope, $location, toaster, jwtHelper, appconf, $http) {
     $rootScope.$on("$routeChangeStart", function(event, next, current) {
         //redirect to /login if user hasn't authenticated yet

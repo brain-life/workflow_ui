@@ -71,26 +71,21 @@
                     <div ng-if="form.datatype == 'ind'" class="form-section">
                         <h3>ANATOMY</h3>
                         <h4>T1 (.NII.GZ)</h4>
-                        <transfer_ui form="form" instance="instance" resources="resources"
-                            id="'t1'" ngfpattern="'.nii.gz'" tasks="$parent.tasks"></transfer_ui>
+                        <transfer_ui id="'t1'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
                         <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/t1.nii.gz</p>
-
                         <hr>
 
                         <h3>Diffusion</h3>
                         <h4>DWI (.nii.gz)</h4>     
-                        <transfer_ui form="form" instance="instance" resources="resources"
-                            id="'dwi'" ngfpattern="'.nii.gz'" tasks="$parent.tasks"></transfer_ui>
+                        <transfer_ui id="'dwi'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
                         <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz</p>
 
                         <h4>bvecs</h4>     
-                        <transfer_ui form="form" instance="instance" resources="resources"
-                            id="'bvecs'" ngfpattern-dis="'.bvecs'" tasks="$parent.tasks"></transfer_ui>
+                        <transfer_ui id="'bvecs'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
                         <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs</p>
 
                         <h4>bvals</h4>     
-                        <transfer_ui form="form" instance="instance" resources="resources"
-                            id="'bvals'" ngfpattern-dis="'.bvals'" tasks="$parent.tasks"></transfer_ui>
+                        <transfer_ui id="'bvals'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
                         <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
                     </div>
                 </div><!--container-->
@@ -110,14 +105,14 @@
                     <h2 class="page-heading">Validate Data</h2>
                 </div>
                 <div style="padding-top: 70px;">
-                    <div ng-switch="tasks[validation_task_id].status">
+                    <div ng-switch="tasks.validation.status">
                         <div ng-switch-when="finished">
                             <p class="bg-danger" style="padding: 10px;" 
-                                ng-repeat="error in tasks[validation_task_id].products[0].results.errors">
+                                ng-repeat="error in tasks.validation.products[0].results.errors">
                                 <b><i class="fa fa-exclamation" aria-hidden="true"></i> {{error}}</b>
                             </p>
                             <p class="bg-warning" style="padding: 10px;" 
-                                ng-repeat="warning in tasks[validation_task_id].products[0].results.warnings">
+                                ng-repeat="warning in tasks.validation.products[0].results.warnings">
                                 <b><i class="fa fa-exclamation text-warning" aria-hidden="true"></i> {{warning}}</b>
                             </p>
                             <p class="bg-success" style="padding: 10px;" ng-if="form.validated">
@@ -128,21 +123,22 @@
                             <p class="bg-danger" style="padding: 10px">
                                 <i class="fa fa-exclamation" aria-hidden="true"></i> Validation Failed
                             </p>
-                            <p>{{tasks[validation_task_id].status_msg}}</p>
+                            <p>{{tasks.validation.status_msg}}</p>
                         </div>
                         <div ng-switch-default>
                             <h3><i style="font-size: 150%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Validating ... </h3>
+                            <p class="help-block">{{tasks.validation.status_msg}}</p>
                         </div>
                     </div>
 
-                    <div ng-if="tasks[validation_task_id].products[0].results.t1_mrinfo">
+                    <div ng-if="tasks.validation.products[0].results.t1_mrinfo">
                         <h3>T1 mrinfo</h3>
-                        <pre>{{tasks[validation_task_id].products[0].results.t1_mrinfo}}</pre>
+                        <pre>{{tasks.validation.products[0].results.t1_mrinfo}}</pre>
                         <h3>DWI mrinfo</h3>
-                        <pre>{{tasks[validation_task_id].products[0].results.dwi_mrinfo}}</pre>
+                        <pre>{{tasks.validation.products[0].results.dwi_mrinfo}}</pre>
                     </div>
 
-                    <div ng-if="!tasks[validation_task_id].products[0].results">
+                    <div ng-if="!tasks.validation.products[0].results">
                         <p>We perform following validations..</p>
                         <ul class="help-block">
                             <li>All required input files are entered</li>
@@ -166,7 +162,7 @@
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
-                    <button type="submit" class="btn btn-warning" ng-if="validation_task_id && !form.validated">Skip</button>
+                    <button type="submit" class="btn btn-warning" ng-if="!form.validated">Skip</button>
                     <button type="submit" class="btn btn-primary" ng-if="form.validated">Next</button>
                 </div>
             </form>
@@ -267,13 +263,9 @@
         <br><br>
 
         <div class="margin30" ng-if="appconf.debug">
-
             <h4>Debug</h4>
             <pre>{{form|json}}</pre>
-            <h5>Validation</h5>
-            <pre>{{$parent.tasks[validation_task_id]|json}}</pre>
-            <h5>Finalize</h5>
-            <pre>{{$parent.tasks[form.data_task_id]|json}}</pre>
+            <pre>{{tasks|json}}</pre>
         </div>
     </div>
 </div>
