@@ -67,7 +67,7 @@
                     <h3 class="text-danger"><strong>Processing Failed</strong></h3>
                     <p class="alert bg-danger">Sorry! Please contact the support team for more information.</p>
                 </div>
-                <div ng-if="instance_status == 'finished'">
+                <div ng-if="taskbyname['connectome-comparison'].status == 'finished'">
                     <!--<h3 class="text-success"><strong>Finished!</strong></h3>-->
                     <comparisonplot task="taskbyname['connectome-comparison']"></comparisonplot>
                 </div>
@@ -179,7 +179,6 @@
                     <tractsview ng-if="taskbyname.afq.show_tracts" task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
 
                 </div><!--workflow-->
-
 
                 <hr>
                 <submitdetail detail="selected.config._form"></submitdetail>

@@ -7,7 +7,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     $scope.selected = [];
     $scope.tasks = {};
 
-    //load all instances
+    //load all submitted instances
     $http.get($scope.appconf.wf_api+"/instance", {params: {
         find: {
             workflow_id: "sca-wf-conneval",
@@ -44,55 +44,20 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         }}).then(function(res) {
             $scope.tasks = [];
             $scope.taskbyname = {};
-            var finished = 0;
-            var running = 0;
-            var failed = 0;
             res.data.tasks.forEach(function(task) { 
                 //ignore some pre-submit tasks..
+                if(task.name == "downloading") return;
                 if(task.name == "validation") return;
                 if(task.name == "finalize") return;
                 $scope.taskbyname[task.name] = task; 
                 $scope.tasks.push(task);
-                if(task.status == "finished") finished++;
-                if(task.status == "running") running++;
-                if(task.status == "failed") failed++;
             });
 
-            //figure out the instance status (TODO - sca-wf should set this at instance level automatically..)
-            if(failed > 0) $scope.instance_status = "failed";
-            else if(running > 0) $scope.instance_status = "running";
-            else if(finished > 0) $scope.instance_status = "finished";
-            else $scope.instance_status = "requested";
+            calc_inst_status(); //first time check
+            connect_eventws();
 
         }, $scope.toast_error);
         
-        //connect to eventws
-        var jwt = localStorage.getItem($scope.appconf.jwt_id);
-        var url = "wss://"+window.location.hostname+$scope.appconf.event_api+"/subscribe?jwt="+jwt;
-        console.log("connecting eventws "+url);
-        var eventws = new ReconnectingWebSocket(url, null, {debug: $scope.appconf.debug, reconnectInterval: 3000});
-        eventws.onerror = function(e) { console.error(e); }; //not sure if this works..
-        eventws.onopen = function(e) {
-            console.log("eventws connection opened.. binding");
-            eventws.send(JSON.stringify({
-                bind: {
-                    ex: "wf.task",
-                    key: $scope.user.sub+"."+instance._id+".#",
-                }
-            }));
-        }
-        eventws.onmessage = function(json) {
-            var e = JSON.parse(json.data);
-            if(!e.msg) return;
-            var task = e.msg;
-            if(!$scope.taskbyname[task.name]) return; //skip ignored tasks (validation, finalize, etc..)
-            if(task.instance_id != $scope.selected.instance_id) return; //ignore task update from other instances
-            $scope.$apply(function() {
-                //update task detail
-                for(var k in task) $scope.taskbyname[task.name][k] = task[k];
-            });
-        }
-
         /*
         $scope.$on('$routeChangeStart', function(next, current) { 
             eventws.close();
@@ -106,6 +71,61 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
         $location.update_path("/tasks/"+instance._id); 
         window.scrollTo(0,0);
+    }
+
+    function calc_inst_status() {
+        console.log("calc_inst");
+        //count task status
+        var finished = 0;
+        var running = 0;
+        var failed = 0;
+        $scope.tasks.forEach(function(task) {
+            if(task.status == "finished") finished++;
+            if(task.status == "running") running++;
+            if(task.status == "failed") failed++;
+        });
+
+        //figure out the instance status (TODO - sca-wf should set this at instance level automatically..)
+        if(failed > 0) $scope.instance_status = "failed";
+        else if(running > 0) $scope.instance_status = "running";
+        else if(finished > 0) $scope.instance_status = "finished";
+        else $scope.instance_status = "requested";
+     }
+
+    function connect_eventws() {
+        //connect to eventws
+        var jwt = localStorage.getItem($scope.appconf.jwt_id);
+        var url = "wss://"+window.location.hostname+$scope.appconf.event_api+"/subscribe?jwt="+jwt;
+        console.log("connecting eventws "+url);
+        var eventws = new ReconnectingWebSocket(url, null, {debug: $scope.appconf.debug, reconnectInterval: 3000});
+        eventws.onerror = function(e) { console.error(e); }; //not sure if this works..
+        eventws.onopen = function(e) {
+            console.log("eventws connection opened.. binding");
+            eventws.send(JSON.stringify({
+                bind: {
+                    ex: "wf.task",
+                    key: $scope.user.sub+"."+$scope.selected._id+".#",
+                }
+            }));
+        }
+        eventws.onmessage = function(json) {
+            var e = JSON.parse(json.data);
+            if(!e.msg) return;
+            var task = e.msg;
+            if(!$scope.taskbyname[task.name]) {
+                console.log("not caring");
+                return; //skip ignored tasks (validation, finalize, etc..)
+            }
+            if(task.instance_id != $scope.selected._id) {
+                console.log("not the instance I care");
+                return; //ignore task update from other instances
+            }
+            $scope.$apply(function() {
+                //update task detail
+                for(var k in task) $scope.taskbyname[task.name][k] = task[k];
+                calc_inst_status();
+            });
+        }
     }
 
     //not used?

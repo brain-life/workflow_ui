@@ -179,7 +179,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             handler: "email",
             config: {
                 task_id: task_id,
-                subject: "[brain-life.org] Connectome Evaluator - Workflow completed",
+                subject: "[brain-life.org] Connectome Evaluation Completed",
                 message: "Hello!\n\nI'd like to inform you that your connectome evaluator workflow has completed.\n\nPlease visit "+url+" and view your evaluation result.\n\nIf you have any questions/comments, please let us know!\n\nBrain-life.org Administrator"
             },
         })
