@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="PageController as page">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Connectome Evaluator / Life Tracking</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <script src="node_modules/reconnectingwebsocket/reconnecting-websocket.min.js"></script>
+    <script>
+        console.log("connecting");
+        var ws = new ReconnectingWebSocket("wss://soichi7.ppa.iu.edu/api/event/subscribe?jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NjYS5pdS5lZHUvYXV0aCIsImV4cCI6MTQ4Mjg2NTY2Ni4yNDUsImlhdCI6MTQ4Mjc3OTI2Ni4yNDUsInNjb3BlcyI6eyJzY2EiOlsidXNlciIsImFkbWluIl0sIm1jYSI6WyJ1c2VyIiwiYWRtaW4iXSwiZGljb20iOlsidXNlciIsImFkbWluIl19LCJzdWIiOjEsImdpZHMiOlsxLDIsMyw0LDZdLCJwcm9maWxlIjp7InVzZXJuYW1lIjoiaGF5YXNoaXMiLCJlbWFpbCI6ImhheWFzaGlzQGl1LmVkdSIsImZ1bGxuYW1lIjoiU29pY2hpIEhheWFzaGkifX0.Bm8XLnEOdhM3ODJntsJTW-8SLQmcAfoW8WRMJScJ8QcQiiB2hs1Gu7DrolkTwK4Lbn6W4ZC5xYflVgFsrh7X-lFpJX9dolCegjwoWtbsjcsoka7hpjnZqoaednUnz8TmvUEJ8NCNGdeU48zlPrIzuSn-dI_60pVj6g8BeQjyrG4");
+        ws.onopen = function(e) {
+            console.log("connected");
+        }
+    </script>
+</body>
+</html>
+

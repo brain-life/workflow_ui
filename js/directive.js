@@ -187,55 +187,85 @@ app.directive('lifeplot', function(appconf, $http) {
         templateUrl: 't/lifeplot.html',
         scope: { task: '<' },
         link: function(scope, element, attrs) {
-            scope.$watch('task', function() {
-                //console.log("detected task update - lifeplot");
-                if(scope.task.status == "finished" && !element.loaded) {
-                    element.loaded = true;
-                    //load life_results.json
-                    var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/life_results.json");
-                    //var jwt = localStorage.getItem(appconf.jwt_id);
-                    $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
-                    .then(function(res) {
-                        if(scope.destroyed) return; 
+            //console.log("detected task update - lifeplot");
+            if(scope.task.status == "finished" && !element.loaded) {
+                element.loaded = true;
+                //load life_results.json
+                var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/life_results.json");
+                //var jwt = localStorage.getItem(appconf.jwt_id);
+                $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
+                .then(function(res) {
+                    if(scope.destroyed) return; 
 
-                        //console.log("life_results.json");
-                        //console.dir(res.data);
-                        var rmse = res.data.out.plot[0];
-                        var w = res.data.out.plot[1];
-                        scope.plot_life_rmse_title = rmse.title;
-                        scope.plot_life_w_title = w.title;
-                        Plotly.plot('plot_life_rmse', [{
-                            x: rmse.x.vals,
-                            y: rmse.y.vals,
-                            //y: rmse, 
-                            //type: 'histogram', 
-                            //marker: { color: 'blue', }
-                        }], {
-                            //title: rmse.title,
-                            xaxis: {title: rmse.x.label},
-                            yaxis: {title: rmse.y.label},
-                            margin: {t: 0, b: 35, r: 0},
-                        });
+                    //console.log("life_results.json");
+                    //console.dir(res.data);
+                    var rmse = res.data.out.plot[0];
+                    var w = res.data.out.plot[1];
+                    scope.plot_life_rmse_title = rmse.title;
+                    scope.plot_life_w_title = w.title;
+                    Plotly.plot('plot_life_rmse', [{
+                        x: rmse.x.vals,
+                        y: rmse.y.vals,
+                        //y: rmse, 
+                        //type: 'histogram', 
+                        //marker: { color: 'blue', }
+                    }], {
+                        //title: rmse.title,
+                        xaxis: {title: rmse.x.label},
+                        yaxis: {title: rmse.y.label},
+                        margin: {t: 0, b: 35, r: 0},
+                    });
 
-                        Plotly.plot('plot_life_w', [{
-                            x: w.x.vals,
-                            y: w.y.vals,
-                            //y: rmse, 
-                            //type: 'histogram', 
-                            //marker: { color: 'blue', }
-                        }], {
-                            //title: w.title,
-                            xaxis: {title: 'beta weight' /*w.x.label*/}, //TODO - life.m is currently wrong
-                            yaxis: {title: w.y.label},
-                            margin: {t: 0, b: 35, r: 0},
-                        });
+                    Plotly.plot('plot_life_w', [{
+                        x: w.x.vals,
+                        y: w.y.vals,
+                        //y: rmse, 
+                        //type: 'histogram', 
+                        //marker: { color: 'blue', }
+                    }], {
+                        //title: w.title,
+                        xaxis: {title: 'beta weight' /*w.x.label*/}, //TODO - life.m is currently wrong
+                        yaxis: {title: w.y.label},
+                        margin: {t: 0, b: 35, r: 0},
                     });
-                    
-                    element.on('$destroy', function() {
-                        scope.destroyed = true;
-                    });
-                }
-            });
+                });
+                
+                element.on('$destroy', function() {
+                    scope.destroyed = true;
+                });
+            }
+            //});
+        }
+    }
+});
+
+app.directive('dtiinitplot', function(appconf, $http) {
+    return {
+        templateUrl: 't/dtiinitplot.html',
+        scope: { task: '<' },
+        link: function(scope, element, attrs) {
+            var jwt = localStorage.getItem(appconf.jwt_id);
+            var urlbase = appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&at="+jwt;
+            var base = scope.task.instance_id+"/"+scope.task._id;
+            scope.plots = [
+                {
+                    label: "ecXform", 
+                    url: urlbase+"&p="+encodeURIComponent(base+"/dwi_aligned_trilin_ecXform.png"),
+                },
+                {
+                    label: "Spatial Normalization", 
+                    url: urlbase+"&p="+encodeURIComponent(base+"/dti_trilin/SpatialNormalization.png"),
+                },
+                /* maybe too big to show?
+                {
+                    label: "T1PPD", 
+                    url: urlbase+"&p="+encodeURIComponent(base+"/dti_trilin/t1pdd.png"),
+                },
+                */
+            ];
+            scope.open = function(plot) {
+                document.location = plot.url;
+            }
         }
     }
 });

@@ -100,7 +100,13 @@
                             <div ng-switch-when="dtiinit">
                                 <p class="help-block">Perform various preprocessing using vistasoft/mrDiffusion/dtiInit</p>
                                 <div ng-if="task.status == 'finished'">
-                                    <!--nothing to show for now-->
+                                    <a style="cursor: pointer;" ng-if="!task.show" ng-click="task.show = true">
+                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show dtiInit Plots</small>
+                                    </a>
+                                    <a style="cursor: pointer;" ng-if="task.show" ng-click="task.show = false">
+                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide dtiInit Plots</small>
+                                    </a>
+                                    <dtiinitplot ng-if="task.show" task="task"></dtiinitplot>
                                 </div>
                             </div>
                             <div ng-switch-when="freesurfer">
