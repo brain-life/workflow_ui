@@ -31,7 +31,8 @@ angular.module('app.config', [])
 
     //instance specific lables around UI
     labels: {
-        homeurl: "http://www.brain-life.org/evaluator",
+        homeurl: "http://www.brain-life.org/tracking",
+        title: "Connectome Tracking", //used as title and also notification email subject
         purpose: "Submit process to analyze your diffusion data and provide quantitative estimates of connectome quality",
     },
     
