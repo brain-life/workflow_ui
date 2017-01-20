@@ -48,7 +48,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 //ignore some pre-submit tasks..
                 if(task.name == "downloading") return;
                 if(task.name == "validation") return;
-                if(task.name == "finalize") return;
+                //if(task.name == "input") return;
                 $scope.taskbyname[task.name] = task; 
                 $scope.tasks.push(task);
             });
@@ -74,7 +74,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     function calc_inst_status() {
-        console.log("calc_inst");
+        //console.log("calc_inst");
         //count task status
         var finished = 0;
         var running = 0;
@@ -113,11 +113,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             if(!e.msg) return;
             var task = e.msg;
             if(!$scope.taskbyname[task.name]) {
-                console.log("not caring");
-                return; //skip ignored tasks (validation, finalize, etc..)
+                //console.log("not caring");
+                return; //skip ignored tasks (validation, input, etc..)
             }
             if(task.instance_id != $scope.selected._id) {
-                console.log("not the instance I care");
+                //console.log("not the instance I care");
                 return; //ignore task update from other instances
             }
             $scope.$apply(function() {

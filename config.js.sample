@@ -25,6 +25,16 @@ angular.module('app.config', [])
 
     upload_task_id: "_upload", //task used to store files uploaded by sca-wf-uploader
 
+    //task to terminate
+    //terminal_task: "dtiinit", 
+    terminal_task: "tracking", 
+
+    //instance specific lables around UI
+    labels: {
+        homeurl: "http://www.brain-life.org/evaluator",
+        purpose: "Submit process to analyze your diffusion data and provide quantitative estimates of connectome quality",
+    },
+
     samples: {
         sample1: {
             name: "STN.sub-FP.run01_fliprot_aligned_trilin",

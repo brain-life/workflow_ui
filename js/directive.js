@@ -252,10 +252,12 @@ app.directive('dtiinitplot', function(appconf, $http) {
                     label: "ecXform", 
                     url: urlbase+"&p="+encodeURIComponent(base+"/dwi_aligned_trilin_ecXform.png"),
                 },
+                /* sometimes doesn't exist
                 {
                     label: "Spatial Normalization", 
                     url: urlbase+"&p="+encodeURIComponent(base+"/dti_trilin/SpatialNormalization.png"),
                 },
+                */
                 /* maybe too big to show?
                 {
                     label: "T1PPD", 

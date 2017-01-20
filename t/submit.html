@@ -1,13 +1,13 @@
 <ng-include src="'t/sidebar.html'"></ng-include>
 <div class="sca-sidebar-page">
     <div class="subbar">
-        <div style="padding-left: 20px; margin-bottom: 25px;">
-            <h2>New Evaluation</h2>
-            <p class="help-block">Guides you through submitting connectome evaluator</p>
+        <div style="padding-left: 20px; margin-bottom: 25px; padding-right: 10px;">
+            <h2>Submit New Process</h2>
+            <p class="help-block" style="line-height: 170%;">{{appconf.labels.purpose}}</p>
         </div>
-        <hr style="margin: 0px;">
+        <hr style="margin: 0px">
 
-        <div class="workflow">
+        <div class="workflow" style="top: 125px;">
             <div class="workflow-item" ng-class="{active: step == 'diffusion'}" ng-click="openpage('/submit/diffusion')">
                 <div class="item-header"><span class="item-header-badge">1</span> Enter Your Data</div>
                 <p class="workflow-detail">Upload your anatomy and diffusion data and validate them to make sure that we can run connectome evaluator.</p>
@@ -22,7 +22,7 @@
             </div>
             <div class="workflow-item" ng-class="{active: step == 'submit'}" ng-click="openpage('/submit/submit')">
                 <div class="item-header"><span class="item-header-badge">4</span> Submit</div>
-                <p class="workflow-detail">Finally, submit your request to be processed on our computer. It should normally take about a few hours, and we will send you an email once processing is completed.</p>
+                <p class="workflow-detail">Finally, confirm your input files and configuration before starting your process.</p>
             </div>
         </div><!--workflow-->
 

@@ -137,17 +137,17 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             }
         })
         .then(function(res) {
-            submit_finalize(res.data.task);
+            submit_input(res.data.task);
         }, $scope.toast_error);
     }
     
     //finalize input data into a single directory so that
     //1 - subsequent data upload won't override the input (if user is downloading, it's simply a waste of time.. but oh well)
     //2 - keep dwi/bvecs/bvals in a single directory. life/encode/vistasoft requires bvecs/bvals to be in a same directory as dwi
-    function submit_finalize(validation_task) {
+    function submit_input(validation_task) {
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
-            name: "finalize",
+            name: "input",
             desc: "running conneval data finalization step",
             service: "soichih/sca-product-raw",
             //remove_date: remove_date, //let's keep this for a while
@@ -162,13 +162,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [validation_task._id]
         })
         .then(function(res) {
-            console.log("data finalization task submitted");
-            console.log($scope.form.data_task_id);
-            console.log(res.data.task._id);
-            //$scope.tasks[$scope.form.data_task_id] = res.data.task;
-            //needs to go to form so that id will be persisted across page switch
-            $scope.form.data_task_id = res.data.task._id; 
-
+            var task = res.data.task;
+            $scope.form.data_task_id = task._id; 
         }, $scope.toast_error);
     }
 
@@ -206,10 +201,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [$scope.form.data_task_id],
         })
         .then(function(res) {
+            var task = res.data.task;
             console.log("submitted acpc align");
-            console.dir(res.data.task);
-            submit_tasks.align = res.data.task;
-            submit_dtiinit();
+            console.dir(task);
+            submit_tasks.align = task;
+            if($scope.appconf.terminal_task == "align") submit_done(task);
+            else submit_dtiinit();
         }, $scope.toast_error);
     }
 
@@ -228,10 +225,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [submit_tasks.align],
         })
         .then(function(res) {
+            var task = res.data.task;
             console.log("submitted dtiinit");
-            console.dir(res.data.task);
-            submit_tasks.dtiinit = res.data.task;
-            submit_freesurfer();
+            console.dir(task);
+            submit_tasks.dtiinit = task;
+            if($scope.appconf.terminal_task == "dtiinit") submit_done(task);
+            else submit_freesurfer();
         }, $scope.toast_error);
     }
 
@@ -250,10 +249,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [submit_tasks.align],
         })
         .then(function(res) {
+            var task = res.data.task;
             console.log("submitted freesurfer");
-            console.dir(res.data.task);
-            submit_tasks.freesurfer = res.data.task;
-            submit_tracking();
+            console.dir(task);
+            submit_tasks.freesurfer = task;
+            if($scope.appconf.terminal_task == "freesurfer") submit_done(task);
+            else submit_tracking();
         }, $scope.toast_error);
     }
 
@@ -282,10 +283,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [submit_tasks.freesurfer._id],
         })
         .then(function(res) {
+            var task = res.data.task;
             console.log("submitted tracking");
-            console.dir(res.data.task);
-            submit_tasks.tracking = res.data.task;
-            submit_life();
+            console.dir(task);
+            submit_tasks.tracking = task;
+            if($scope.appconf.terminal_task == "tracking") submit_done(task);
+            else submit_life();
         }, $scope.toast_error);
     }
 
@@ -313,10 +316,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [submit_tasks.tracking._id],
         })
         .then(function(res) {
+            var task = res.data.task;
             console.log("submitted life");
-            console.dir(res.data.task);
-            submit_tasks.life = res.data.task;
-            submit_afq();
+            console.dir(task);
+            submit_tasks.life = task;
+            if($scope.appconf.terminal_task == "life") submit_done(task);
+            else submit_afq();
         }, $scope.toast_error);
     }
 
@@ -333,10 +338,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [submit_tasks.life._id, submit_tasks.dtiinit._id],
         })
         .then(function(res) {
+            var task = res.data.task;
             console.log("submitted afq");
-            console.dir(res.data.task);
-            submit_tasks.afq = res.data.task;
-            submit_eval(); 
+            console.dir(task);
+            submit_tasks.afq = task;
+            if($scope.appconf.terminal_task == "afq") submit_done(task);
+            else submit_eval();
         }, $scope.toast_error);
     }
 
@@ -352,27 +359,31 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             deps: [submit_tasks.life._id],
         })
         .then(function(res) {
+            var task = res.data.task;
             console.log("submitted eval");
             console.dir(res.data.task);
-            submit_tasks.compare = res.data.task;
+            submit_tasks.compare = task;
+            if($scope.appconf.terminal_task == "eval") submit_done(task);
+            else submit_done(task); //this is the last one we got.
+        }, $scope.toast_error);
+    }
 
-            //the last thing to submit..
-            submit_notification(res.data.task._id);
+    function submit_done(task) {
+        //the last thing to submit..
+        submit_notification(task._id);
 
-            //update instance
-            $http.put($scope.appconf.wf_api+"/instance/"+$scope.form.instance._id, {
-                name: $scope.form.name, 
-                desc: "todo..",
-                config: {
-                    submitted: true,
-                    _form: $scope.form, //store form info so that UI can find more info
-                }
-            }).then(function(res) {
-                //all done submitting!
-                submitform.reset();
-                $scope.openpage('/tasks/'+$scope.form.instance._id);
-                toaster.success("Task submitted successfully!");
-            }, $scope.toast_error);
+        //mark instance as submitted
+        $http.put($scope.appconf.wf_api+"/instance/"+$scope.form.instance._id, {
+            name: $scope.form.name, 
+            desc: "todo..",
+            config: {
+                submitted: true,
+                _form: $scope.form, //store form info so that UI can find more info
+            }
+        }).then(function(res) {
+            submitform.reset();
+            $scope.openpage('/tasks/'+$scope.form.instance._id);
+            toaster.success("Task submitted successfully!");
         }, $scope.toast_error);
     }
 });

@@ -4,8 +4,8 @@
         <h3><i class="fa fa-bars"></i></h3> 
     </div>
 
-    <h2 class="text-muted" ng-click="relocate('http://www.brain-life.org/evaluator');" 
-        title="Connectome Evaluator Home Page"
+    <h2 class="text-muted" ng-click="relocate(appconf.labels.homeurl);" 
+        title="Back to Home Page"
         style="margin-top: 43px; cursor: pointer;">
         <i class="fa fa-flask" aria-hidden="true"></i>
     </h2>
@@ -19,15 +19,17 @@
 
     <div class="menu" ng-class="{'active':  active_menu == 'tasks'}" ng-click="openpage('/tasks')">
         <h3><i class="fa fa-list-alt" aria-hidden="true"></i></h3> 
-        <span class="label">Evaluations</span>
+        <span class="label">Processes</span>
     </div>
 
     <div class="bottom">
+        <!--
         <div class="menu" ng-click="relocate('https://github.com/soichih/sca-wf-conneval/wiki/Help')">
             <h3><i class="fa fa-question" aria-hidden="true"></i></h3> 
             <span class="label">Help</span>
         </div>
         <hr>
+        -->
         <div class="menu" ng-click="relocate('/profile', true)">
             <h3><i class="fa fa-cog" aria-hidden="true"></i></h3> 
             <span class="label">Settings</span>

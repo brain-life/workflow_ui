@@ -36,4 +36,12 @@
 (7) load the life results from the FE structure resulting from (6) into the graph in demo_connectome_data_comparison.m
 
 
+## TODO
 
+brain-life.org/evaluator
+brain-life.org/life
+brain-life.org/tracking (MRTRIX)
+brain-life.org/preprocessing (dtiInit)
+brain-life.org/majortracts (AFQ)
+brain-life.org/cortex (FreeSurfer)
+brain-life.org/networkneuro (work with Brent)
