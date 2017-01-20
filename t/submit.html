@@ -174,15 +174,15 @@
                     <h2 class="page-heading">Configure</h2>
                 </div>
                 <div style="padding-top: 70px;">
-                    <div ng-show="!form.config._noconf">
+                    <div ng-if="!form.config._noconf">
                         <p class="help-block">Please specify configuration used to run your evaluation.</p>
                     </div>
-                    <div ng-show="form.config._noconf">
+                    <div ng-if="form.config._noconf">
                         <p class="">This process currently has no configuration you can specify. Please skip this step.</p>
                     </div>
                     <br>
                 
-                    <div ng-show="form.config.tracking">
+                    <div ng-if="form.config.tracking">
                         <h3 style="margin-top: 0px;">Streamlines Tracking</h3>
                         <div class="row">
                             <div class="col-sm-3">
@@ -208,7 +208,7 @@
                         </div>
                     </div><!--showconf-->
 
-                    <div ng-show="form.config.life">
+                    <div ng-if="form.config.life">
                         <h3 style="margin-top: 0px;">Life</h3>
                         <div class="row">
                             <div class="col-sm-3">

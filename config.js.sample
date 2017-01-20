@@ -43,10 +43,12 @@ angular.module('app.config', [])
             fibers: 500000,  
             fibers_max: 1000000,  
         },
+        /*
         life: {
             discretization: 360,  
             num_iteration: 500,  
         }
+        */
     },
 
     samples: {

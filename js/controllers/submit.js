@@ -43,7 +43,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     //timeout to force initial page ng-animate
     $timeout(function() {
         if($routeParams.step) $scope.step = $routeParams.step;
-        else $scope.step = "diffusion"; //first page
+        else $scope.step = "diffusion"; //first page (it should be name something like "inputdata"?)
     }, 0);
 
     if(!$scope.form.instance) {
@@ -105,7 +105,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                     }
                 }
 
-                $scope.$broadcast("task_updated", task);
+                $scope.$broadcast("task_updated", task); //who receive this again?
             });
         }
     }
