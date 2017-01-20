@@ -4,16 +4,17 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     $scope.$parent.active_menu = "tasks";
 
     $scope.instances = []; //list of all connectome-data-comparison tasks
-    $scope.selected = [];
+    $scope.selected = null;
     $scope.tasks = {};
 
     //load all submitted instances
     $http.get($scope.appconf.wf_api+"/instance", {params: {
         find: {
-            workflow_id: "sca-wf-conneval",
+            //workflow_id: "sca-wf-conneval",
             //service: "soichih/sca-service-connectome-data-comparison",
             //status: { $in: ["running", "requested", "failed", "finished"] },
-            "config.submitted": true ,
+            //"config.submitted": true ,
+            "config.workflow": "brain-life."+$scope.appconf.terminal_task,
         },
         sort: '-create_date', 
     }})

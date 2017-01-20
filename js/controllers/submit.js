@@ -49,10 +49,14 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     if(!$scope.form.instance) {
         //create new temporary instance 
         $http.post($scope.appconf.wf_api+"/instance", {
-            workflow_id: "sca-wf-conneval",
+            //workflow_id: "sca-wf-conneval",
             name: "tdb",
             desc: "tdb",
-            //config: {},
+            /*
+            config: {
+                workflow: "brain-life."+$scope.appconf.terminal_task,
+            },
+            */
         }).then(function(res) {
             $scope.form.instance = res.data;
             console.dir("created new instance");
@@ -365,7 +369,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             name: $scope.form.name, 
             desc: "todo..",
             config: {
-                submitted: true,
+                workflow: "brain-life."+$scope.appconf.terminal_task,
+                //submitted: true,
                 _form: $scope.form, //store form info so that UI can find more info
             }
         }).then(function(res) {
