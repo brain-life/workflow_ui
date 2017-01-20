@@ -34,6 +34,20 @@ angular.module('app.config', [])
         homeurl: "http://www.brain-life.org/evaluator",
         purpose: "Submit process to analyze your diffusion data and provide quantitative estimates of connectome quality",
     },
+    
+    //default config to use. This also determine which service has configuration to select
+    default_config: {
+        _noconf: false, //set to true if there is no configuration to set
+
+        tracking: {
+            fibers: 500000,  
+            fibers_max: 1000000,  
+        },
+        life: {
+            discretization: 360,  
+            num_iteration: 500,  
+        }
+    },
 
     samples: {
         sample1: {

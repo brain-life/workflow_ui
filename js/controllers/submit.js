@@ -15,20 +15,8 @@ app.factory('submitform', function($http, appconf, toaster) {
             bvals: null,
 
             instance: null,
-            
-            //config for various services
-            config: {
-                tracking: {
-                    fibers: 500000,  
-                    fibers_max: 1000000,  
-                },
-                life: {
-                    discretization: 360,  
-                    num_iteration: 500,  
-                }
-            }
         });
-        
+        form.config = angular.copy(appconf.default_config);
     }
     reset();
 
