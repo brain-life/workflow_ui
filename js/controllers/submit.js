@@ -129,36 +129,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             }
         })
         .then(function(res) {
-            submit_input(res.data.task);
+            //submit_input(res.data.task);
+            console.log("submitted validation task"); 
+            console.dir(res); 
         }, $scope.toast_error);
     }
     
-    //finalize input data into a single directory so that
-    //1 - subsequent data upload won't override the input (if user is downloading, it's simply a waste of time.. but oh well)
-    //2 - keep dwi/bvecs/bvals in a single directory. life/encode/vistasoft requires bvecs/bvals to be in a same directory as dwi
-    function submit_input(validation_task) {
-        $http.post($scope.appconf.wf_api+"/task", {
-            instance_id: $scope.form.instance._id,
-            name: "input",
-            desc: "running conneval data finalization step",
-            service: "soichih/sca-product-raw",
-            //remove_date: remove_date, //let's keep this for a while
-            config: {
-                copy: [
-                    {src: $scope.form.t1, dest: "data/t1.nii.gz"},
-                    {src: $scope.form.dwi, dest: "data/dwi.nii.gz"},
-                    {src: $scope.form.bvecs, dest: "data/dwi.bvecs"},
-                    {src: $scope.form.bvals, dest: "data/dwi.bvals"},
-                ]
-            },
-            deps: [validation_task._id]
-        })
-        .then(function(res) {
-            var task = res.data.task;
-            $scope.form.data_task_id = task._id; 
-        }, $scope.toast_error);
-    }
-
     function submit_notification(task_id) {
         var url = document.location.origin+document.location.pathname+"#!/tasks/"+$scope.form.instance._id;
         $http.post($scope.appconf.event_api+"/notification", {
@@ -176,7 +152,39 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
     var submit_tasks = {}; //stores tasks submitted
     $scope.submit = function() {
-        submit_align();
+        //submit_align();
+        submit_input();
+    }
+    
+    //finalize input data into a single directory so that
+    //1 - subsequent data upload won't override the input (if user is downloading, it's simply a waste of time.. but oh well)
+    //2 - keep dwi/bvecs/bvals in a single directory. life/encode/vistasoft requires bvecs/bvals to be in a same directory as dwi
+    function submit_input() {
+        $http.post($scope.appconf.wf_api+"/task", {
+            instance_id: $scope.form.instance._id,
+            name: "input",
+            desc: "running conneval data finalization step",
+            service: "soichih/sca-product-raw",
+            //remove_date: remove_date, //let's keep this for a while
+            config: {
+                copy: [
+                    {src: $scope.form.t1, dest: "data/t1.nii.gz"},
+                    {src: $scope.form.dwi, dest: "data/dwi.nii.gz"},
+                    {src: $scope.form.bvecs, dest: "data/dwi.bvecs"},
+                    {src: $scope.form.bvals, dest: "data/dwi.bvals"},
+                ]
+            },
+            //deps: [validation_task._id]
+        })
+        .then(function(res) {
+            //$scope.form.data_task_id = task._id; 
+            var task = res.data.task;
+            console.log("submitted input finalization");
+            console.dir(task);
+            submit_tasks.input = task;
+            if($scope.appconf.terminal_task == "input") submit_done(task);
+            else submit_align();
+        }, $scope.toast_error);
     }
 
     function submit_align() {
@@ -186,11 +194,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             desc: "running acpc alignment",
             service: "brain-life/sca-service-autoalignacpc",
             config: {
-                t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
+                t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
                 t1_out: "t1_acpc_aligned.nii.gz",
                 coords: [ [0,0,0], [0, -16, 0], [0, -8, 40] ]
             },
-            deps: [$scope.form.data_task_id],
+            deps: [submit_tasks.input._id],
         })
         .then(function(res) {
             var task = res.data.task;
@@ -210,9 +218,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "soichih/sca-service-dtiinit",
             config: {
                 t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
-                dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
-                bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
-                bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
+                dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
+                bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
+                bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
             },
             deps: [submit_tasks.align],
         })
@@ -264,9 +272,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //remove_date: remove_date,
             config: {
                 lmax: [8],
-                dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
-                bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
-                bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
+                dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
+                bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
+                bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
 
                 freesurfer: "../"+submit_tasks.freesurfer._id+"/output",
                 fibers: $scope.form.config.tracking.fibers,
@@ -293,13 +301,13 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //remove_date: remove_date,
             config: {
                 diff: { 
-                    dwi: "../"+$scope.form.data_task_id+"/data/dwi.nii.gz",
-                    bvals: "../"+$scope.form.data_task_id+"/data/dwi.bvals",
-                    bvecs: "../"+$scope.form.data_task_id+"/data/dwi.bvecs",
+                    dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
+                    bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
+                    bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
                 },
                 anatomy: { 
                     //t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
-                    t1: "../"+$scope.form.data_task_id+"/data/t1.nii.gz",
+                    t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
                 },
                 trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.8.tck" },
                 life_discretization: $scope.form.config.life.discretization,

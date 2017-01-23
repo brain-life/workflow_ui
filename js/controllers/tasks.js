@@ -53,6 +53,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 $scope.taskbyname[task.name] = task; 
                 $scope.tasks.push(task);
             });
+            console.dir($scope.tasks);
 
             calc_inst_status(); //first time check
             connect_eventws();
