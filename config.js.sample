@@ -27,12 +27,14 @@ angular.module('app.config', [])
 
     //task to terminate
     //terminal_task: "dtiinit", 
-    terminal_task: "tracking", 
+    //terminal_task: "tracking", 
+    terminal_task: "eval", 
 
     //instance specific lables around UI
     labels: {
         homeurl: "http://www.brain-life.org/tracking",
-        title: "Connectome Tracking", //used as title and also notification email subject
+        //title: "Connectome Tracking", //used as title and also notification email subject
+        title: "Connectome Evaluation", //used as title and also notification email subject
         purpose: "Submit process to analyze your diffusion data and provide quantitative estimates of connectome quality",
     },
     
@@ -44,12 +46,10 @@ angular.module('app.config', [])
             fibers: 500000,  
             fibers_max: 1000000,  
         },
-        /*
         life: {
             discretization: 360,  
             num_iteration: 500,  
         }
-        */
     },
 
     samples: {
