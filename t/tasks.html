@@ -185,7 +185,7 @@
                         <a style="cursor: pointer;" ng-if="task.show_output" ng-click="task.show_output = false">
                             <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide Raw Outputs</small>
                         </a>
-                        <sca-product-raw ng-if="task.show_output" taskid="task._id"></sca-product-raw>
+                        <sca-product-raw ng-if="task.show_output" task="task"></sca-product-raw>
                     </div><!--detail/ng-repeast workflow-item-->
 
                     <tractsview ng-if="taskbyname.afq.show_tracts" task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
