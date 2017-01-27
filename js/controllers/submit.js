@@ -137,6 +137,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     
     function submit_notification(task_id) {
         var url = document.location.origin+document.location.pathname+"#!/tasks/"+$scope.form.instance._id;
+        //success
         $http.post($scope.appconf.event_api+"/notification", {
             event: "wf.task.finished",
             handler: "email",
@@ -144,6 +145,19 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 task_id: task_id,
                 subject: "[brain-life.org] "+$scope.appconf.labels.title+" Process Completed",
                 message: "Hello!\n\nI'd like to inform you that your process has completed successfully.\n\nPlease visit "+url+" to view your result.\n\nBrain-life.org Administrator"
+            },
+        })
+        .then(function(res) {
+        }, $scope.toast_error);
+
+        //fail
+        $http.post($scope.appconf.event_api+"/notification", {
+            event: "wf.task.failed",
+            handler: "email",
+            config: {
+                task_id: task_id,
+                subject: "[brain-life.org] "+$scope.appconf.labels.title+" Process Failed",
+                message: "Hello!\n\nI am sorry to inform you, that you brain-life processing has failed. \n\nPlease visit "+url+" to view your partial result.\n\nPlease contact us if you have any questions.\n\nBrain-life.org Administrator"
             },
         })
         .then(function(res) {
@@ -320,8 +334,40 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             console.log("submitted life");
             console.dir(task);
             submit_tasks.life = task;
-            if($scope.appconf.terminal_task == "life") submit_done(task);
-            else submit_afq();
+            switch($scope.appconf.terminal_task) {
+            case "life":
+                submit_done(task);
+                break;
+            case "network":
+                submit_network();
+                break;
+            default:
+                submit_afq();
+            }
+        }, $scope.toast_error);
+    }
+
+    function submit_network() {
+        $http.post($scope.appconf.wf_api+"/task", {
+            instance_id: $scope.form.instance._id,
+            name: "network",
+            desc: $scope.form.name, //"running comparison service for conneval process",
+            service: "soichih/sca-service-networkneuro",
+            config: {
+                fe: "../"+submit_tasks.life._id+"/output_fe.mat",
+                fsdir: "../"+submit_tasks.freesurfer._id+"/output",
+                cachedir: "./cache",
+                ncores: 32,
+            },
+            deps: [submit_tasks.life._id, submit_tasks.freesurfer._id],
+        })
+        .then(function(res) {
+            var task = res.data.task;
+            console.log("submitted network");
+            console.dir(task);
+            submit_tasks.network = task;
+            //if($scope.appconf.terminal_task == "network") submit_done(task);
+            submit_done(task);
         }, $scope.toast_error);
     }
 

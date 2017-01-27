@@ -28,13 +28,13 @@ angular.module('app.config', [])
     //task to terminate
     //terminal_task: "dtiinit", 
     //terminal_task: "tracking", 
-    terminal_task: "eval", 
+    //terminal_task: "eval", 
+    terminal_task: "network", 
 
     //instance specific lables around UI
     labels: {
-        homeurl: "http://www.brain-life.org/tracking",
-        //title: "Connectome Tracking", //used as title and also notification email subject
-        title: "Connectome Evaluation", //used as title and also notification email subject
+        homeurl: "http://soichi7.ppa.iu.edu/wfui/conneval",
+        title: "Development", //used as title and also notification email subject
         purpose: "Submit process to analyze your diffusion data and provide quantitative estimates of connectome quality",
     },
     
