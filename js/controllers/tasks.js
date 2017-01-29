@@ -53,26 +53,23 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             $scope.tasks = [];
             $scope.taskbyname = {};
             res.data.tasks.forEach(function(task) { 
+                //debug... I won't need this for long
+                if(task.name == "connectome-comparison") task.name = "eval";
+                if(task.name == "neuro-tracking") task.name = "tracking";
+                
                 //ignore some pre-submit tasks..
                 if(task.name == "downloading") return;
                 if(task.name == "validation") return;
-                //if(task.name == "input") return;
                 $scope.taskbyname[task.name] = task; 
                 $scope.tasks.push(task);
             });
-            console.dir($scope.tasks);
+            //console.dir($scope.tasks);
 
             calc_inst_status(); //first time check
             connect_eventws();
 
         }, $scope.toast_error);
         
-        /*
-        $scope.$on('$routeChangeStart', function(next, current) { 
-            eventws.close();
-        });
-        */
-
         //hide subbar if it's hidden optionally for narrow view
         if($(".subbar").hasClass("subbar-shown")) {
             $(".subbar").removeClass("subbar-shown");
@@ -82,8 +79,13 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         window.scrollTo(0,0);
     }
 
+    $scope.download = function(task, path) {
+        var jwt = localStorage.getItem($scope.appconf.jwt_id);
+        window.location = $scope.appconf.wf_api+"/resource/download?r="+task.resource_id+
+            "&p="+encodeURIComponent(task.instance_id+"/"+task._id+"/"+path)+"&at="+jwt;
+    }    
+
     function calc_inst_status() {
-        //console.log("calc_inst");
         //count task status
         var finished = 0;
         var running = 0;
@@ -92,6 +94,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             if(task.status == "finished") finished++;
             if(task.status == "running") running++;
             if(task.status == "failed") failed++;
+
         });
 
         //figure out the instance status (TODO - sca-wf should set this at instance level automatically..)

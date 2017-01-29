@@ -283,7 +283,7 @@ app.factory('vtk', function($q, appconf) {
 
             //never loaded before.. create a new promise
             var promise = $q(function(resolve, reject) {
-                console.log("loading vtk model for the first time "+path); 
+                //console.log("loading vtk model for the first time "+path); 
                 var loader = new THREE.VTKLoader();
                 var p = encodeURIComponent(path);
                 var jwt = localStorage.getItem(appconf.jwt_id);
@@ -480,7 +480,7 @@ app.directive('tractsview', function(appconf, $http, vtk) {
             }
             
             function load_tract(path, cb) {
-                console.log("loading tract "+path);
+                //console.log("loading tract "+path);
                 //$scope.loading = true;
                 $http.get(path)
                 .then(function(res) {

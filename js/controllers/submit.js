@@ -118,7 +118,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "validation", //have to match in eventwm.onmessage
-            desc: "running conneval validation step",
+            desc: "Running conneval validation step",
             service: "soichih/sca-service-conneval-validate",
             remove_date: remove_date,
             config: {
@@ -164,6 +164,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         }, $scope.toast_error);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Submit functions
+    //
+    //
+
     var submit_tasks = {}; //stores tasks submitted
     $scope.submit = function() {
         //submit_align();
@@ -177,7 +183,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "input",
-            desc: "running conneval data finalization step",
+            desc: "Organizing all your input files",
             service: "soichih/sca-product-raw",
             //remove_date: remove_date, //let's keep this for a while
             config: {
@@ -191,12 +197,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //deps: [validation_task._id]
         })
         .then(function(res) {
-            //$scope.form.data_task_id = task._id; 
             var task = res.data.task;
-            console.log("submitted input finalization");
-            console.dir(task);
-            submit_tasks.input = task;
-            if($scope.appconf.terminal_task == "input") submit_done(task);
+            submit_tasks[task.name] = task;
+            if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_align();
         }, $scope.toast_error);
     }
@@ -205,7 +208,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "align",
-            desc: "running acpc alignment",
+            desc: "Align brains(t1) to the AC-PC plane by guessing their location given MNI coordinates",
             service: "brain-life/sca-service-autoalignacpc",
             config: {
                 t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
@@ -218,8 +221,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             var task = res.data.task;
             console.log("submitted acpc align");
             console.dir(task);
-            submit_tasks.align = task;
-            if($scope.appconf.terminal_task == "align") submit_done(task);
+            submit_tasks[task.name] = task;
+            if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_dtiinit();
         }, $scope.toast_error);
     }
@@ -228,7 +231,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "dtiinit",
-            desc: "running dtiinit preprocessing",
+            desc: "Perform various preprocessing using vistasoft/mrDiffusion/dtiInit",
             service: "soichih/sca-service-dtiinit",
             config: {
                 t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
@@ -240,10 +243,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             var task = res.data.task;
-            console.log("submitted dtiinit");
-            console.dir(task);
-            submit_tasks.dtiinit = task;
-            if($scope.appconf.terminal_task == "dtiinit") submit_done(task);
+            submit_tasks[task.name] = task;
+            if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_freesurfer();
         }, $scope.toast_error);
     }
@@ -252,7 +253,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "freesurfer",
-            desc: "running freesurfer for conneval process",
+            desc: "Subdivide the brain into major tissue and anatomical regions using FreeSurfer (2 to 10h compute time).",
             service: "soichih/sca-service-freesurfer",
             //remove_date: remove_date,
             config: {
@@ -264,10 +265,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             var task = res.data.task;
-            console.log("submitted freesurfer");
-            console.dir(task);
-            submit_tasks.freesurfer = task;
-            if($scope.appconf.terminal_task == "freesurfer") submit_done(task);
+            submit_tasks[task.name] = task;
+            if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_tracking();
         }, $scope.toast_error);
     }
@@ -280,8 +279,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
-            name: "neuro-tracking",
-            desc: "running neuro tracking service for conneval process",
+            name: "tracking",
+            desc: "Tracking white matter fascicles (1 h compute time).",
             service: "soichih/sca-service-neuro-tracking",
             //remove_date: remove_date,
             config: {
@@ -298,10 +297,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             var task = res.data.task;
-            console.log("submitted tracking");
-            console.dir(task);
-            submit_tasks.tracking = task;
-            if($scope.appconf.terminal_task == "tracking") submit_done(task);
+            submit_tasks[task.name] = task;
+            if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_life();
         }, $scope.toast_error);
     }
@@ -310,7 +307,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "life",
-            desc: "running life service for conneval process",
+            desc: "Evaluating white matter fascicles and removing false alarms (5 h compute time).",
             service: "soichih/sca-service-life",
             //remove_date: remove_date,
             config: {
@@ -331,11 +328,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             var task = res.data.task;
-            console.log("submitted life");
-            console.dir(task);
-            submit_tasks.life = task;
+            submit_tasks[task.name] = task;
             switch($scope.appconf.terminal_task) {
-            case "life":
+            case task.name: //can I do this?
                 submit_done(task);
                 break;
             case "network":
@@ -351,7 +346,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "network",
-            desc: $scope.form.name, //"running comparison service for conneval process",
+            desc: "Computing weighted region connectivities using output from LiFE and freesurfer",
             service: "soichih/sca-service-networkneuro",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
@@ -363,10 +358,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             var task = res.data.task;
-            console.log("submitted network");
-            console.dir(task);
-            submit_tasks.network = task;
-            //if($scope.appconf.terminal_task == "network") submit_done(task);
+            submit_tasks[task.name] = task;
             submit_done(task);
         }, $scope.toast_error);
     }
@@ -375,7 +367,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "afq",
-            desc: $scope.form.name, //"running comparison service for conneval process",
+            desc: "Generate tracts segments from fe-structure and dt6",
             service: "brain-life/sca-service-tractclassification",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
@@ -385,10 +377,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             var task = res.data.task;
-            console.log("submitted afq");
-            console.dir(task);
-            submit_tasks.afq = task;
-            if($scope.appconf.terminal_task == "afq") submit_done(task);
+            submit_tasks[task.name] = task;
+            if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_eval();
         }, $scope.toast_error);
     }
@@ -396,7 +386,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     function submit_eval() {
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
-            name: "connectome-comparison",
+            name: "eval",
+            desc: "Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).",
             service: "soichih/sca-service-connectome-data-comparison",
             //remove_date: remove_date,
             config: {
@@ -406,10 +397,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             var task = res.data.task;
-            console.log("submitted eval");
-            console.dir(res.data.task);
-            submit_tasks.compare = task;
-            if($scope.appconf.terminal_task == "eval") submit_done(task);
+            submit_tasks[task.name] = task;
+            if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_done(task); //this is the last one we got.
         }, $scope.toast_error);
     }
@@ -418,13 +407,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         //the last thing to submit..
         submit_notification(task._id);
 
-        //mark instance as submitted
+        //update instance as this is now fully submitted
         $http.put($scope.appconf.wf_api+"/instance/"+$scope.form.instance._id, {
             name: $scope.form.name, 
             desc: "todo..",
             config: {
                 workflow: "brain-life."+$scope.appconf.terminal_task,
-                //submitted: true,
                 _form: $scope.form, //store form info so that UI can find more info
             }
         }).then(function(res) {

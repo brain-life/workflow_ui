@@ -62,16 +62,35 @@
                 <div ng-if="instance_status == 'requested' || instance_status == 'running'">
                     <h3 class="text-info" style="margin-top: 0px;"><strong><i style="font-size: 150%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Processing ...</strong></h3>
                     <p class="alert bg-info">
-                        The process should take anywhere between 10 - 24 hours depending on the availability of computing resources and the size of your input data. You may close this page and we will send you an email once the processing is completed.</p>
+                        The process should take anywhere between 24 - 36 hours depending on the availability of computing resources and the size of your input data. You may close this page and we will send you an email once the processing is completed.</p>
                 </div>
                 <div ng-if="instance_status == 'failed'">
                     <h3 class="text-danger"><strong>Processing Failed</strong></h3>
                     <p class="alert bg-danger">Sorry! Your processing has failed. Please examine the details below and contact the support team for more information.</p>
                 </div>
+
+                <!--show details from terminal task if finished-->
+                <div ng-if="taskbyname[appconf.terminal_task].status == 'finished'">
+                    <ng-include src="appconf.terminal_task"></ng-include>
+
+                    <!--show raw output (show always)-->
+                    <div>
+                        <a style="cursor: pointer;" ng-if="!taskbyname[appconf.terminal_task].show_output" ng-click="taskbyname[appconf.terminal_task].show_output = true">
+                            <i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs
+                        </a>
+                        <a style="cursor: pointer;" ng-if="taskbyname[appconf.terminal_task].show_output" ng-click="taskbyname[appconf.terminal_task].show_output = false">
+                            <i class="fa fa-caret-down" aria-hidden="true"></i> Hide Raw Outputs
+                        </a>
+                        <sca-product-raw ng-if="taskbyname[appconf.terminal_task].show_output" task="taskbyname[appconf.terminal_task]"></sca-product-raw>
+                    </div>
+                    <hr>
+                </div>
+
+                <!-- 
                 <div ng-if="taskbyname['connectome-comparison'].status == 'finished'">
-                    <!--<h3 class="text-success"><strong>Finished!</strong></h3>-->
                     <comparisonplot task="taskbyname['connectome-comparison']"></comparisonplot>
                 </div>
+                -->
 
                 <div class="workflow">
                     <p><!--placeholder-->&nbsp;</p>
@@ -105,113 +124,32 @@
                         </div>
                         -->
 
-                        <!--task specific details-->
-                        <div ng-switch="task.name">
-                            <div ng-switch-when="input">
-                                <p class="help-block">Organize all your input files</p>
-                                <div ng-if="task.status == 'finished'">
-                                    <!--nothing to show for now-->
-                                </div>
-                            </div>
-                            <div ng-switch-when="align">
-                                <p class="help-block">Align brains(t1) to the AC-PC plane by guessing their location given MNI coordinates</p>
-                                <div ng-if="task.status == 'finished'">
-                                    <!--nothing to show for now-->
-                                </div>
-                            </div>
-                            <div ng-switch-when="dtiinit">
-                                <p class="help-block">Perform various preprocessing using vistasoft/mrDiffusion/dtiInit</p>
-                                <div ng-if="task.status == 'finished'">
-                                    <a style="cursor: pointer;" ng-if="!task.show" ng-click="task.show = true">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show dtiInit Plots</small>
-                                    </a>
-                                    <a style="cursor: pointer;" ng-if="task.show" ng-click="task.show = false">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide dtiInit Plots</small>
-                                    </a>
-                                    <dtiinitplot ng-if="task.show" task="task"></dtiinitplot>
-                                </div>
-                            </div>
-                            <div ng-switch-when="freesurfer">
-                                <p class="help-block">Subdivide the brain into major tissue and anatomical regions using FreeSurfer (2 to 10h compute time).</p>
+                        <p class="help-block">{{task.desc}}</p>
 
-                                <div ng-if="task.status == 'finished'">
-                                    <a style="cursor: pointer;" ng-if="!task.show_vtk" ng-click="task.show_vtk = true">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Model (lh/rh.piel / .vtk)</small>
-                                    </a>
-                                    <a style="cursor: pointer;" ng-if="task.show_vtk" ng-click="task.show_vtk = false">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide 3D Model (lh/rh.piel / .vtk)</small>
-                                    </a>
-                                    <div class="row" ng-if="task.show_vtk">
-                                    <div class="col-lg-6">
-                                        <h4>Left Hemisphere</h4>
-                                        <vtkview resourceid="task.resource_id" 
-                                            url="task.instance_id+'/'+task._id+'/lh.10.vtk'"></vtkview>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <h4>Right Hemishpere</h4>
-                                        <vtkview resourceid="task.resource_id" 
-                                            url="task.instance_id+'/'+task._id+'/rh.10.vtk'"></vtkview>
-                                    </div>
-                                    </div><!--row-->
-                                </div>
-                            </div>
-                            <div ng-switch-when="neuro-tracking">
-                                <p class="help-block">Tracking white matter fascicles (1 h compute time).</p>
-                                <div ng-if="task.status == 'finished'">
-                                    <!--nothing to show for now-->
-                                </div>
-                            </div>
-                            <div ng-switch-when="life">
-                                <p class="help-block">Evaluating white matter fascicles and removing false alarms (5 h compute time).</p>
-                                <div ng-if="task.status == 'finished'">
-                                    <a style="cursor: pointer;" ng-if="!task.show_lifeplot" ng-click="task.show_lifeplot = true">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Life Plots</small>
-                                    </a>
-                                    <a style="cursor: pointer;" ng-if="task.show_lifeplot" ng-click="task.show_lifeplot = false">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Hide Life Plots</small>
-                                    </a>
-                                    <lifeplot ng-if="task.show_lifeplot" task="task"></lifeplot>
-                                </div>
-                            </div>
-                            <div ng-switch-when="afq">
-                                <p class="help-block">Generate tracts segments from fe structure and dt6</p>
-                                <div ng-if="task.status == 'finished'">
-                                    <a style="cursor: pointer;" ng-if="!task.show_tracts" ng-click="task.show_tracts = true">
-                                        <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show 3D Tracts (below)</small>
-                                    </a>
-                                    <a style="cursor: pointer;" ng-if="task.show_tracts" ng-click="task.show_tracts = false">
-                                        <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide 3D Tracts (below)</small>
-                                    </a>
-                                </div>
-                            </div>
-                            <div ng-switch-when="connectome-comparison">
-                                <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
-                                <div ng-if="task.status == 'finished' && tasks.freesurfer.status == 'finished'">
-                                    <!--nothing to show for now-->
-                                </div>
-                            </div>
-                            <div ng-switch-when="network">
-                                <p class="help-block">Computing weighted region connectivities using output from LiFE and freesurfer</p>
-                                <div ng-if="task.status == 'finished'">
-                                    <!--nothing to show for now-->
-                                </div>
-                            </div>
-                            <div ng-switch-default>
-                                <p class="help-block">Behind the scene task..</p>
-                            </div>
-                        </div><!--task.name switch-->
+                        <!--show service specific output (only when finished)-->
+                        <div ng-if="task.status == 'finished' && task.name != appconf.terminal_task">
+                            <a style="cursor: pointer;" 
+                                ng-if="!task.show_result" ng-click="task.show_result = true">
+                                <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Result</small>
+                            </a>
+                            <a style="cursor: pointer;" 
+                                ng-if="task.show_result" ng-click="task.show_result = false">
+                                <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide Result</small>
+                            </a>
+                            <ng-include ng-if="task.show_result" src="task.name"></ng-include>
+                        </div>
 
-                        <a style="cursor: pointer;" ng-if="!task.show_output" ng-click="task.show_output = true">
-                            <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs</small>
-                        </a>
-                        <a style="cursor: pointer;" ng-if="task.show_output" ng-click="task.show_output = false">
-                            <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide Raw Outputs</small>
-                        </a>
-                        <sca-product-raw ng-if="task.show_output" task="task"></sca-product-raw>
+                        <!--show raw output (show always)-->
+                        <div ng-if="task.name != appconf.terminal_task">
+                            <a style="cursor: pointer;" ng-if="!task.show_output" ng-click="task.show_output = true">
+                                <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs</small>
+                            </a>
+                            <a style="cursor: pointer;" ng-if="task.show_output" ng-click="task.show_output = false">
+                                <small><i class="fa fa-caret-down" aria-hidden="true"></i> Hide Raw Outputs</small>
+                            </a>
+                            <sca-product-raw ng-if="task.show_output" task="task"></sca-product-raw>
+                        </div>
                     </div><!--detail/ng-repeast workflow-item-->
-
-                    <tractsview ng-if="taskbyname.afq.show_tracts" task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
-
                 </div><!--workflow-->
 
                 <hr>
@@ -231,3 +169,65 @@
         </div><!--magin30-->
     </div><!--subbar-content-->
 </div><!--sca-sidebbar-page-->
+
+<script type='text/ng-template' id="input">
+    <p>
+        <button type="button" class="btn btn-primary" ng-click="download(task, 'data')">Download Input Data</button>
+    </p>
+</script>
+
+<script type='text/ng-template' id="align">
+    <p>
+        <button type="button" class="btn btn-primary" ng-click="download(task, 't1_acpc_aligned.nii.gz')">Download t1_acpc_aligned.nii.gz</button>
+    </p>
+</script>
+
+<script type='text/ng-template' id="dtiinit">
+    <h3>dtiInit Plots</h3>
+    <dtiinitplot task="task"></dtiinitplot>
+</script>
+
+<script type='text/ng-template' id="freesurfer">
+    <h3>Surface Model</h3>
+    <div class="row">
+        <div class="col-lg-6">
+            <h4>Left Hemisphere</h4>
+            <vtkview resourceid="task.resource_id" 
+                url="task.instance_id+'/'+task._id+'/lh.10.vtk'"></vtkview>
+        </div>
+        <div class="col-lg-6">
+            <h4>Right Hemishpere</h4>
+            <vtkview resourceid="task.resource_id" 
+                url="task.instance_id+'/'+task._id+'/rh.10.vtk'"></vtkview>
+        </div>
+    </div>
+</script>
+
+<script type='text/ng-template' id="tracking">
+    <p>
+        <button type="button" class="btn btn-primary" ng-click="download(task, 'tensor.tck')">Download tensor.tck</button>
+        <button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_STREAM.8.tck')">Download SD_STREAM.tck</button>
+        <button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_PROB.8.tck')">Download SD_PROB.tck</button>
+    </p>
+</script>
+
+<script type='text/ng-template' id="life">
+    <lifeplot task="task"></lifeplot>
+</script>
+
+<script type='text/ng-template' id="network">
+    <p class="alert alert-info">TODO..</p>
+</script>
+
+<script type='text/ng-template' id="afq">
+    <h3>Tracts</h3>
+    <tractsview task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
+</script>
+
+<script type='text/ng-template' id="eval">
+    <h3>Evaluator Result</h3>
+    <comparisonplot task="taskbyname.eval"></comparisonplot>
+</script>
+
+
+

@@ -28,8 +28,8 @@ angular.module('app.config', [])
     //task to terminate
     //terminal_task: "dtiinit", 
     //terminal_task: "tracking", 
-    //terminal_task: "eval", 
-    terminal_task: "network", 
+    terminal_task: "eval", 
+    //terminal_task: "network", 
 
     //instance specific lables around UI
     labels: {
