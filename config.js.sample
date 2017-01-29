@@ -33,7 +33,8 @@ angular.module('app.config', [])
 
     //instance specific lables around UI
     labels: {
-        homeurl: "http://soichi7.ppa.iu.edu/wfui/conneval",
+        homeurl: "https://soichi7.ppa.iu.edu/wfui",
+        appicon: "fa-flask",
         title: "Development", //used as title and also notification email subject
         purpose: "Submit process to analyze your diffusion data and provide quantitative estimates of connectome quality",
     },

@@ -155,9 +155,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             event: "wf.task.failed",
             handler: "email",
             config: {
-                task_id: task_id,
+                instance_id: $scope.form.instance._id,
                 subject: "[brain-life.org] "+$scope.appconf.labels.title+" Process Failed",
-                message: "Hello!\n\nI am sorry to inform you, that you brain-life processing has failed. \n\nPlease visit "+url+" to view your partial result.\n\nPlease contact us if you have any questions.\n\nBrain-life.org Administrator"
+                message: "Hello!\n\nI am sorry to inform you that your brain-life processing has failed. \n\nPlease visit "+url+" to view your partial result.\n\nPlease contact us if you have any questions.\n\nBrain-life.org Administrator"
             },
         })
         .then(function(res) {

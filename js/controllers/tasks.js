@@ -25,8 +25,15 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         //find task specified
         if($routeParams.instanceid) {
             $scope.instances.forEach(function(instance) {
-                if(instance._id == $routeParams.instanceid) $scope.select(instance);
+                if(instance._id == $routeParams.instanceid) {
+                    $scope.select(instance);
+                }
             });
+            //scroll element to view - after this apply cycle is complete
+            setTimeout(function() {
+                var item = document.getElementById($routeParams.instanceid);
+                if(item) item.scrollIntoView(true);
+            },0);
         } else {
             //select first one
             if($scope.instances.length > 0) $scope.select($scope.instances[0]);    
@@ -149,6 +156,13 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $scope.instances.splice($scope.instances.indexOf($scope.selected), 1);
         //$scope.selected_main = null;
         $scope.selected = null;
+    }
+
+    $scope.retry = function(task) {
+        $http.put($scope.appconf.wf_api+"/task/rerun/"+task._id)
+        .then(function(res) {
+            toaster.success("Re-run requested"); 
+        }, $scope.toast_error);
     }
 
     /*

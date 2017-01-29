@@ -2,7 +2,7 @@
 <div class="sca-sidebar-page">
     <div class="subbar">
         <div style="padding-left: 20px; margin-bottom: 10px;">
-            <h2>{{appconf.labels.title}}</h2>
+            <h2><i class="fa {{appconf.labels.appicon}}"/> {{appconf.labels.title}}</h2>
             <p class="help-block">Showing all processes you have submitted previously</p>
             <br>
             <div class="btn-group pull-right" style="left: -20px;top: -5px;">
@@ -22,8 +22,9 @@
         <hr style="margin: 0px;">
 
         <div class="subbar-list">
-            <p class="alert alert-info" ng-if="instances.length == 0">Please submit an new evaluation.</p>
+            <p class="alert alert-info" ng-if="instances.length == 0">Please submit a new process</p>
             <div class="subbar-list-item" 
+                id="{{instance._id}}"
                 ng-repeat="instance in instances"
                 ng-class="{'active': selected == instance}"
                 ng-click="select(instance)">
@@ -65,7 +66,7 @@
                 </div>
                 <div ng-if="instance_status == 'failed'">
                     <h3 class="text-danger"><strong>Processing Failed</strong></h3>
-                    <p class="alert bg-danger">Sorry! Please contact the support team for more information.</p>
+                    <p class="alert bg-danger">Sorry! Your processing has failed. Please examine the details below and contact the support team for more information.</p>
                 </div>
                 <div ng-if="taskbyname['connectome-comparison'].status == 'finished'">
                     <!--<h3 class="text-success"><strong>Finished!</strong></h3>-->
@@ -81,13 +82,28 @@
                             'item-header-status-running': task.status == 'running'  }">
                             <span class="item-header-badge">{{$index+1}}</span> 
                             <div class="item-header-addon">
-                                <span class="label label-default item-header-task"> {{task.name}}</span><span class="label label-default item-header-status">
+                                <span class="label label-default item-header-task"> 
+                                    {{task.name}}
+                                </span><span class="label label-danger clickable" style="box-shadow: inset 1px 0px 3px #b00;"
+                                    ng-if="task.status == 'failed'" ng-click="retry(task)">
+                                    <i class="fa fa-repeat"></i> Re-try
+                                </span><span class="label label-default item-header-status">
                                     <!--<strong>{{task.status}}</strong>-->
-                                    <i ng-if="task.status == 'running'" class="fa fa-cog fa-spin text-muted" aria-hidden="true"></i>
-                                    <small>{{task.status_msg|cut:true:130:'...'}}</small>
+                                    <i ng-if="task.status == 'running'" 
+                                        class="fa fa-cog fa-spin text-muted" 
+                                        aria-hidden="true"></i>
+                                    <small>{{task.status_msg|cut:true:130:'...' || task.status}}</small>
                                 </span>
                             </div>
                         </div>
+                        <!--
+                        <div class="alert alert-danger" ng-if="task.status == 'failed'">
+                            <a class="btn btn-xs btn-default pull-right" ng-click="retry(task)">
+                                <i class="fa fa-repeat"></i> Re-try
+                            </a>
+                            <strong>Task Failed!</strong> Something went wrong with the execution of this step. Please check the detail and/or contact support staff.
+                        </div>
+                        -->
 
                         <!--task specific details-->
                         <div ng-switch="task.name">
@@ -171,6 +187,12 @@
                             <div ng-switch-when="connectome-comparison">
                                 <p class="help-block">Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).</p>
                                 <div ng-if="task.status == 'finished' && tasks.freesurfer.status == 'finished'">
+                                    <!--nothing to show for now-->
+                                </div>
+                            </div>
+                            <div ng-switch-when="network">
+                                <p class="help-block">Computing weighted region connectivities using output from LiFE and freesurfer</p>
+                                <div ng-if="task.status == 'finished'">
                                     <!--nothing to show for now-->
                                 </div>
                             </div>

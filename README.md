@@ -32,12 +32,24 @@
 
 ## TODO
 
-//need both t1 and dwi
-brain-life.org/evaluator
-brain-life.org/life
-brain-life.org/tracking (MRTRIX)
-brain-life.org/majortracts (AFQ)
-brain-life.org/preprocessing (dtiInit) 
-
 brain-life.org/cortex (FreeSurfer) (just need t1 for input - validator should only validate dwi)
 brain-life.org/networkneuro (work with Brent)
+
+
+ >> dwParams = dtiInitParams
+    dwParams = 
+                    bvalue: []
+              gradDirsCode: []
+                   clobber: 0
+               dt6BaseName: 
+              flipLrApFlag: 0
+       numBootStrapSamples: 500
+                 fitMethod: 'ls'
+                     nStep: 50
+               eddyCorrect: 1
+               excludeVols: []
+         bsplineInterpFlag: 0
+            phaseEncodeDir: []
+                   dwOutMm: [2 2 2]
+         rotateBvecsWithRx: 0
+   rotateBvecsWithCanXform: 0

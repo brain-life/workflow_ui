@@ -199,6 +199,9 @@ vtkview canvas {
     height: 300px;
   }
 }
+.clickable:hover {
+  cursor: pointer;
+}
 /*
 comparisonplot {
     .plot {
