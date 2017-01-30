@@ -228,6 +228,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     function submit_dtiinit() {
+        //only afq and dtinit wf uses this
+        if($scope.appconf.terminal_task != "afq" && $scope.appconf.terminal_task != "dtiinit") {
+            submit_freesurfer(); //skip to freesurfer
+            return;
+        }
+
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "dtiinit",
@@ -364,6 +370,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     function submit_afq() {
+        //afq needs dtiinit
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "afq",

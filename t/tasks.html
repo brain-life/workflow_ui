@@ -98,7 +98,7 @@
                                 <span class="label label-default item-header-task"> 
                                     {{task.name}}
                                 </span><span class="label label-danger clickable" style="box-shadow: inset 1px 0px 3px #b00;"
-                                    ng-if="task.status == 'failed'" ng-click="retry(task)">
+                                    ng-if="task.status == 'failed' || (appconf.debug && task.status == 'finished')" ng-click="retry(task)">
                                     <i class="fa fa-repeat"></i> Re-try
                                 </span><span class="label label-default item-header-status">
                                     <!--<strong>{{task.status}}</strong>-->
