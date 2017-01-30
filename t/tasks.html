@@ -28,17 +28,21 @@
                 ng-repeat="instance in instances"
                 ng-class="{'active': selected == instance}"
                 ng-click="select(instance)">
+                <time class="help-block pull-right">{{instance.create_date | date}}</time>
 
-                <!--<taskstatus status="instance.status" class="pull-right"></taskstatus>-->
-                <div class="list-header">{{instance.name}}</div>
-                <small>
-                    <time class="text-muted" style="position: relative; top: -4px;">{{instance.create_date | date}}</time>
+                <div class="list-header">
+                    <small>
+                        <span class="label label-default">{{instance._terminal_task}}</span>
+                        {{instance.name}}
+                    </small>
+                </div>
+                <!--
                     <p>
                         <code>dwi</code>{{instance.config._form.dwi|filename}}
                         <code>t1</code>{{instance.config._form.t1|filename}}
-                        <!--{{instance.desc}}-->
+                        {{instance.desc}}
                     </p>
-                </small>
+                -->
             </div>
         </div><!--workflow-->
 
@@ -69,7 +73,7 @@
                     <p class="alert bg-danger">Sorry! Your processing has failed. Please examine the details below and contact the support team for more information.</p>
                 </div>
 
-                <ng-include ng-init="task = ttask" src="appconf.terminal_task" ng-if="instance_status == 'finished'"></ng-include>
+                <ng-include ng-init="task = ttask" src="selected._terminal_task" ng-if="instance_status == 'finished'"></ng-include>
 
                 <!--show raw output (show always)-->
                 <div ng-if="ttask.resource_id">
@@ -117,7 +121,7 @@
                         <p class="help-block">{{task.desc}}</p>
 
                         <!--show service specific output (only when finished)-->
-                        <div ng-if="task.status == 'finished' && task.name != appconf.terminal_task">
+                        <div ng-if="task.status == 'finished' && task.name != selected._terminal_task">
                             <a style="cursor: pointer;" 
                                 ng-if="!task.show_result" ng-click="task.show_result = true">
                                 <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Result</small>
@@ -130,7 +134,7 @@
                         </div>
 
                         <!--show raw output (show always)-->
-                        <div ng-if="task.name != appconf.terminal_task">
+                        <div ng-if="task.name != selected._terminal_task">
                             <a style="cursor: pointer;" ng-if="!task.show_output" ng-click="task.show_output = true">
                                 <small><i class="fa fa-caret-right" aria-hidden="true"></i> Show Raw Outputs</small>
                             </a>
@@ -161,15 +165,15 @@
 </div><!--sca-sidebbar-page-->
 
 <script type='text/ng-template' id="input">
-    <p>
-        <button type="button" class="btn btn-primary" ng-click="download(task, 'data')">Download Input Data</button>
-    </p>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="#" ng-click="download(task, 'data')">Input Data (.tar.gz)</a></li>
+    </ul>
 </script>
 
 <script type='text/ng-template' id="align">
-    <p>
-        <button type="button" class="btn btn-primary" ng-click="download(task, 't1_acpc_aligned.nii.gz')">Download t1_acpc_aligned.nii.gz</button>
-    </p>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="#" ng-click="download(task, 't1_acpc_aligned.nii.gz')">t1_acpc_aligned.nii.gz</a></li>
+    </ul>
 </script>
 
 <script type='text/ng-template' id="dtiinit">
@@ -194,11 +198,12 @@
 </script>
 
 <script type='text/ng-template' id="tracking">
-    <p>
-        <button type="button" class="btn btn-primary" ng-click="download(task, 'tensor.tck')">Download tensor.tck</button>
-        <button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_STREAM.8.tck')">Download SD_STREAM.tck</button>
-        <button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_PROB.8.tck')">Download SD_PROB.tck</button>
-    </p>
+    <h3>Tracking Output</h3>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="#" ng-click="download(task, 'tensor.tck')">tensor.tck</a></li>
+        <li class="list-group-item"><a href="#" ng-click="download(task, 'output.SD_STREAM.8.tck')">SD_STREAM.tck</a></li>
+        <li class="list-group-item"><a href="#" ng-click="download(task, 'output.SD_PROB.8.tck')">SD_PROB.tck</a></li>
+    </ul>
 </script>
 
 <script type='text/ng-template' id="life">

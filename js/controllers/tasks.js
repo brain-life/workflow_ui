@@ -13,8 +13,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //workflow_id: "sca-wf-conneval",
             //service: "soichih/sca-service-connectome-data-comparison",
             //status: { $in: ["running", "requested", "failed", "finished"] },
-            //"config.submitted": true ,
-            "config.workflow": "brain-life."+$scope.appconf.terminal_task,
+            //"config.workflow": "brain-life."+$scope.appconf.terminal_task,
+            "config.workflow": {$regex: "^brain-life"},
         },
         sort: '-create_date', 
     }})
@@ -22,6 +22,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $scope.instances = res.data.instances;
         console.log("instances loaded");
         console.dir($scope.instances);
+
+        //figure out terminal taskname
+        $scope.instances.forEach(function(instance) {
+            instance._terminal_task  = instance.config.workflow.split(".")[1];
+        });
+        
         //find task specified
         if($routeParams.instanceid) {
             $scope.instances.forEach(function(instance) {
@@ -42,6 +48,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
     $scope.select = function(instance) {
         console.log("selecting "+instance._id);
+        $scope.instance_status = null;
         $scope.selected = instance;
 
         //load all tasks for this instance
@@ -63,7 +70,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 $scope.taskbyname[task.name] = task; 
                 $scope.tasks.push(task);
             });
-            $scope.ttask = $scope.taskbyname[$scope.appconf.terminal_task];
+            $scope.ttask = $scope.taskbyname[$scope.selected._terminal_task];
 
             calc_inst_status(); //first time check
             connect_eventws();
