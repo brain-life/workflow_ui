@@ -87,7 +87,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     $scope.download = function(task, path) {
-        window.location = $scope.downoad_url(task, path);
+        window.location = $scope.download_url(task, path);
     }    
 
     $scope.download_url = function(task, path) {
