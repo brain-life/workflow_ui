@@ -15,6 +15,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //status: { $in: ["running", "requested", "failed", "finished"] },
             //"config.workflow": "brain-life."+$scope.appconf.terminal_task,
             "config.workflow": {$regex: "^brain-life"},
+            "config.removing": {$exists: false},
         },
         sort: '-create_date', 
     }})
@@ -160,20 +161,16 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     $scope.delete = function() {
         if(!$scope.selected) return;
 
-        //TODO - popup confirmation dialog first? there is no api to remove instance
-        /*
         $http.delete($scope.appconf.wf_api+"/instance/"+$scope.selected._id)
         .then(function(res) {
-            console.log("Successfully removed a task: "+task._id);
+            toaster.success(res.data.message);
         }, $scope.toast_error);
-        */
-        alert('todo');
 
         $scope.instances.splice($scope.instances.indexOf($scope.selected), 1);
         $scope.selected = null;
-    }
-    
 
+        //TODO select first one?
+    }
 
     $scope.retry = function(task) {
         $http.put($scope.appconf.wf_api+"/task/rerun/"+task._id)
