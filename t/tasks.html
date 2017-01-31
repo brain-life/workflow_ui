@@ -166,13 +166,13 @@
 
 <script type='text/ng-template' id="input">
     <ul class="list-group">
-        <li class="list-group-item"><a href="#" ng-click="download(task, 'data')">Input Data (.tar.gz)</a></li>
+        <li class="list-group-item"><a ng-click="download(task, 'data')">Input Data (.tar.gz)</a></li>
     </ul>
 </script>
 
 <script type='text/ng-template' id="align">
     <ul class="list-group">
-        <li class="list-group-item"><a href="#" ng-click="download(task, 't1_acpc_aligned.nii.gz')">t1_acpc_aligned.nii.gz</a></li>
+        <li class="list-group-item"><a ng-click="download(task, 't1_acpc_aligned.nii.gz')">t1_acpc_aligned.nii.gz</a></li>
     </ul>
 </script>
 
@@ -200,9 +200,9 @@
 <script type='text/ng-template' id="tracking">
     <h3>Tracking Output</h3>
     <ul class="list-group">
-        <li class="list-group-item"><a href="#" ng-click="download(task, 'tensor.tck')">tensor.tck</a></li>
-        <li class="list-group-item"><a href="#" ng-click="download(task, 'output.SD_STREAM.8.tck')">SD_STREAM.tck</a></li>
-        <li class="list-group-item"><a href="#" ng-click="download(task, 'output.SD_PROB.8.tck')">SD_PROB.tck</a></li>
+        <li class="list-group-item"><a ng-click="download(task, 'tensor.tck')">tensor.tck</a></li>
+        <li class="list-group-item"><a ng-click="download(task, 'output.SD_STREAM.8.tck')">SD_STREAM.tck</a></li>
+        <li class="list-group-item"><a ng-click="download(task, 'output.SD_PROB.8.tck')">SD_PROB.tck</a></li>
     </ul>
 </script>
 
