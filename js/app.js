@@ -39,6 +39,7 @@ app.animation('.slide-down', ['$animateCss', function($animateCss) {
     };
 }]);
 
+/*
 //http://plnkr.co/edit/YWr6o2?p=preview
 app.directive('ngConfirmClick', [
     function() {
@@ -55,6 +56,74 @@ app.directive('ngConfirmClick', [
         };
     }
 ]);
+*/
+
+/*
+app.directive('ngConfirmClick', [
+  function(){
+    return {
+      priority: -1,
+      restrict: 'A',
+      link: function(scope, element, attrs){
+        element.bind('click', function(e){
+          var message = attrs.ngConfirmClick;
+          if(message && !confirm(message)){
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        });
+      }
+    }
+  }
+]);
+*/
+
+app.directive( "mwConfirmClick", [
+  function( ) {
+    return {
+      priority: -1,
+      restrict: 'A',
+      scope: { confirmFunction: "&mwConfirmClick" },
+      link: function( scope, element, attrs ){
+        element.bind( 'click', function( e ){
+          // message defaults to "Are you sure?"
+          var message = attrs.mwConfirmClickMessage ? attrs.mwConfirmClickMessage : "Are you sure?";
+          // confirm() requires jQuery
+          if( confirm( message ) ) {
+            scope.confirmFunction();
+          }
+        });
+      }
+    }
+  }
+]);
+
+
+//http://stackoverflow.com/questions/14852802/detect-unsaved-changes-and-alert-user-using-angularjs
+app.directive('confirmOnExit', function($window, $location) {
+    return {
+        //scope: { form: '=', },
+        link: function($scope, elem, attrs) {
+            window.onbeforeunload = function(){
+                if ($scope.form.$dirty) {
+                    return "You have unsaved changes.";
+                }
+            }
+            $scope.$on('$locationChangeStart', function(event, next, current) {
+                if ($scope.form.$dirty) {
+                    if(!confirm("Do you want to abondon unsaved changes?")) {
+                        event.preventDefault();
+                        //TODO controller might have already changed selected item on the menu.. 
+                        //I somehow need to revert, but not sure how..
+                    } else {
+                        $scope.form.$setPristine();
+                        $window.location.reload();  //to load previous content
+                    }
+                }
+            });
+        }
+    };
+});
 
 //show loading bar at the top
 app.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
@@ -73,90 +142,6 @@ function(appconf, $httpProvider, jwtInterceptorProvider) {
     }
     $httpProvider.interceptors.push('jwtInterceptor');
 }]);
-
-/*
-//load menu and profile by promise chaining
-app.factory('menu', ['appconf', '$http', 'jwtHelper', '$sce', 'scaMessage', 'scaMenu', 'toaster',
-function(appconf, $http, jwtHelper, $sce, scaMessage, scaMenu, toaster) {
-    console.log("conneval menu factory");
-    var jwt = localStorage.getItem(appconf.jwt_id);
-    var menu = {
-        header: {
-        },
-        top: scaMenu,
-        user: null, //to-be-loaded
-    };
-    if(appconf.icon_url) menu.header.icon = $sce.trustAsHtml("<img src=\""+appconf.icon_url+"\">");
-    if(appconf.home_url) menu.header.url = appconf.home_url
-    var jwt = localStorage.getItem(appconf.jwt_id);
-    if(jwt) {
-        var expdate = jwtHelper.getTokenExpirationDate(jwt);
-        var ttl = expdate - Date.now();
-        if(ttl < 0) {
-            toaster.error("Your login session has expired. Please re-sign in");
-            localStorage.removeItem(appconf.jwt_id);
-        } else {
-            menu.user = jwtHelper.decodeToken(jwt);
-            if(ttl < 3600*1000) {
-                //jwt expring in less than an hour! refresh!
-                console.log("jwt expiring in an hour.. refreshing first");
-                $http({
-                    url: appconf.auth_api+'/refresh',
-                    method: 'POST'
-                }).then(function(response) {
-                    var jwt = response.data.jwt;
-                    localStorage.setItem(appconf.jwt_id, jwt);
-                    menu.user = jwtHelper.decodeToken(jwt);
-                });
-            }
-        }
-    }
-    return menu;
-}]);
-*/
-
-/*
-
-//return singleton instance or create new one if it doesn't exist yet
-app.factory('instance', function(appconf, $http, jwtHelper, toaster, $q) {
-    console.log("getting conneval instance");
-    var workflow_id = "sca-wf-conneval"; //needs to match package.json/name
-
-    var promise;
-    return {
-        get: function() {
-            if(promise) return promise;
-            promise = $q(function(resolve, reject) {
-
-                $http.get(appconf.wf_api+'/instance', {
-                    params: {
-                        find: { workflow_id: workflow_id } 
-                    }
-                })
-                .then(function(res) {
-                    if(res.data.count != 0) {
-                        //yay!
-                        resolve(res.data.instances[0]);
-                    } else {
-                        //need to create instance
-                        $http.post(appconf.wf_api+"/instance", {
-                            workflow_id: workflow_id,
-                            name: "test",
-                            desc: "singleton",
-                            config: {some: "thing"},
-                        }).then(function(res) {
-                            console.log("created new instance");
-                            resolve(res.data);
-                        }, reject);
-                    }
-                }, reject);
-            });
-            return promise;
-        }
-    }
-
-});
-*/
 
 /**
  * AngularJS default filter with the following expression:

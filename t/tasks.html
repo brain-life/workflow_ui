@@ -51,7 +51,9 @@
         <div class="margin30" ng-if="selected">
             <div class="fixed-top">
                 <h2 class="pull-right">
-                    <i class="fa fa-trash-o" aria-hidden="true" ng-click="delete()"></i>&nbsp;&nbsp;&nbsp;
+                    <i class="fa fa-trash-o" aria-hidden="true" 
+                        mw-confirm-click="delete()" 
+                        mw-confirm-click-message="Are you sure you want to remove this process?"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-star-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
                     <i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -211,7 +213,28 @@
 </script>
 
 <script type='text/ng-template' id="network">
-    <p class="alert alert-info">TODO..</p>
+    <h3>Edge Count</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Uncleaned</h4>
+            <img ng-src="{{download_url(task, 'uncleaned_edge_count.png')}}" width="100%">
+        </div>
+        <div class="col-md-6">
+            <h4>Cleaned</h4>
+            <img ng-src="{{download_url(task, 'cleaned_edge_count.png')}}" width="100%">
+        </div>
+    </div>
+    <h3>Earth Mover's Distance (EMD)</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Uncleaned</h4>
+            <img ng-src="{{download_url(task, 'uncleaned_edge_emd.png')}}" width="100%">
+        </div>
+        <div class="col-md-6">
+            <h4>Cleaned</h4>
+            <img ng-src="{{download_url(task, 'cleaned_edge_emd.png')}}" width="100%">
+        </div>
+    </div>
 </script>
 
 <script type='text/ng-template' id="afq">

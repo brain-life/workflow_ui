@@ -87,10 +87,14 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     $scope.download = function(task, path) {
-        var jwt = localStorage.getItem($scope.appconf.jwt_id);
-        window.location = $scope.appconf.wf_api+"/resource/download?r="+task.resource_id+
-            "&p="+encodeURIComponent(task.instance_id+"/"+task._id+"/"+path)+"&at="+jwt;
+        window.location = $scope.downoad_url(task, path);
     }    
+
+    $scope.download_url = function(task, path) {
+        var jwt = localStorage.getItem($scope.appconf.jwt_id);
+        return $scope.appconf.wf_api+"/resource/download?r="+task.resource_id+
+            "&p="+encodeURIComponent(task.instance_id+"/"+task._id+"/"+path)+"&at="+jwt;
+    } 
 
     function calc_inst_status() {
         //count task status
@@ -160,11 +164,13 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             console.log("Successfully removed a task: "+task._id);
         }, $scope.toast_error);
         */
+        alert('todo');
 
         $scope.instances.splice($scope.instances.indexOf($scope.selected), 1);
-        //$scope.selected_main = null;
         $scope.selected = null;
     }
+    
+
 
     $scope.retry = function(task) {
         $http.put($scope.appconf.wf_api+"/task/rerun/"+task._id)
