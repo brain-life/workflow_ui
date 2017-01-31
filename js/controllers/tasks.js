@@ -100,17 +100,20 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         //count task status
         var other = 0;
         var finished = 0;
+        var running = 0;
         var failed = 0;
         $scope.tasks.forEach(function(task) {
             if(task.status == "failed") failed++;
             else if(task.status == "finished") finished++;
+            else if(task.status == "running") running++;
             else other++;
         });
 
         //figure out the instance status (TODO - sca-wf should set this at instance level automatically..)
         if(failed > 0) $scope.instance_status = "failed";
-        else if(other > 0) $scope.instance_status = "running";
-        else $scope.instance_status = "finished";
+        else if(running > 0) $scope.instance_status = "running";
+        else if(other == 0) $scope.instance_status = "finished";
+        else $scope.instance_status = "failed";
      }
 
     function connect_eventws() {
