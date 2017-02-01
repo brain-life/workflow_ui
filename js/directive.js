@@ -14,7 +14,7 @@ app.directive('uiSelectRequired', function() {
 app.directive('uploadingStatus', function() {
   return {
     templateUrl: 't/uploading_status.html',
-    scope: { detail: '=', tasks: '=' },
+    scope: { detail: '='},
     controller: function($scope) {
         console.log("init uploading status");
     }
@@ -178,6 +178,10 @@ app.directive('submitdetail', function() {
         templateUrl: 't/submitdetail.html',
         scope: { detail: '<' },
         controller: function($scope) {
+            $scope.isEmpty = function(obj) {
+                if(!obj) return true; 
+                return(Object.keys(obj).length == 0);
+            }
         }
     }
 });

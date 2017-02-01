@@ -111,6 +111,10 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
         if(res.data && res.data.message) toaster.error(res.data.message);
         else toaster.error(res.statusText);
     }
+
+    $scope.isEmpty = function(obj) {
+        return(Object.keys(obj).length == 0);
+    }
 });
 
 app.controller('HomeController', 

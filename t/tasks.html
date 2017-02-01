@@ -174,17 +174,26 @@
 </script>
 
 <script type='text/ng-template' id="align">
-    <ul class="list-group">
-        <li class="list-group-item"><a ng-click="download(task, 't1_acpc_aligned.nii.gz')">t1_acpc_aligned.nii.gz</a></li>
-    </ul>
+    <h3>AC-PC Alignment Output</h3>
+    <div class="well well-sm">
+        <button type="button" class="btn btn-primary" ng-click="download(task, 't1_acpc_aligned.nii.gz')">Download t1_acpc_aligned.nii.gz</button> 
+    </div>
 </script>
 
 <script type='text/ng-template' id="dtiinit">
+    <h3>dtiInit Output</h3>
+    <div class="well well-sm">
+        <button type="button" class="btn btn-primary" ng-click="download(task, 'dti_trilin')">Download dti_trilin.tar.gz</button> 
+    </div>
     <h3>dtiInit Plots</h3>
     <dtiinitplot task="task"></dtiinitplot>
 </script>
 
 <script type='text/ng-template' id="freesurfer">
+    <h3>Freesurfer Output</h3>
+    <div class="well well-sm">
+        <button type="button" class="btn btn-primary" ng-click="download(task, 'output')">Download output.tar.gz</button> 
+    </div>
     <h3>Surface Model</h3>
     <div class="row">
         <div class="col-lg-6">
@@ -202,11 +211,11 @@
 
 <script type='text/ng-template' id="tracking">
     <h3>Tracking Output</h3>
-    <ul class="list-group">
-        <li class="list-group-item"><a ng-click="download(task, 'tensor.tck')">tensor.tck</a></li>
-        <li class="list-group-item"><a ng-click="download(task, 'output.SD_STREAM.8.tck')">SD_STREAM.tck</a></li>
-        <li class="list-group-item"><a ng-click="download(task, 'output.SD_PROB.8.tck')">SD_PROB.tck</a></li>
-    </ul>
+    <div class="well">
+        <p><button type="button" class="btn btn-primary" ng-click="download(task, 'output.DT_STREAM.tck')">DT_STREAM.tck (tensor)</button></p>
+        <p><button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_STREAM.8.tck')">SD_STREAM.8.tck (CSD/Deterministic/lmax=8)</button></p>
+        <p><button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_PROB.8.tck')">SD_PROB.8.tck (CSD/Probabilistic/lmax=8)</button></p>
+    </div>
 </script>
 
 <script type='text/ng-template' id="life">

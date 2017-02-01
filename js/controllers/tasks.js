@@ -114,7 +114,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         if(failed > 0) $scope.instance_status = "failed";
         else if(running > 0) $scope.instance_status = "running";
         else if(other == 0) $scope.instance_status = "finished";
-        else $scope.instance_status = "failed";
+        else if(failed > 0) $scope.instance_status = "failed";
+        else $scope.instance_status = "unknown";
      }
 
     function connect_eventws() {

@@ -26,12 +26,19 @@ angular.module('app.config', [])
     upload_task_id: "_upload", //task used to store files uploaded by sca-wf-uploader
 
     //task to terminate
-    terminal_task: "afq", 
+    //terminal_task: "afq", 
     //terminal_task: "life", 
     //terminal_task: "dtiinit", 
     //terminal_task: "tracking", 
     //terminal_task: "eval", 
     //terminal_task: "network", 
+    terminal_task: "freesurfer",  //aka cortex?
+    
+    //required inputs
+    inputs: {
+        t1: true,
+        dwi: false,
+    },
 
     //instance specific lables around UI
     labels: {
@@ -40,11 +47,11 @@ angular.module('app.config', [])
         title: "Development", //used as title and also notification email subject
         purpose: "Submit process to analyze your diffusion data and provide quantitative estimates of connectome quality",
     },
+
     
     //default config to use. This also determine which service has configuration to select
     default_config: {
-        _noconf: false, //set to true if there is no configuration to set
-
+        /*
         tracking: {
             fibers: 500000,  
             fibers_max: 1000000,  
@@ -53,6 +60,7 @@ angular.module('app.config', [])
             discretization: 360,  
             num_iteration: 500,  
         }
+        */
     },
 
     samples: {

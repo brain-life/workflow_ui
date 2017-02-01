@@ -115,21 +115,24 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     function submit_validate() {
+        var config = {}
+        if($scope.appconf.inputs.t1) {
+            config.t1 = $scope.form.t1;
+        }
+        if($scope.appconf.inputs.dwi) {
+            config.dwi = $scope.form.dwi;
+            config.bvecs = $scope.form.bvecs;
+            config.bvals = $scope.form.bvals;
+        }
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "validation", //have to match in eventwm.onmessage
             desc: "Running conneval validation step",
             service: "soichih/sca-service-conneval-validate",
             remove_date: remove_date,
-            config: {
-                t1: $scope.form.t1,
-                dwi: $scope.form.dwi,
-                bvecs: $scope.form.bvecs,
-                bvals: $scope.form.bvals,
-            }
+            config: config,
         })
         .then(function(res) {
-            //submit_input(res.data.task);
             console.log("submitted validation task"); 
             console.dir(res); 
         }, $scope.toast_error);
@@ -180,6 +183,15 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     //1 - subsequent data upload won't override the input (if user is downloading, it's simply a waste of time.. but oh well)
     //2 - keep dwi/bvecs/bvals in a single directory. life/encode/vistasoft requires bvecs/bvals to be in a same directory as dwi
     function submit_input() {
+        var copy = [];
+        if($scope.appconf.inputs.t1) {
+            copy.push({src: $scope.form.t1, dest: "data/t1.nii.gz"});
+        }
+        if($scope.appconf.inputs.dwi) {
+            copy.push({src: $scope.form.dwi, dest: "data/dwi.nii.gz"});
+            copy.push({src: $scope.form.bvecs, dest: "data/dwi.bvecs"});
+            copy.push({src: $scope.form.bvals, dest: "data/dwi.bvals"});
+        }
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "input",
@@ -187,12 +199,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "soichih/sca-product-raw",
             //remove_date: remove_date, //let's keep this for a while
             config: {
-                copy: [
-                    {src: $scope.form.t1, dest: "data/t1.nii.gz"},
-                    {src: $scope.form.dwi, dest: "data/dwi.nii.gz"},
-                    {src: $scope.form.bvecs, dest: "data/dwi.bvecs"},
-                    {src: $scope.form.bvals, dest: "data/dwi.bvals"},
-                ]
+                copy: copy,
             },
             //deps: [validation_task._id]
         })
@@ -228,7 +235,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     function submit_dtiinit() {
-        //only afq and dtinit wf uses this
+        //only afq and dtinit uses this
         if($scope.appconf.terminal_task != "afq" && $scope.appconf.terminal_task != "dtiinit") {
             submit_freesurfer(); //skip to freesurfer
             return;
@@ -358,7 +365,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 fsdir: "../"+submit_tasks.freesurfer._id+"/output",
                 cachedir: "./cache",
-                ncores: 32,
+                //ncores: 32, //it's hardcoded to 16 now
             },
             deps: [submit_tasks.life._id, submit_tasks.freesurfer._id],
         })

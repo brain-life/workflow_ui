@@ -36,12 +36,12 @@
                 <div style="padding-top: 70px;">
                     <!--<p class="help-block">Let's start by preparing your diffusion data. Diffusion data is ...brah.. </p>-->
                     <h3 style="margin-top: 0px;">Name</h3>
-                    <input type="text" class="form-control" ng-model="form.name" placeholder="Name for this evaluation" required></input>
+                    <input type="text" class="form-control" ng-model="form.name" placeholder="Name for this process" required></input>
 
                     <div class="form-section">
                         <h3>Data Format</h3>
                         <div class="radio"> 
-                            <label><input type="radio" ng-model="form.datatype" value="ind">T1 Anatomy(.nii.gz) / Diffusion(.dwi.nii.gz/bvecs/bvals)</label>
+                            <label><input type="radio" ng-model="form.datatype" value="ind">Upload / Transfer Files Individually</label>
                         </div>
                         <div class="radio"> 
                             <label><input type="radio" ng-model="form.datatype" value="bids">BIDS - Brain Imaging Data Structure(.tar)</label>
@@ -69,32 +69,35 @@
                     </div>
 
                     <div ng-if="form.datatype == 'ind'" class="form-section">
-                        <h3>ANATOMY</h3>
-                        <h4>T1 (.NII.GZ)</h4>
-                        <transfer_ui id="'t1'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
-                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/t1.nii.gz</p>
-                        <hr>
 
-                        <h3>Diffusion</h3>
-                        <h4>DWI (.nii.gz)</h4>     
-                        <transfer_ui id="'dwi'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
-                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz</p>
+                        <div ng-if="appconf.inputs.t1">
+                            <h3>ANATOMY</h3>
+                            <h4>T1 (.NII.GZ)</h4>
+                            <transfer_ui id="'t1'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/t1.nii.gz</p>
+                        </div><!--t1-->
 
-                        <h4>bvecs</h4>     
-                        <transfer_ui id="'bvecs'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
-                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs</p>
+                        <div ng-if="appconf.inputs.dwi">
+                            <h3>Diffusion</h3>
+                            <h4>DWI (.nii.gz)</h4>     
+                            <transfer_ui id="'dwi'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz</p>
 
-                        <h4>bvals</h4>     
-                        <transfer_ui id="'bvals'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
-                        <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
+                            <h4>bvecs</h4>     
+                            <transfer_ui id="'bvecs'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs</p>
+
+                            <h4>bvals</h4>     
+                            <transfer_ui id="'bvals'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
+                        </div><!--dwi-->
                     </div>
                 </div><!--container-->
-
                 <hr>
                 <div class="pull-right">
                     <button type="button" class="btn" ng-click="back()">Back</button>
                     <button type="submit" class="btn btn-primary" 
-                        ng-disabled="!form.t1 || !form.dwi || !form.bvecs || !form.bvals">Next</button>
+                        ng-disabled-dis="!form.t1 || !form.dwi || !form.bvecs || !form.bvals">Next</button>
                 </div>
             </form>
         </div>
@@ -105,57 +108,81 @@
                     <h2 class="page-heading">Validate Data</h2>
                 </div>
                 <div style="padding-top: 70px;">
-                    <div ng-switch="tasks.validation.status">
-                        <div ng-switch-when="finished">
-                            <p class="bg-danger" style="padding: 10px;" 
-                                ng-repeat="error in tasks.validation.products[0].results.errors">
-                                <b><i class="fa fa-exclamation" aria-hidden="true"></i> {{error}}</b>
-                            </p>
-                            <p class="bg-warning" style="padding: 10px;" 
-                                ng-repeat="warning in tasks.validation.products[0].results.warnings">
-                                <b><i class="fa fa-exclamation text-warning" aria-hidden="true"></i> {{warning}}</b>
-                            </p>
-                            <p class="bg-success" style="padding: 10px;" ng-if="form.validated">
-                                Congratulations! Your data passed all of our checks. Please proceed.
-                            </p>
+
+                    <div ng-if="!tasks.validation.products[0].results">
+                        <!-- no results yet. must be running validation or failed-->
+                        <div ng-if="tasks.validation.status == 'failed'">
+                            <p class="alert alert-danger"><b>Validation Failed</b> {{tasks.validation.status_msg}}</p>
                         </div>
-                        <div ng-switch-when="failed">
-                            <p class="bg-danger" style="padding: 10px">
-                                <i class="fa fa-exclamation" aria-hidden="true"></i> Validation Failed
-                            </p>
-                            <p>{{tasks.validation.status_msg}}</p>
-                        </div>
-                        <div ng-switch-default>
+
+                        <div ng-if="!tasks.validation.products">
                             <h3><i style="font-size: 150%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Validating ... </h3>
                             <p class="help-block">{{tasks.validation.status_msg}}</p>
                         </div>
+
+                        <!--<p class="help-block">We perform following validations..</p>-->
+                        <div class="well" ng-if="appconf.inputs.t1">
+                            <h4>For T1</h4>
+                            <ul class="help-block">
+                                <!--<li>All required input files are entered</li>-->
+                                <li>Make sure mrinfo runs successfully on specified t1 file</li>
+                                <li>Make sure t1 is 3d</li>
+                                <li>Check to see t1 transformation matrix is set to identity matrix</li>
+                            </ul>
+                        </div>
+                        <div class="well" ng-if="appconf.inputs.dwi">
+                            <h4>For DWI</h4>
+                            <ul class="help-block" ng-if="appconf.inputs.dwi">
+                                <li>Make sure mrinfo runs successfully on specified dwi file</li>
+                                <li>Make sure dwi is 4d</li>
+                                <li>Raise warning if dwi transformation matrix isn't unit matrix (identity matrix)</li>
+
+                                <li>Make sure bvecs and bvals can be read</li>
+                                <li>Make sure bvecs's cols count matches dwi's 4th dimension number</li>
+                                <li>Make sure bvecs has 3 rows</li>
+                                <li>Make sure bvals's cols count matches dwi's 4th dimension number</li>
+                                <li>Make sure bvals has 1 row</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <div ng-if="tasks.validation.products[0].results.t1_mrinfo">
-                        <h3>T1 mrinfo</h3>
-                        <pre>{{tasks.validation.products[0].results.t1_mrinfo}}</pre>
-                        <h3>DWI mrinfo</h3>
-                        <pre>{{tasks.validation.products[0].results.dwi_mrinfo}}</pre>
-                    </div>
+                    <!--has validation product!-->
+                    <div ng-if="tasks.validation.products[0].results">
+                        <!--display what to do-->
+                        <div ng-if="tasks.validation.products[0].results.errors.length == 0">
+                            <p class="alert alert-success">
+                                Congratulations! Your data passed all of our checks. Please proceed.
+                            </p>
+                        </div>
 
-                    <div ng-if="!tasks.validation.products[0].results">
-                        <p>We perform following validations..</p>
-                        <ul class="help-block">
-                            <li>All required input files are entered</li>
-                            <li>Make sure mrinfo runs successfully on specified dwi file</li>
-                            <li>Make sure dwi is 4d</li>
-                            <li>Raise warning if dwi transformation matrix isn't unit matrix (identity matrix)</li>
+                        <div ng-if="tasks.validation.products[0].results.errors.length > 0">
+                            <p class="alert alert-danger">
+                                <i class="fa fa-exclamation" aria-hidden="true"></i> Validation Failed.
+                                Please go back and correct problems.
+                            </p>
+                        </div>
 
-                            <li>Make sure mrinfo runs successfully on specified t1 file</li>
-                            <li>Make sure t1 is 3d</li>
-                            <li>Check to see t1 transformation matrix isn't unit matrix (identity matrix)</li>
-                        
-                            <li>Make sure bvecs and bvals can be read</li>
-                            <li>Make sure bvecs's cols count matches dwi's 4th dimension number</li>
-                            <li>Make sure bvecs has 3 rows</li>
-                            <li>Make sure bvals's cols count matches dwi's 4th dimension number</li>
-                            <li>Make sure bvals has 1 row</li>
+                        <!--display errors / warnings -->
+                        <ul>
+                            <li class="text-danger" style="padding: 10px;" 
+                                ng-repeat="error in tasks.validation.products[0].results.errors">
+                                {{error}}
+                            </li>
+                            <li class="text-warning" style="padding: 10px;" 
+                                ng-repeat="warning in tasks.validation.products[0].results.warnings">
+                                {{warning}}
+                            </li>
                         </ul>
+
+                        <!--display mrinfo-->
+                        <div ng-if="tasks.validation.products[0].results.t1_mrinfo">
+                            <h3>T1 mrinfo</h3>
+                            <pre>{{tasks.validation.products[0].results.t1_mrinfo}}</pre>
+                        </div>
+                        <div ng-if="tasks.validation.products[0].results.dwi_mrinfo">
+                            <h3>DWI mrinfo</h3>
+                            <pre>{{tasks.validation.products[0].results.dwi_mrinfo}}</pre>
+                        </div>
                     </div>
                 </div>
 
@@ -174,10 +201,10 @@
                     <h2 class="page-heading">Configure</h2>
                 </div>
                 <div style="padding-top: 70px;">
-                    <div ng-if="!form.config._noconf">
-                        <p class="help-block">Please specify configuration used to run your evaluation.</p>
+                    <div ng-if="!isEmpty(form.config)">
+                        <p class="help-block">Please modify configuration if you'd like to use non-default parameters.</p>
                     </div>
-                    <div ng-if="form.config._noconf">
+                    <div ng-if="isEmpty(form.config)">
                         <p class="">This process currently has no configuration you can specify. Please skip this step.</p>
                     </div>
                     <br>
@@ -249,7 +276,7 @@
                     <h2 class="page-heading">Submit</h2>
                 </div>
                 <div style="padding-top: 70px;">
-                    <p>We are now ready to submit your connectome evaluation process. Please verify information below and click submit button.</p>
+                    <p>We are now ready to submit your process. Please verify information below and click submit button.</p>
 
                     <h3>Name</h3>
                     <p><i>{{form.name}}</i></p>

@@ -1,13 +1,17 @@
 <h3 style="margin-top: 0px;">Input Files</h3> 
-<h4>Anatomy</h4>
-<code>{{detail.t1}}</code><br>
-<h4>DWI</h4>
-<code>{{detail.dwi}}</code><br>
-<code>{{detail.bvecs}}</code><br>
-<code>{{detail.bvals}}</code><br>
+<div ng-if="detail.t1">
+    <h4>Anatomy</h4>
+    <code>{{detail.t1}}</code><br>
+</div>
+<div ng-if="detail.dwi">
+    <h4>DWI</h4>
+    <code>{{detail.dwi}}</code><br>
+    <code>{{detail.bvecs}}</code><br>
+    <code>{{detail.bvals}}</code><br>
+</div>
 
-<div ng-if="!detail.config.noconf">
-    <h3>Configurations</h3>
+<div ng-if="!isEmpty(detail.config)">
+    <h3>Configuration</h3>
     <div class="row">
         <div class="col-md-6" ng-if="detail.config.life">
             <h4>Life</h4>
