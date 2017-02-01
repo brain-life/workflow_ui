@@ -235,9 +235,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     function submit_dtiinit() {
-        //only afq and dtinit uses this
-        if($scope.appconf.terminal_task != "afq" && $scope.appconf.terminal_task != "dtiinit") {
-            submit_freesurfer(); //skip to freesurfer
+        //some task doesn't use dtiinit
+        if( $scope.appconf.terminal_task == "freesurfer" ||
+            $scope.appconf.terminal_task == "preprocessing" ||
+            $scope.appconf.terminal_task == "network") {
+            submit_freesurfer(); //jump to freesurfer
             return;
         }
 
