@@ -322,7 +322,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "life",
-            desc: "Evaluating white matter fascicles and removing false alarms (5 h compute time).",
+            desc: "Evaluating white matter fascicles on SD_PROD and removing false alarms (5h compute time).",
             service: "soichih/sca-service-life",
             //remove_date: remove_date,
             config: {
@@ -335,7 +335,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                     //t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
                     t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
                 },
-                trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.8.tck" },
+                trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.tck" },
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
             },
