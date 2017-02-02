@@ -299,7 +299,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "soichih/sca-service-neuro-tracking",
             //remove_date: remove_date,
             config: {
-                lmax: [8],
+                lmax: $scope.form.config.tracking.lmax,
                 dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
                 bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
                 bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",

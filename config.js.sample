@@ -5,8 +5,6 @@ angular.module('app.config', [])
 
     debug: true,
 
-    api: '/api/sca-wf-life',
-
     shared_api: '/api/shared',
     shared_url: '/shared',
     
@@ -29,15 +27,15 @@ angular.module('app.config', [])
     //terminal_task: "afq", 
     //terminal_task: "life", 
     //terminal_task: "dtiinit", 
-    //terminal_task: "tracking", 
+    terminal_task: "tracking", 
     //terminal_task: "eval", 
     //terminal_task: "network", 
-    terminal_task: "freesurfer",  //aka cortex?
+    //terminal_task: "freesurfer",  //aka cortex?
     
     //required inputs
     inputs: {
         t1: true,
-        dwi: false,
+        dwi: true,
     },
 
     //instance specific lables around UI
@@ -51,8 +49,8 @@ angular.module('app.config', [])
     
     //default config to use. This also determine which service has configuration to select
     default_config: {
-        /*
         tracking: {
+            lmax: 8,
             fibers: 500000,  
             fibers_max: 1000000,  
         },
@@ -60,7 +58,6 @@ angular.module('app.config', [])
             discretization: 360,  
             num_iteration: 500,  
         }
-        */
     },
 
     samples: {

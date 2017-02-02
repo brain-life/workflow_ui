@@ -168,9 +168,10 @@
 </div><!--sca-sidebbar-page-->
 
 <script type='text/ng-template' id="input">
-    <ul class="list-group">
-        <li class="list-group-item"><a ng-click="download(task, 'data')">Input Data (.tar.gz)</a></li>
-    </ul>
+    <h3>Input Data</h3>
+    <div class="well well-sm">
+        <button type="button" class="btn btn-primary" ng-click="download(task, 'data')">Download input.tar.gz</button> 
+    </div>
 </script>
 
 <script type='text/ng-template' id="align">
@@ -248,7 +249,7 @@
 </script>
 
 <script type='text/ng-template' id="afq">
-    <h3>Tracts</h3>
+    <h3>AFQ Tracts</h3>
     <tractsview task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
 </script>
 
