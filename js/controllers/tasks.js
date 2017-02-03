@@ -31,8 +31,10 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         
         //find task specified
         if($routeParams.instanceid) {
+            $scope.missing = true;
             $scope.instances.forEach(function(instance) {
                 if(instance._id == $routeParams.instanceid) {
+                    $scope.missing = false;
                     $scope.select(instance);
                 }
             });

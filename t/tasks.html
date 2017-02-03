@@ -48,6 +48,7 @@
 
     </div><!--subbar-->
     <div class="subbar-content">
+        <p class="alert alert-info" ng-if="missing">You don't have access to specified process (maybe owned by a different user?)</p>
         <div class="margin30" ng-if="selected">
             <div class="fixed-top">
                 <h2 class="pull-right">
