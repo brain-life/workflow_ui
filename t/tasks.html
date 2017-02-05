@@ -51,7 +51,7 @@
         <p class="alert alert-info" ng-if="missing">You don't have access to specified process (maybe owned by a different user?)</p>
         <div class="margin30" ng-if="selected">
             <div class="fixed-top">
-                <h2 class="pull-right">
+                <h2 class="pull-right page-buttons">
                     <i class="fa fa-trash-o" aria-hidden="true" 
                         mw-confirm-click="delete()" 
                         mw-confirm-click-message="Are you sure you want to remove this process?"></i>&nbsp;&nbsp;&nbsp;
@@ -61,7 +61,7 @@
                 </h2>
                 <h2 class="page-heading">{{selected.name}}</h2>
             </div>  
-            <div style="padding-top: 70px;">
+            <div class="fixed-top-under">
                 <div class="pull-right text-muted" title="Submitted Date">
                     <i class="fa fa-clock-o" aria-hidden="true"></i>
                     <time>{{selected.create_date | date:'medium'}}</time>

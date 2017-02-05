@@ -33,7 +33,7 @@
                 <div class="fixed-top">
                     <h2 class="page-heading">Enter Your Data</h2>
                 </div>
-                <div style="padding-top: 70px;">
+                <div class="fixed-top-under">
                     <!--<p class="help-block">Let's start by preparing your diffusion data. Diffusion data is ...brah.. </p>-->
                     <h3 style="margin-top: 0px;">Name</h3>
                     <input type="text" class="form-control" ng-model="form.name" placeholder="Name for this process" required></input>
@@ -107,7 +107,7 @@
                 <div class="fixed-top">
                     <h2 class="page-heading">Validate Data</h2>
                 </div>
-                <div style="padding-top: 70px;">
+                <div class="fixed-top-under">
 
                     <div ng-if="!tasks.validation.products[0].results">
                         <!-- no results yet. must be running validation or failed-->
@@ -200,7 +200,7 @@
                 <div class="fixed-top">
                     <h2 class="page-heading">Configure</h2>
                 </div>
-                <div style="padding-top: 70px;">
+                <div class="fixed-top-under">
                     <div ng-if="!isEmpty(form.config)">
                         <p class="help-block">Please modify configuration if you'd like to use non-default parameters.</p>
                     </div>
@@ -311,7 +311,7 @@
                 <div class="fixed-top">
                     <h2 class="page-heading">Submit</h2>
                 </div>
-                <div style="padding-top: 70px;">
+                <div class="fixed-top-under">
                     <p>We are now ready to submit your process. Please verify information below and click submit button.</p>
 
                     <h3>Name</h3>
