@@ -1,6 +1,7 @@
 
 app.controller('TasksController', 
-function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, submitform) {
+function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, submitform, scaMessage) {
+    scaMessage.show(toaster);//doesn't work if it's placed in PageController (why!?)
     $scope.$parent.active_menu = "tasks";
 
     $scope.instances = []; //list of all connectome-data-comparison tasks
@@ -181,32 +182,5 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             toaster.success("Re-run requested"); 
         }, $scope.toast_error);
     }
-
-    /*
-    function load_deps(deps) {
-        if(!deps || deps.length == 0) return;
-
-        $http.get($scope.appconf.wf_api+"/task", {params: {
-            find: {
-                instance_id: $scope.instance._id,
-                _id: { $in: deps },
-            }
-        }})
-        .then(function(res) {
-            res.data.tasks.forEach(function(task) {
-                //don't add if we know about this task already
-                var already = false;
-                $scope.selected.forEach(function(t) {
-                    if(t._id == task._id) already = true;
-                });
-                if(!already) $scope.selected.unshift(task);
-
-                $scope.tasks[task.name] = task;
-                if(task.name != "align") load_deps(task.deps); //keep loading until align service
-            });
-        }, $scope.toast_error);
-    }
-    */
-
 });
 

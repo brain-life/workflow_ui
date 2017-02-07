@@ -4,10 +4,12 @@
 app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     $routeProvider
 
+    /*
     .when('/home', {
         templateUrl: 't/home.html',
         controller: 'HomeController',
     })
+    */
     .when('/submit/:step?', {
         templateUrl: 't/submit.html',
         controller: 'SubmitController',

@@ -33,8 +33,11 @@
                 <div class="fixed-top">
                     <h2 class="page-heading">Enter Your Data</h2>
                 </div>
+
                 <div class="fixed-top-under">
-                    <!--<p class="help-block">Let's start by preparing your diffusion data. Diffusion data is ...brah.. </p>-->
+                    <p ng-if="!resources.sca_product_raw" class="alert alert-danger">
+                        Backend computing resource is currently not available (maybe maintenance day?) You may not be able to submit new task
+                    </p>
                     <h3 style="margin-top: 0px;">Name</h3>
                     <input type="text" class="form-control" ng-model="form.name" placeholder="Name for this process" required></input>
 
@@ -68,8 +71,12 @@
                         <p class="alert alert-warning">TODO - not yet implemented</p>
                     </div>
 
+                    <!--
+                    <div ng-if="form.datatype == 'ind' && !resources.upload" class="form-section">
+                        <p alert="alert alert-danger">Backend computing resource is currently not available.</p>
+                    </div>
+                    -->
                     <div ng-if="form.datatype == 'ind'" class="form-section">
-
                         <div ng-if="appconf.inputs.t1">
                             <h3>ANATOMY</h3>
                             <h4>T1 (.NII.GZ)</h4>

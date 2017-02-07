@@ -27,7 +27,8 @@ app.factory('submitform', function($http, appconf, toaster) {
 });
 
 app.controller('SubmitController', 
-function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, submitform) {
+function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, submitform, scaMessage) {
+    scaMessage.show(toaster);//doesn't work if it's placed in PageController (why!?)
     $scope.$parent.active_menu = "submit";
     $scope.form = submitform.get();
             
@@ -344,13 +345,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         .then(function(res) {
             var task = res.data.task;
             submit_tasks[task.name] = task;
+
+            //after life.. we diverge
             switch($scope.appconf.terminal_task) {
-            case task.name: //can I do this?
-                submit_done(task);
-                break;
-            case "network":
-                submit_network();
-                break;
+            case task.name: submit_done(task); break;
+            case "network": submit_network(); break;
+            case "eval": submit_eval(); break;
             default:
                 submit_afq();
             }

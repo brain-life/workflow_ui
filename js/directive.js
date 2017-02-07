@@ -137,12 +137,27 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     });
                 }, false);
                 xhr.addEventListener("load", function(evt) {
+                    console.log(evt);
                     $scope.$apply(function() {
                         delete processing.progress;
                         processing.done = true;
-                        $scope.form[type] = "../upload/"+file.name;
+
+                        if(evt.target.status == "200") {
+                            $scope.form[type] = "../upload/"+file.name;
+                        } else {
+                            var msg = JSON.parse(evt.target.response);
+                            toaster.error(msg.message||"Failed to upload");
+                            delete $scope.form.processing[type];
+                        }
                     });
                 }, false);
+                xhr.addEventListener("error", function(evt) {
+                    console.error(evt);
+                    $scope.$apply(function() {
+                        toaster.error("Failed to upload");
+                        delete $scope.form.processing[type];
+                    });
+                });
 
                 //all set..
                 xhr.send(file);
