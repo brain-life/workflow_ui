@@ -47,6 +47,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         else $scope.step = "diffusion"; //first page (it should be name something like "inputdata"?)
     }, 0);
 
+    //don't create new instance across sub page navigation 
     if(!$scope.form.instance) {
         //create new temporary instance 
         $http.post($scope.appconf.wf_api+"/instance", {
@@ -64,13 +65,23 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             console.dir($scope.form.instance);
             post_inst();
         }, $scope.toast_error);
+    } else {
+        post_inst();
     }
+    
 
-    post_inst();
     $scope.tasks = {}; //keep up with transfer/validation task status
 
     function post_inst() {
-        if(!$scope.form.instance) return;
+        //if(!$scope.form.instance) return;
+
+        //handle page specific init steps.
+        if($routeParams.step) switch($routeParams.step) {
+        case "validate": 
+            //immediately submit validation task (if we haven't submited yet)
+            if($scope.tasks["validation"] == undefined) submit_validate();
+            break;
+        }
 
         //connect to eventws
         var jwt = localStorage.getItem($scope.appconf.jwt_id);
@@ -88,14 +99,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                     key: $scope.user.sub+"."+$scope.form.instance._id+".#",
                 }
             }));
-            
-            //handle page specific init steps.
-            if($routeParams.step) switch($routeParams.step) {
-            case "validate": 
-                //immediately submit validation task (if we haven't submited yet)
-                if($scope.tasks["validation"] == undefined) submit_validate();
-                break;
-            }
         }
         eventws.onmessage = function(json) {
             var e = JSON.parse(json.data);
@@ -117,6 +120,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         }
     }
 
+    
     function submit_validate() {
         var config = {}
         if($scope.appconf.inputs.t1) {
