@@ -78,6 +78,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         console.log("connecting eventws "+url);
         var eventws = new ReconnectingWebSocket(url, null, {debug: $scope.appconf.debug, reconnectInterval: 3000});
         eventws.onerror = function(e) { console.error(e); } //not sure if this works..
+
+        //this gets call repeatedly when I get reconnected
         eventws.onopen = function(e) {
             console.log("eventws connection opened.. binding");
             eventws.send(JSON.stringify({
@@ -90,8 +92,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //handle page specific init steps.
             if($routeParams.step) switch($routeParams.step) {
             case "validate": 
-                //immediately submit validation task
-                submit_validate();
+                //immediately submit validation task (if we haven't submited yet)
+                if($scope.tasks["validation"] == undefined) submit_validate();
                 break;
             }
         }
@@ -136,6 +138,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         .then(function(res) {
             console.log("submitted validation task"); 
             console.dir(res); 
+            //we are using $scope.tasks for validation / transfer
+            var task = res.data.task;
+            $scope.tasks[task.name] = task;
         }, $scope.toast_error);
     }
     
