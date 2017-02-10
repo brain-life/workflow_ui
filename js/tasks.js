@@ -90,10 +90,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         window.scrollTo(0,0);
     }
 
+    //deprecated - use file directive
     $scope.download = function(task, path) {
-        window.location = $scope.download_url(task, path);
     }    
-
     $scope.download_url = function(task, path) {
         var jwt = localStorage.getItem($scope.appconf.jwt_id);
         return $scope.appconf.wf_api+"/resource/download?r="+task.resource_id+

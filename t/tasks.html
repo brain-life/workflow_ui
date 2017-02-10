@@ -172,32 +172,20 @@
 </div><!--sca-sidebbar-page-->
 
 <script type='text/ng-template' id="input">
-    <h3>Input Data</h3>
-    <div class="well well-sm">
-        <button type="button" class="btn btn-primary" ng-click="download(task, 'data')">Download input.tar.gz</button> 
-    </div>
+    <file name="'Input Data'" icon="'fa-file-zip-o'" task="task" path="'data'"></file>
 </script>
 
 <script type='text/ng-template' id="align">
-    <h3>AC-PC Alignment Output</h3>
-    <div class="well well-sm">
-        <button type="button" class="btn btn-primary" ng-click="download(task, 't1_acpc_aligned.nii.gz')">Download t1_acpc_aligned.nii.gz</button> 
-    </div>
+    <file name="'AC-PC Alignment Output'" icon="'fa-file-image-o'" task="task" path="'t1_acpc_aligned.nii.gz'"></file>
 </script>
 
 <script type='text/ng-template' id="dtiinit">
-    <h3>dtiInit Output</h3>
-    <div class="well well-sm">
-        <button type="button" class="btn btn-primary" ng-click="download(task, 'dti_trilin')">Download dti_trilin.tar.gz</button> 
-    </div>
+    <file name="'dtiInit Output'" icon="'fa-file-zip-o'" task="task" path="'dti_trilin'"></file>
     <dtiinitplot task="task"></dtiinitplot>
 </script>
 
 <script type='text/ng-template' id="freesurfer">
-    <h3>Freesurfer Output</h3>
-    <div class="well well-sm">
-        <button type="button" class="btn btn-primary" ng-click="download(task, 'output')">Download output.tar.gz</button> 
-    </div>
+    <file name="'Freesurfer Output'" icon="'fa-file-zip-o'" task="task" path="'output'"></file>
     <h3>Surface Model</h3>
     <div class="row">
         <div class="col-lg-6">
@@ -214,15 +202,15 @@
 </script>
 
 <script type='text/ng-template' id="tracking">
-    <h3>Tracking Output</h3>
-    <div class="well">
-        <p><button type="button" class="btn btn-primary" ng-click="download(task, 'output.DT_STREAM.tck')">DT_STREAM.tck (tensor)</button></p>
-        <p><button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_STREAM.tck')">SD_STREAM.tck (CSD/Deterministic)</button></p>
-        <p><button type="button" class="btn btn-primary" ng-click="download(task, 'output.SD_PROB.tck')">SD_PROB.tck (CSD/Probabilistic)</button></p>
-    </div>
+    <file name="'Tensor Tracks'" icon="'fa-file-pdf-o'" task="task" path="'output.DT_STREAM.tck'"></file>
+    <file name="'CSD/Deterministic Tracks'" icon="'fa-file-pdf-o'" task="task" path="'output.SD_STREAM.tck'"></file>
+    <file name="'CSD/Probabilistic Tracks'" icon="'fa-file-pdf-o'" task="task" path="'output.SD_PROB.tck'"></file>
 </script>
 
 <script type='text/ng-template' id="life">
+    <file name="'fe structure'" icon="'fa-file-code-o'" task="task" path="'output_fe.mat'"></file>
+    <file name="'fg'" icon="'fa-file-code-o'" task="task" path="'output_fg.pdb'"></file>
+    <br>
     <lifeplot task="task"></lifeplot>
 </script>
 
@@ -260,6 +248,4 @@
     <h3>Evaluator Result</h3>
     <comparisonplot task="taskbyname.eval"></comparisonplot>
 </script>
-
-
 

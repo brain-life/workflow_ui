@@ -201,6 +201,23 @@ app.directive('submitdetail', function() {
     }
 });
 
+app.directive('file', function(appconf) {
+    return {
+        templateUrl: 't/file.html',
+        scope: { name: '<', icon: '<', task: '<', path: '<', },
+        controller: function($scope) {
+            $scope.download = function() {
+                var jwt = localStorage.getItem(appconf.jwt_id);
+                document.location = appconf.wf_api+"/resource/download"+
+                    "?r="+$scope.task.resource_id+
+                    "&p="+encodeURIComponent($scope.task.instance_id+"/"+$scope.task._id+"/"+$scope.path)+
+                    "&at="+jwt;
+            }
+        }
+    }
+});
+
+
 app.directive('lifeplot', function(appconf, $http) {
     return {
         templateUrl: 't/lifeplot.html',
@@ -271,18 +288,6 @@ app.directive('dtiinitplot', function(appconf, $http) {
                     label: "ecXform", 
                     url: urlbase+"&p="+encodeURIComponent(base+"/dwi_aligned_trilin_ecXform.png"),
                 },
-                /* sometimes doesn't exist
-                {
-                    label: "Spatial Normalization", 
-                    url: urlbase+"&p="+encodeURIComponent(base+"/dti_trilin/SpatialNormalization.png"),
-                },
-                */
-                /* maybe too big to show?
-                {
-                    label: "T1PPD", 
-                    url: urlbase+"&p="+encodeURIComponent(base+"/dti_trilin/t1pdd.png"),
-                },
-                */
             ];
             scope.open = function(plot) {
                 document.location = plot.url;
@@ -535,21 +540,12 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                         color: new THREE.Color(color[0], color[1], color[2]),
                         transparent: true,
                         opacity: 0.7,
-                        //fog: true,
-                        //blending: THREE.NormalBlending,
-                        //depthTest: true,
-                        //depthWrite: true,
-                        //linewidth: 3 ,
                     } );
                     var mesh = new THREE.LineSegments( geometry, material );
                     mesh.rotation.x = -Math.PI/2;
-                    //
                     //temporarly hack to fit fascicles inside
                     mesh.position.z = -20;
                     mesh.position.y = -20;
-                    //mesh.scale.x = 1.08;
-                    //mesh.scale.y = 1.08;
-                    //mesh.scale.z = 1.08;
 
                     cb(null, mesh);
                 });
