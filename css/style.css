@@ -230,10 +230,11 @@ comparisonplot {
   border-right: 1px solid #eee;
   padding: 10px;
   margin-right: 10px;
+  bottom: 0px;
 }
 .file .file-detail {
   padding: 10px;
-  height: 40px;
+  min-height: 40px;
 }
 .file:hover {
   background-color: #eee;

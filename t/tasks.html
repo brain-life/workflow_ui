@@ -75,8 +75,11 @@
                         The process should take anywhere between 24 - 36 hours depending on the availability of computing resources and the size of your input data. You may close this page and we will send you an email once the processing is completed.</p>
                 </div>
                 <div ng-if="instance_status == 'failed'">
-                    <h3 class="text-danger"><strong>Processing Failed</strong></h3>
+                    <h3 class="text-danger" style="margin-top: 0px;"><strong>Processing Failed</strong></h3>
                     <p class="alert bg-danger">Sorry! Your processing has failed. Please examine the details below and contact the support team for more information.</p>
+                </div>
+                <div ng-if="instance_status == 'finished'">
+                    <h3 class="text-success" style="margin-top: 0px;">Completed</h3>
                 </div>
 
                 <ng-include ng-init="task = ttask" src="selected._terminal_task" ng-if="instance_status == 'finished'"></ng-include>
@@ -240,12 +243,12 @@
 </script>
 
 <script type='text/ng-template' id="afq">
-    <h3>AFQ Tracts</h3>
+    <h4>AFQ Tracts</h4>
     <tractsview task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
 </script>
 
 <script type='text/ng-template' id="eval">
-    <h3>Evaluator Result</h3>
+    <h4>Evaluator Result</h4>
     <comparisonplot task="taskbyname.eval"></comparisonplot>
 </script>
 
