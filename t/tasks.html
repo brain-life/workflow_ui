@@ -81,8 +81,9 @@
                 <div ng-if="instance_status == 'finished'">
                     <h3 class="text-success" style="margin-top: 0px;">Completed</h3>
                 </div>
-
+                
                 <ng-include ng-init="task = ttask" src="selected._terminal_task" ng-if="instance_status == 'finished'"></ng-include>
+                <br>
 
                 <!--show raw output (show always)-->
                 <div ng-if="ttask.resource_id">
