@@ -4,7 +4,7 @@ app.factory('submitform', function($http, appconf, toaster) {
     var form;
     function reset() {
         form = angular.copy({
-            name: "Untitled",
+            name: "",
             //used while processing upload /transfer
             processing: {},
 
@@ -131,6 +131,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config.bvecs = $scope.form.bvecs;
             config.bvals = $scope.form.bvals;
         }
+        if(!$scope.form.name) $scope.form.name = "Untitled";
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "validation", //have to match in eventwm.onmessage
