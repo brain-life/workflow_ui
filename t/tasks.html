@@ -21,7 +21,7 @@
         </div>
         <hr style="margin: 0px;">
 
-        <div class="subbar-list">
+        <div class="subbar-list" style="bottom: 50px;">
             <p class="alert alert-info" ng-if="instances.length == 0">Please submit a new process</p>
             <div class="subbar-list-item" 
                 id="{{instance._id}}"
@@ -45,7 +45,7 @@
                 -->
             </div>
         </div><!--workflow-->
-
+        <ng-include src="'t/improve.html'"></ng-include>
     </div><!--subbar-->
     <div class="subbar-content">
         <p class="alert alert-info" ng-if="missing">You don't have access to specified process (maybe owned by a different user?)</p>

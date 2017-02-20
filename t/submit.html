@@ -7,7 +7,7 @@
         </div>
         <hr style="margin: 0px">
 
-        <div class="workflow" style="top: 125px;">
+         <div class="workflow" style="top: 125px; bottom: 50px;">
             <div class="workflow-item" ng-class="{active: step == 'diffusion'}" ng-click="openpage('/submit/diffusion')">
                 <div class="item-header"><span class="item-header-badge">1</span> Enter Your Data</div>
                 <p class="workflow-detail">Upload or transfer-in data you'd like to process.</p>
@@ -25,6 +25,7 @@
                 <p class="workflow-detail">Finally, confirm your input files and configuration before starting your process.</p>
             </div>
         </div><!--workflow-->
+        <ng-include src="'t/improve.html'"></ng-include>
 
     </div><!--subbar-->
     <div class="subbar-content">
