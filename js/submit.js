@@ -119,7 +119,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             });
         }
     }
-
     
     function submit_validate() {
         var config = {}
@@ -230,7 +229,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "brain-life/sca-service-autoalignacpc",
             config: {
                 t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
-                t1_out: "t1_acpc_aligned.nii.gz",
+                //t1_out: "t1_acpc_aligned.nii.gz",
                 coords: [ [0,0,0], [0, -16, 0], [0, -8, 40] ]
             },
             deps: [submit_tasks.input._id],
