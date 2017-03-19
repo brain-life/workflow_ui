@@ -26,12 +26,12 @@ app.factory('submitform', function($http, appconf, toaster) {
     }
 });
 
-app.controller('SubmitController', 
+app.controller('SubmitController',
 function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, submitform, scaMessage) {
     scaMessage.show(toaster);//doesn't work if it's placed in PageController (why!?)
     $scope.$parent.active_menu = "submit";
     $scope.form = submitform.get();
-            
+
     //remove date used to submit various services
     var remove_date = new Date();
     remove_date.setDate(remove_date.getDate()+14); //remove in 14 day (long enough for large job?)
@@ -47,9 +47,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         else $scope.step = "diffusion"; //first page (it should be name something like "inputdata"?)
     }, 0);
 
-    //don't create new instance across sub page navigation 
+    //don't create new instance across sub page navigation
     if(!$scope.form.instance) {
-        //create new temporary instance 
+        //create new temporary instance
         $http.post($scope.appconf.wf_api+"/instance", {
             //workflow_id: "sca-wf-conneval",
             name: "tdb",
@@ -68,7 +68,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     } else {
         post_inst();
     }
-    
+
 
     $scope.tasks = {}; //keep up with transfer/validation task status
 
@@ -77,7 +77,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
         //handle page specific init steps.
         if($routeParams.step) switch($routeParams.step) {
-        case "validate": 
+        case "validate":
             //immediately submit validation task (if we haven't submited yet)
             if($scope.tasks["validation"] == undefined) submit_validate();
             break;
@@ -106,11 +106,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             var task = e.msg;
             $scope.$apply(function() {
                 $scope.tasks[task.name] = task;
-                
+
                 //handle validation finish event
                 if(task.name == "validation") {
                     //compute validation status only check for errors
-                    if(task.status == 'finished' && task.products[0].results.errors.length == 0) { 
+                    if(task.status == 'finished' && task.products[0].results.errors.length == 0) {
                         $scope.form.validated = true;
                     }
                 }
@@ -119,7 +119,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             });
         }
     }
-    
+
     function submit_validate() {
         var config = {}
         if($scope.appconf.inputs.t1) {
@@ -140,14 +140,14 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config: config,
         })
         .then(function(res) {
-            console.log("submitted validation task"); 
-            console.dir(res); 
+            console.log("submitted validation task");
+            console.dir(res);
             //we are using $scope.tasks for validation / transfer
             var task = res.data.task;
             $scope.tasks[task.name] = task;
         }, $scope.toast_error);
     }
-    
+
     function submit_notification(task_id) {
         var url = document.location.origin+document.location.pathname+"#!/tasks/"+$scope.form.instance._id;
         //success
@@ -188,7 +188,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         //submit_align();
         submit_input();
     }
-    
+
     //finalize input data into a single directory so that
     //1 - subsequent data upload won't override the input (if user is downloading, it's simply a waste of time.. but oh well)
     //2 - keep dwi/bvecs/bvals in a single directory. life/encode/vistasoft requires bvecs/bvals to be in a same directory as dwi
@@ -229,7 +229,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "brain-life/sca-service-autoalignacpc",
             config: {
                 t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
-                //t1_out: "t1_acpc_aligned.nii.gz",
                 coords: [ [0,0,0], [0, -16, 0], [0, -8, 40] ]
             },
             deps: [submit_tasks.input._id],
@@ -259,7 +258,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             desc: "Perform various preprocessing using vistasoft/mrDiffusion/dtiInit",
             service: "soichih/sca-service-dtiinit",
             config: {
-                t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
+                t1: "../"+submit_tasks.align._id+"/t1.nii.gz",
                 dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
                 bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
                 bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
@@ -284,7 +283,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config: {
                 hipposubfields: false, //just trying..
                 //"t1": $scope.form.t1,
-                t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
+                t1: "../"+submit_tasks.align._id+"/t1.nii.gz",
             },
             deps: [submit_tasks.align],
         })
@@ -336,13 +335,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "soichih/sca-service-life",
             //remove_date: remove_date,
             config: {
-                diff: { 
+                diff: {
                     dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
                     bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
                     bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
                 },
-                anatomy: { 
-                    //t1: "../"+submit_tasks.align._id+"/t1_acpc_aligned.nii.gz",
+                anatomy: {
                     t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
                 },
                 trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.tck" },
@@ -434,7 +432,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
         //update instance as this is now fully submitted
         $http.put($scope.appconf.wf_api+"/instance/"+$scope.form.instance._id, {
-            name: $scope.form.name, 
+            name: $scope.form.name,
             desc: "todo..",
             config: {
                 workflow: "brain-life."+$scope.appconf.terminal_task,
