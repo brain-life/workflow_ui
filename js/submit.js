@@ -51,7 +51,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     if(!$scope.form.instance) {
         //create new temporary instance
         $http.post($scope.appconf.wf_api+"/instance", {
-            //workflow_id: "sca-wf-conneval",
             name: "tdb",
             desc: "tdb",
             /*
@@ -226,7 +225,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "align",
             desc: "Align brains(t1) to the AC-PC plane by guessing their location given MNI coordinates",
-            service: "brain-life/sca-service-autoalignacpc",
+            service: "brain-life/app-autoalignacpc",
             config: {
                 t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
                 coords: [ [0,0,0], [0, -16, 0], [0, -8, 40] ]
@@ -256,7 +255,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "dtiinit",
             desc: "Perform various preprocessing using vistasoft/mrDiffusion/dtiInit",
-            service: "soichih/sca-service-dtiinit",
+            service: "brain-life/app-dtiinit",
             config: {
                 t1: "../"+submit_tasks.align._id+"/t1.nii.gz",
                 dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
@@ -278,7 +277,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "freesurfer",
             desc: "Subdivide the brain into major tissue and anatomical regions using FreeSurfer (2 to 10h compute time).",
-            service: "soichih/sca-service-freesurfer",
+            service: "brain-life/app-freesurfer",
             //remove_date: remove_date,
             config: {
                 hipposubfields: false, //just trying..
@@ -305,7 +304,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "tracking",
             desc: "Tracking white matter fascicles (1 h compute time).",
-            service: "soichih/sca-service-neuro-tracking",
+            service: "brain-life/app-tracking",
             //remove_date: remove_date,
             config: {
                 lmax: $scope.form.config.tracking.lmax,
@@ -332,7 +331,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "life",
             desc: "Evaluating white matter fascicles on SD_PROD and removing false alarms (5h compute time).",
-            service: "soichih/sca-service-life",
+            service: "brain-life/app-life",
             //remove_date: remove_date,
             config: {
                 diff: {
@@ -369,7 +368,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "network",
             desc: "Computing weighted region connectivities using output from LiFE and freesurfer",
-            service: "soichih/sca-service-networkneuro",
+            service: "brain-life/app-networkneuro",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 fsdir: "../"+submit_tasks.freesurfer._id+"/output",
@@ -391,7 +390,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "afq",
             desc: "Generate tracts segments from fe-structure and dt6",
-            service: "brain-life/sca-service-tractclassification",
+            service: "brain-life/app-tractclassification",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 dt6: "../"+submit_tasks.dtiinit._id+"/dti_trilin/dt6.mat",
