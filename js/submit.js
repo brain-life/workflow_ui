@@ -357,6 +357,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             case task.name: submit_done(task); break;
             case "network": submit_network(); break;
             case "eval": submit_eval(); break;
+            case "o3d": 
+                //o3d runs both network and afq
+                submit_network();
+                submit_afq();
+                break;
             default:
                 submit_afq();
             }
