@@ -44,7 +44,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     //timeout to force initial page ng-animate
     $timeout(function() {
         if($routeParams.step) $scope.step = $routeParams.step;
-        else $scope.step = "diffusion"; //first page (it should be name something like "inputdata"?)
+        else $scope.step = "input"; //first page (it should be name something like "inputdata"?)
     }, 0);
 
     //don't create new instance across sub page navigation
@@ -68,8 +68,35 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         post_inst();
     }
 
-
     $scope.tasks = {}; //keep up with transfer/validation task status
+
+    $scope.isvalid = function() {
+        //console.log("step", $scope.step);
+        var valid = true;
+        switch($scope.step) {
+        case "input":
+            switch($scope.form.datatype) {
+            case "ind":
+                console.dir($scope.form.processing);
+                if($scope.appconf.inputs.t1) {
+                    if(!$scope.form.processing.t1 || !$scope.form.processing.t1.done) valid = false;
+                }
+                if($scope.appconf.inputs.dwi) {
+                    if(!$scope.form.processing.dwi || !$scope.form.processing.dwi.done) valid = false;
+                    if(!$scope.form.processing.bvecs || !$scope.form.processing.bvecs.done) valid = false;
+                    if(!$scope.form.processing.bvals || !$scope.form.processing.bvals.done) valid = false;
+                }
+                break;
+            case "sample":
+                if(!$scope.form.sample) valid = false;
+                break;
+            default:
+                valid = false;
+            } 
+            break;
+        }
+        return valid;
+    }
 
     function post_inst() {
         //if(!$scope.form.instance) return;

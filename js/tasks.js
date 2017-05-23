@@ -144,7 +144,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 //console.log("not caring");
                 return; //skip ignored tasks (validation, input, etc..)
             }
-            if(task.instance_id != $scope.selected._id) {
+            if($scope.selected && task.instance_id != $scope.selected._id) {
                 //console.log("not the instance I care");
                 return; //ignore task update from other instances
             }

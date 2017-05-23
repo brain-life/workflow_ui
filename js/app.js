@@ -231,6 +231,7 @@ app.filter('cut', function () {
     };
 });
 
+/*
 app.directive('focusMe', ['$timeout', '$parse', function ($timeout, $parse) {
     return {
         //scope: true,   // optionally create a child scope
@@ -253,3 +254,6 @@ app.directive('focusMe', ['$timeout', '$parse', function ($timeout, $parse) {
         }
     };
 }]);
+*/
+
+

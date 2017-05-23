@@ -8,7 +8,7 @@
         <hr style="margin: 0px">
 
          <div class="workflow" style="top: 125px; bottom: 50px;">
-            <div class="workflow-item" ng-class="{active: step == 'diffusion'}" ng-click="openpage('/submit/diffusion')">
+            <div class="workflow-item" ng-class="{active: step == 'input'}" ng-click="openpage('/submit/input')">
                 <div class="item-header"><span class="item-header-badge">1</span> Enter Your Data</div>
                 <p class="workflow-detail">Upload or transfer-in data you'd like to process.</p>
             </div>
@@ -29,7 +29,7 @@
 
     </div><!--subbar-->
     <div class="subbar-content">
-        <div class="margin30 animate-submit" ng-if="step == 'diffusion'">
+        <div class="margin30 animate-submit" ng-if="step == 'input'">
             <form ng-submit="openpage('/submit/validate')" class="form-horizontal">
                 <div class="fixed-top">
                     <h2 class="page-heading">Enter Your Data</h2>
@@ -101,11 +101,13 @@
                         </div><!--dwi-->
                     </div>
                 </div><!--container-->
-                <hr>
-                <div class="pull-right">
-                    <button type="button" class="btn" ng-click="back()">Back</button>
-                    <button type="submit" class="btn btn-primary" 
-                        ng-disabled-dis="!form.t1 || !form.dwi || !form.bvecs || !form.bvals">Next</button>
+                <div ng-if="isvalid()">
+                    <hr>
+                    <div class="pull-right">
+                        <button type="button" class="btn" ng-click="back()">Back</button>
+                        <button type="submit" class="btn btn-primary" 
+                            ng-disabled-dis="!form.t1 || !form.dwi || !form.bvecs || !form.bvals">Next</button>
+                    </div>
                 </div>
             </form>
         </div>
