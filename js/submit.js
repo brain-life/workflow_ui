@@ -77,7 +77,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         case "input":
             switch($scope.form.datatype) {
             case "ind":
-                console.dir($scope.form.processing);
+                //console.dir($scope.form.processing);
                 if($scope.appconf.inputs.t1) {
                     if(!$scope.form.processing.t1 || !$scope.form.processing.t1.done) valid = false;
                 }
@@ -135,13 +135,14 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
                 //handle validation finish event
                 if(task.name == "validation") {
+                    console.log("validation task updated", task);
                     //compute validation status only check for errors
                     if(task.status == 'finished' && task.products[0].results.errors.length == 0) {
                         $scope.form.validated = true;
                     }
                 }
 
-                $scope.$broadcast("task_updated", task); //who receive this again?
+                $scope.$broadcast("task_updated", task); //for transferUI directive?
             });
         }
     }
@@ -167,7 +168,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         })
         .then(function(res) {
             console.log("submitted validation task");
-            console.dir(res);
+            //console.dir(res);
             //we are using $scope.tasks for validation / transfer
             var task = res.data.task;
             $scope.tasks[task.name] = task;
@@ -262,7 +263,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         .then(function(res) {
             var task = res.data.task;
             console.log("submitted acpc align");
-            console.dir(task);
+            //console.dir(task);
             submit_tasks[task.name] = task;
             if($scope.appconf.terminal_task == task.name) submit_done(task);
             else submit_dtiinit();
