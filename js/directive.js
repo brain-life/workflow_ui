@@ -285,8 +285,9 @@ app.directive('dtiinitplot', function(appconf, $http) {
             var base = scope.task.instance_id+"/"+scope.task._id;
             scope.plots = [
                 {
-                    label: "ecXform", 
+                    //label: "ecXform", 
                     //url: urlbase+"&p="+encodeURIComponent(base+"/dwi_aligned_trilin_ecXform.png"),
+                    label: "T1 PDD", 
                     url: urlbase+"&p="+encodeURIComponent(base+"/dti_trilin/t1pdd.png"),
                 },
             ];
