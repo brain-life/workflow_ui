@@ -286,7 +286,8 @@ app.directive('dtiinitplot', function(appconf, $http) {
             scope.plots = [
                 {
                     label: "ecXform", 
-                    url: urlbase+"&p="+encodeURIComponent(base+"/dwi_aligned_trilin_ecXform.png"),
+                    //url: urlbase+"&p="+encodeURIComponent(base+"/dwi_aligned_trilin_ecXform.png"),
+                    url: urlbase+"&p="+encodeURIComponent(base+"/dti_trilin/t1pdd.png"),
                 },
             ];
             scope.open = function(plot) {
