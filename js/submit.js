@@ -336,9 +336,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //remove_date: remove_date,
             config: {
                 lmax: $scope.form.config.tracking.lmax,
-                dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
-                bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
-                bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
+                dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
+                bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
+                bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
+                //dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
+                //bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
+                //bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
 
                 freesurfer: "../"+submit_tasks.freesurfer._id+"/output",
                 fibers: $scope.form.config.tracking.fibers,
@@ -363,9 +366,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             //remove_date: remove_date,
             config: {
                 diff: {
-                    dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
-                    bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
-                    bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
+                    dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
+                    bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
+                    bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
+                    //dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
+                    //bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
+                    //bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
                 },
                 anatomy: {
                     t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",

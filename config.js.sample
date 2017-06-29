@@ -25,8 +25,8 @@ angular.module('app.config', [])
 
     //task to terminate
     //terminal_task: "afq", 
-    //terminal_task: "life", 
-    terminal_task: "dtiinit", 
+    terminal_task: "life", 
+    //terminal_task: "dtiinit", 
     //terminal_task: "tracking", 
     //terminal_task: "eval", 
     //terminal_task: "network", 
