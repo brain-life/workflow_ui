@@ -348,7 +348,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
             },
-            deps: [submit_tasks.freesurfer._id],
+            deps: [submit_tasks.freesurfer._id, submit_tasks.dtiinit._id ],
         })
         .then(function(res) {
             var task = res.data.task;
@@ -381,7 +381,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
             },
-            deps: [submit_tasks.tracking._id],
+            deps: [submit_tasks.tracking._id, submit_tasks.dtiinit._id, submit_tasks.input._id],
         })
         .then(function(res) {
             var task = res.data.task;
