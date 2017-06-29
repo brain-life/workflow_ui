@@ -60,6 +60,10 @@ angular.module('app.config', [])
         }
     },
 
+    //the initial resource should run on certain resource that has sample data accessible
+    //input_default_resource: "5845c8ceff35844a88494323", //karst (brain-life)
+    input_default_resource: "575ee815b62439c67b693b85", //karst (brain-life)
+
     samples: {
         sample1: {
             name: "STN.sub-FP.run01_fliprot_aligned_trilin",

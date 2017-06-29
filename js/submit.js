@@ -238,6 +238,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config: {
                 copy: copy,
             },
+            preferred_resource_id: $scope.appconf.input_default_resource,
             //deps: [validation_task._id]
         })
         .then(function(res) {
