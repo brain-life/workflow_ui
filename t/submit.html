@@ -36,9 +36,12 @@
                 </div>
 
                 <div class="fixed-top-under">
-                    <p ng-if="!resources.sca_product_raw" class="alert alert-danger">
+                    <!-- TODO - we need to check all resources used by brain-life-->
+                    <!--
+                    <p ng-if="!resources.validator" class="alert alert-danger">
                         Backend computing resource is currently not available (maybe maintenance day?) You may not be able to submit new task
                     </p>
+                    -->
                     <h3 style="margin-top: 0px;">Name</h3>
                     <input type="text" class="form-control" focus-me="true" ng-model="form.name" placeholder="Name for this process"></input>
 

@@ -47,10 +47,20 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
 
     //load resources that user has access
     $scope.resources = {
-        sca_product_raw: null, //used to copy stuff around
-        upload: null, //used to upload files
+        //sca_product_raw: null, //used to copy stuff around
+        validator: null, //used to upload files and validate
     };
+
     if($scope.user) {
+        $http.get($scope.appconf.wf_api+"/resource/best", {params: {
+            service: "soichih/sca-service-conneval-validate",
+        }}).then(function(res) {
+            //TODO - what if we don't find any resource?
+
+            $scope.resources.validator = res.data.resource;
+        }, console.dir);
+
+        /*
         $http.get($scope.appconf.wf_api+"/resource/best", {params: {
             service: "_upload", //where we can upload stuff to
         }}).then(function(res) {
@@ -62,6 +72,7 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
                 $scope.resources.sca_product_raw = res.data.resource;
             }, console.dir);
         });
+        */
     }
 
     $scope.toast_error = function(res) {

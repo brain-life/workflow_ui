@@ -128,7 +128,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 //do upload
                 var xhr = new XMLHttpRequest();
                 processing.xhr = xhr; //so that I can abort it
-                xhr.open("POST", appconf.wf_api+"/resource/upload/"+$scope.resources.upload._id+"/"+btoa(path));
+                xhr.open("POST", appconf.wf_api+"/resource/upload/"+$scope.resources.validator._id+"/"+btoa(path));
                 var jwt = localStorage.getItem(appconf.jwt_id);
                 xhr.setRequestHeader("Authorization", "Bearer "+jwt);
                 xhr.upload.addEventListener("progress", function(evt) {
