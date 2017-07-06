@@ -275,7 +275,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         //some task doesn't use dtiinit
         if( $scope.appconf.terminal_task == "freesurfer" ||
             $scope.appconf.terminal_task == "preprocessing" ||
-            $scope.appconf.terminal_task == "network") {
             submit_freesurfer(); //jump to freesurfer
             return;
         }
@@ -340,9 +339,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
                 bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
                 bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
-                //dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
-                //bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
-                //bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
 
                 freesurfer: "../"+submit_tasks.freesurfer._id+"/output",
                 fibers: $scope.form.config.tracking.fibers,
