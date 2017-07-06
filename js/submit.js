@@ -274,7 +274,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     function submit_dtiinit() {
         //some task doesn't use dtiinit
         if( $scope.appconf.terminal_task == "freesurfer" ||
-            $scope.appconf.terminal_task == "preprocessing" ||
+            $scope.appconf.terminal_task == "preprocessing") {
             submit_freesurfer(); //jump to freesurfer
             return;
         }
