@@ -84,6 +84,7 @@
                 </div>
                 <div ng-if="instance_status == 'finished'">
                     <h3 class="text-success" style="margin-top: 0px;">Completed</h3>
+                    <p class="alert bg-warning">Congratulations! Please examine and download your output data you'd like to keep. <b>This process wll be removed 25 days after completion.</b>.</p>
                     <ng-include ng-init="task = ttask" src="selected._terminal_task"></ng-include>
                     <br>
                 </div>
@@ -188,6 +189,9 @@
 
 <script type='text/ng-template' id="dtiinit">
     <file name="'dtiInit Output'" icon="'fa-file-zip-o'" task="task" path="'dti_trilin'"></file>
+    <file name="'dtiInit noMEC.nii.gz'" icon="'fa-file'" task="task" path="'dwi_aligned_trilin_noMEC.nii.gz'"></file>
+    <file name="'dtiInit noMEC.bvecs'" icon="'fa-file'" task="task" path="'dwi_aligned_trilin_noMEC.bvecs'"></file>
+    <file name="'dtiInit noMEC.bvals'" icon="'fa-file'" task="task" path="'dwi_aligned_trilin_noMEC.bvals'"></file>
     <dtiinitplot task="task"></dtiinitplot>
 </script>
 
@@ -248,6 +252,7 @@
 
 <script type='text/ng-template' id="afq">
     <h4>AFQ Tracts</h4>
+    <file name="'afq output'" icon="'fa-file-code-o'" task="task" path="'output.mat'"></file>
     <tractsview task="taskbyname.afq" freesurfer="taskbyname.freesurfer" afq="taskbyname.afq"></tractsview>
 </script>
 
