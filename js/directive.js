@@ -208,9 +208,12 @@ app.directive('file', function(appconf) {
         controller: function($scope) {
             $scope.download = function() {
                 var jwt = localStorage.getItem(appconf.jwt_id);
+                var url = $scope.task.instance_id+"/"+$scope.task._id;
+                if($scope.path) url += "/"+$scope.path;
+                console.log(url);
                 document.location = appconf.wf_api+"/resource/download"+
                     "?r="+$scope.task.resource_id+
-                    "&p="+encodeURIComponent($scope.task.instance_id+"/"+$scope.task._id+"/"+$scope.path)+
+                    "&p="+encodeURIComponent(url)+
                     "&at="+jwt;
             }
         }
