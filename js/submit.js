@@ -306,10 +306,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             name: "freesurfer",
             desc: "Subdivide the brain into major tissue and anatomical regions using FreeSurfer (2 to 10h compute time).",
             service: "brain-life/app-freesurfer",
-            //remove_date: remove_date,
+            retry: 3, //freesurfer randomly fails.. so let's retry a few times
             config: {
-                hipposubfields: false, //just trying..
-                //"t1": $scope.form.t1,
                 t1: "../"+submit_tasks.align._id+"/t1.nii.gz",
             },
             deps: [submit_tasks.align],

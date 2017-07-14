@@ -236,8 +236,6 @@ app.directive('lifeplot', function(appconf, $http) {
                 .then(function(res) {
                     if(scope.destroyed) return; 
 
-                    //console.log("life_results.json");
-                    //console.dir(res.data);
                     var rmse = res.data.out.plot[0];
                     var w = res.data.out.plot[1];
                     scope.plot_life_rmse_title = rmse.title;
@@ -267,6 +265,9 @@ app.directive('lifeplot', function(appconf, $http) {
                         yaxis: {title: w.y.label},
                         margin: {t: 0, b: 35, r: 0},
                     });
+
+                    scope.stats = res.data.out.stats;
+
                 });
                 
                 element.on('$destroy', function() {
