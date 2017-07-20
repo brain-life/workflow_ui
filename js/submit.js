@@ -290,7 +290,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
                 bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
             },
-            deps: [submit_tasks.align],
+            deps: [submit_tasks.align._id, submit_tasks.input._id],
         })
         .then(function(res) {
             var task = res.data.task;
@@ -310,7 +310,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config: {
                 t1: "../"+submit_tasks.align._id+"/t1.nii.gz",
             },
-            deps: [submit_tasks.align],
+            deps: [submit_tasks.align._id],
         })
         .then(function(res) {
             var task = res.data.task;
@@ -364,9 +364,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                     dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
                     bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
                     bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
-                    //dwi: "../"+submit_tasks.input._id+"/data/dwi.nii.gz",
-                    //bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
-                    //bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
                 },
                 anatomy: {
                     t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
