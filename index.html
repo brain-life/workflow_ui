@@ -7,6 +7,9 @@
     <title ng-bind="appconf.labels.title">Loading ...</title>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
+    <!--for page header-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="node_modules/bootswatch/yeti/bootstrap.min.css">
     <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
@@ -21,6 +24,14 @@
 </head>
 <body>
     <toaster-container toaster-options="{'position-class': 'toast-bottom-right', 'close-button': {'toast-error': true}}"></toaster-container>
+    <div class="page-header">
+        <div class="profile" ng-cloak ng-if="user.profile" style="float: right;">
+            <a href="/profile" target="_blank">
+                {{user.profile.fullname}}
+            </a>
+        </div>
+        <h1><a href="/">Brain Life</a></h1>
+    </div>
     <ng-view></ng-view>
 
     <!--pre angular dep-->

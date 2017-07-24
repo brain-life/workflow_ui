@@ -30,21 +30,12 @@ i[onclick]:hover {
 .static-content {
     h1 {
         background-color: #555;
-        /*background-color: #008cba;*/
         margin-top: 0px;
         padding: 40px 0px;
         box-shadow: 0px 0px 20px gray;
         margin-bottom: 0px;
         color: white;
     
-        /*
-        img.backdrop {
-            opacity: 0.5;
-            position: absolute;
-            width: 200px;
-            z-index: -1;
-        }
-        */
         button {
             font-weight: bold;
             text-transform: uppercase;
@@ -66,11 +57,11 @@ i[onclick]:hover {
         overflow-x: hidden;
         overflow-y: auto;
         width: 350px;
-        position: fixed;
         bottom: 0px;
 
         padding-right: 10px;
         padding-top: 20px;
+        top: 130px;
 
         .workflow-item {
             margin-left: 35px;
@@ -99,7 +90,7 @@ i[onclick]:hover {
 
 .workflow {
     .workflow-item {
-        margin-left: 15px;
+        margin-left: 20px;
         padding-bottom: 25px;
         padding-left: 35px;
         position: relative;
@@ -189,6 +180,7 @@ i[onclick]:hover {
     */
 }
 
+/*to give brain-life title*/
 .subbar-content {
     .workflow {
         .workflow-item {
@@ -262,6 +254,9 @@ vtkview {
         #conview {
             height: 300px;
         }
+        .subbar-content {
+            margin-top: 50px;
+        }
     }
     .page-buttons {
         margin-top: 0px;
@@ -271,16 +266,8 @@ vtkview {
     cursor: pointer;
 }
 
-/*
-comparisonplot {
-    .plot {
-        width: 100%;
-    }
-}
-*/
-
 .fixed-top-under {
-    padding-top: 70px;
+    padding-top: 120px;
 }
 .file-upload {
     border: 1px solid #ddd; 
@@ -307,5 +294,51 @@ comparisonplot {
         color: #008cba;
         cursor: pointer;
     }
+}
+
+.fixed-top,
+.sca-sidebar {
+    top: 50px;
+}
+.sca-sidebar-page {
+    .subbar {
+        top: 50px;
+        .subbar-list {
+            top: 179px;
+        }
+    }
+}
+
+.page-header {
+    position: fixed;
+    top: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 50px;
+    background-color: #159957;
+    background-image: linear-gradient(120deg, #2693ff, #159957);
+    color: white;
+    z-index: 10;
+    h1 {
+        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 27px;
+        margin: 4px 37px;
+        padding: 0px;
+        font-weight: bold;
+        line-height: 1.5;
+        width: 200px;
+    }
+    .profile {
+        opacity: 0.8;
+        font-size: 18px;
+        padding: 12px;
+        color: white;
+        font-weight: bold;
+    }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 }
 

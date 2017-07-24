@@ -529,10 +529,10 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                         var zs = fascicle[0][2];
 
                         for(var i = 1;i < xs.length;++i) {
-                            threads_pos.push(-xs[i-1]);
+                            threads_pos.push(xs[i-1]);
                             threads_pos.push(ys[i-1]);
                             threads_pos.push(zs[i-1]);
-                            threads_pos.push(-xs[i]);
+                            threads_pos.push(xs[i]);
                             threads_pos.push(ys[i]);
                             threads_pos.push(zs[i]);
                         }
