@@ -329,18 +329,19 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "tracking",
-            desc: "Tracking white matter fascicles (1 h compute time).",
-            service: "brain-life/app-tracking",
+            desc: "Ensemble Tracking white matter fascicles (1 h compute time).",
+            service: "brain-life/app-ensembletracking",
             //remove_date: remove_date,
             config: {
-                lmax: $scope.form.config.tracking.lmax,
                 dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
                 bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
                 bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
 
                 freesurfer: "../"+submit_tasks.freesurfer._id+"/output",
+
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
+                lmax: $scope.form.config.tracking.lmax,
             },
             deps: [submit_tasks.freesurfer._id, submit_tasks.dtiinit._id ],
         })
@@ -368,7 +369,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 anatomy: {
                     t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
                 },
-                trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.tck" },
+                //trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.tck" },
+                trac: { ptck: "../"+submit_tasks.tracking._id+"/track.tck" },
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
             },
