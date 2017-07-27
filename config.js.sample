@@ -24,8 +24,8 @@ angular.module('app.config', [])
     upload_task_id: "_upload", //task used to store files uploaded by sca-wf-uploader
 
     //task to terminate
-    //terminal_task: "afq", 
-    terminal_task: "life", 
+    terminal_task: "afq", 
+    //terminal_task: "life", 
     //terminal_task: "dtiinit", 
     //terminal_task: "tracking", 
     //terminal_task: "eval", 
@@ -50,9 +50,13 @@ angular.module('app.config', [])
     //default config to use. This also determine which service has configuration to select
     default_config: {
         tracking: {
+            /*
             lmax: 8,
             fibers: 500000,  
             fibers_max: 1000000,  
+            */
+            fibers: 60000,  
+            fibers_max: 100000,  
         },
         life: {
             discretization: 360,  

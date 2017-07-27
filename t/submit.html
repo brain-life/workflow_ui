@@ -2,7 +2,10 @@
 <div class="sca-sidebar-page">
     <div class="subbar">
         <div style="padding-left: 20px; margin-bottom: 25px; padding-right: 10px;">
-            <h2><!--<i class="fa {{appconf.labels.appicon}}"/> -->{{appconf.labels.title}}</h2>
+            <h2>
+                {{appconf.labels.title}}
+                <span ng-if="appconf.debug">{{appconf.terminal_task}}</span>
+            </h2>
             <p class="help-block" style="line-height: 170%;">{{appconf.labels.purpose}}</p>
         </div>
         <hr style="margin: 0px">
@@ -251,6 +254,7 @@
                                 </p>
                             </div>
                         </div>
+                        <!--
                         <div class="row">
                             <div class="col-sm-3">
                                 <b>LMAX</b>
@@ -275,6 +279,7 @@
                                 </p>
                             </div>
                         </div>
+                        -->
                     </div><!--showconf-->
 
                     <div ng-if="form.config.life">

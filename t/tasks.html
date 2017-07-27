@@ -2,7 +2,10 @@
 <div class="sca-sidebar-page">
     <div class="subbar">
         <div style="padding-left: 20px; margin-bottom: 10px;">
-            <h2><!--<i class="fa {{appconf.labels.appicon}}"/> -->{{appconf.labels.title}}</h2>
+            <h2>
+                {{appconf.labels.title}}
+                <span ng-if="appconf.debug">{{appconf.terminal_task}}</span>
+            </h2>
             <p class="help-block">Showing all processes you have submitted previously</p>
             <br>
             <!--

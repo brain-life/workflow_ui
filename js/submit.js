@@ -341,7 +341,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
-                lmax: $scope.form.config.tracking.lmax,
+                
+                //https://github.com/brain-life/app-ensembletracking/issues/1
+                //lmax: $scope.form.config.tracking.lmax,
             },
             deps: [submit_tasks.freesurfer._id, submit_tasks.dtiinit._id ],
         })
