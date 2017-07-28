@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('PageController', function($scope, appconf, jwtHelper, $location, $http) {
+app.controller('PageController', function($scope, appconf, jwtHelper, $location, $http, toaster) {
     $scope.appconf = appconf;
     $scope.title = appconf.title;
     $scope.active_menu = "unknown"; //should be overriden by the view controller
@@ -59,23 +59,10 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
 
             $scope.resources.validator = res.data.resource;
         }, console.dir);
-
-        /*
-        $http.get($scope.appconf.wf_api+"/resource/best", {params: {
-            service: "_upload", //where we can upload stuff to
-        }}).then(function(res) {
-            $scope.resources.upload = res.data.resource;
-
-            $http.get($scope.appconf.wf_api+"/resource/best", {params: {
-                service: "soichih/sca-product-raw",
-            }}).then(function(res) {
-                $scope.resources.sca_product_raw = res.data.resource;
-            }, console.dir);
-        });
-        */
     }
 
     $scope.toast_error = function(res) {
+        console.dir(res);
         if(res.data && res.data.message) toaster.error(res.data.message);
         else toaster.error(res.statusText);
     }

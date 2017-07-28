@@ -65,7 +65,7 @@ angular.module('app.config', [])
     },
 
     //the initial resource should run on certain resource that has sample data accessible
-    input_default_resource: "575ee815b62439c67b693b85", //karst (brain-life)
+    //input_default_resource: "575ee815b62439c67b693b85", //karst (brain-life)
 
     samples: {
         sample1: {

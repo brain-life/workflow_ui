@@ -15,6 +15,9 @@ app.factory('submitform', function($http, appconf, toaster) {
             bvals: null,
 
             instance: null,
+            upload_task: null,
+
+            deps: [], //tasks where user uploaded / downloaded filea are
         });
         form.config = angular.copy(appconf.default_config);
     }
@@ -47,23 +50,52 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         else $scope.step = "input"; //first page (it should be name something like "inputdata"?)
     }, 0);
 
+
+	//I think this would be useful someplace else.. I should refactor
+	function wait_for_task(id, cb) {
+		var find = {_id: id};
+		$http.get($scope.appconf.wf_api+"/task?find="+JSON.stringify(find))
+		.then(function(res) {
+			console.dir(res);
+			var task = res.data.tasks[0];
+			if(task.status == "finished") return cb(null, task);
+			if(task.status == "failed") return cb(task.status_msg);
+			console.log("waiting for job to finish..", task.status);
+			setTimeout(function() {
+				wait_for_task(id, cb);
+			}, 500);
+		});
+	}
+
     //don't create new instance across sub page navigation
     if(!$scope.form.instance) {
         //create new temporary instance
         $http.post($scope.appconf.wf_api+"/instance", {
             name: "tdb",
             desc: "tdb",
-            /*
-            config: {
-                workflow: "brain-life."+$scope.appconf.terminal_task,
-            },
-            */
         }).then(function(res) {
             $scope.form.instance = res.data;
             console.dir("created new instance");
             console.dir($scope.form.instance);
-            post_inst();
-        }, $scope.toast_error);
+            
+            //submit task to upload data to
+            return $http.post($scope.appconf.wf_api+"/task", {
+                instance_id: $scope.form.instance._id,
+                name: "brainlife.upload",
+                service: "soichih/sca-service-noop",
+                preferred_resource_id: $scope.resources.validator._id, //where connectome validator runs
+            })
+        }).then(function(res) {
+			wait_for_task(res.data.task._id, function(err, task) {	
+				if(err) $scope.toast_error(err);
+				console.log("created upload_task");
+				$scope.form.upload_task = task;
+                $scope.form.deps.push(task._id);
+				console.dir(task);
+				post_inst();
+			});
+
+        }).catch($scope.toast_error);
     } else {
         post_inst();
     }
@@ -148,6 +180,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }
 
     function submit_validate() {
+        console.log("submitting validation task");
         var config = {}
         if($scope.appconf.inputs.t1) {
             config.t1 = $scope.form.t1;
@@ -158,6 +191,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config.bvals = $scope.form.bvals;
         }
         if(!$scope.form.name) $scope.form.name = "Untitled";
+        console.log("deps---------------------------------------------");
+        console.dir($scope.form.deps);
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "validation", //have to match in eventwm.onmessage
@@ -165,6 +200,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "soichih/sca-service-conneval-validate",
             remove_date: remove_date,
             config: config,
+			deps: $scope.form.deps,
         })
         .then(function(res) {
             console.log("submitted validation task");
@@ -238,8 +274,9 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config: {
                 copy: copy,
             },
-            preferred_resource_id: $scope.appconf.input_default_resource,
+            //preferred_resource_id: $scope.resources.validator._id, //where connectome validator runs
             //deps: [validation_task._id]
+			deps: $scope.form.deps,
         })
         .then(function(res) {
             var task = res.data.task;
@@ -445,7 +482,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "eval",
             desc: "Compare connectome properties generated with the data provided with those stored in the data base (10 minutes compute time).",
-            service: "soichih/sca-service-connectome-data-comparison",
+            service: "brain-life/app-connectome-evaluator",
             //remove_date: remove_date,
             config: {
                 input_fe: "../"+submit_tasks.life._id+"/output_fe.mat",

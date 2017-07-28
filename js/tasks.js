@@ -4,17 +4,13 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     scaMessage.show(toaster);//doesn't work if it's placed in PageController (why!?)
     $scope.$parent.active_menu = "tasks";
 
-    $scope.instances = []; //list of all connectome-data-comparison tasks
+    $scope.instances = []; 
     $scope.selected = null;
     $scope.tasks = {};
 
     //load all submitted instances
     $http.get($scope.appconf.wf_api+"/instance", {params: {
         find: {
-            //workflow_id: "sca-wf-conneval",
-            //service: "soichih/sca-service-connectome-data-comparison",
-            //status: { $in: ["running", "requested", "failed", "finished"] },
-            //"config.workflow": "brain-life."+$scope.appconf.terminal_task,
             "config.workflow": {$regex: "^brain-life"},
             "config.removing": {$exists: false},
         },
@@ -59,17 +55,15 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.get($scope.appconf.wf_api+"/task", {params: {
             find: {
                 instance_id: instance._id,
-            }
+            },
+            sort: 'create_date',
         }}).then(function(res) {
             $scope.tasks = [];
             $scope.taskbyname = {};
             res.data.tasks.forEach(function(task) { 
-                //debug... I won't need this for long
-                if(task.name == "connectome-comparison") task.name = "eval";
-                if(task.name == "neuro-tracking") task.name = "tracking";
-                
                 //ignore some pre-submit tasks..
                 if(task.name == "downloading") return;
+                if(task.name == "brainlife.upload") return;
                 if(task.name == "validation") return;
                 $scope.taskbyname[task.name] = task; 
                 $scope.tasks.push(task);

@@ -55,7 +55,6 @@ app.directive('transferUi', function(appconf, toaster, $http) {
         templateUrl: 't/transferui.html',
         scope: { 
             form: '=',
-            instance: '=',
             resources: '=',
             id: '=',
             ngfpattern: '<',
@@ -90,7 +89,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
 
                 //submit transfer request first
                 $http.post(appconf.wf_api+"/task", {
-                    instance_id: $scope.instance._id,
+                    instance_id: $scope.form.instance._id,
                     name: "downloading",
                     desc: "downloading "+url,
                     service: "soichih/sca-product-raw",
@@ -116,7 +115,6 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     console.dir(type);
                     return toaster.error("Please select a correct file type");
                 }
-                var path = $scope.instance._id+"/upload/"+file.name;
                 var processing = {
                     name: file.name,
                     size: file.size,
@@ -124,11 +122,12 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     progress: 0,
                 };
                 $scope.form.processing[type] = processing;
-
+                   
                 //do upload
                 var xhr = new XMLHttpRequest();
-                processing.xhr = xhr; //so that I can abort it
-                xhr.open("POST", appconf.wf_api+"/resource/upload/"+$scope.resources.validator._id+"/"+btoa(path));
+                processing.xhr = xhr; //so that I can abort i
+                var path = $scope.form.instance._id+"/"+$scope.form.upload_task._id+"/"+file.name;
+                xhr.open("POST", appconf.wf_api+"/resource/upload/"+$scope.form.upload_task.resource_id+"/"+btoa(path));
                 var jwt = localStorage.getItem(appconf.jwt_id);
                 xhr.setRequestHeader("Authorization", "Bearer "+jwt);
                 xhr.upload.addEventListener("progress", function(evt) {
@@ -143,7 +142,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                         processing.done = true;
 
                         if(evt.target.status == "200") {
-                            $scope.form[type] = "../upload/"+file.name;
+                            $scope.form[type] = "../"+$scope.form.upload_task._id+"/"+file.name;
                         } else {
                             var msg = JSON.parse(evt.target.response);
                             toaster.error(msg.message||"Failed to upload");
@@ -175,6 +174,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                             delete processing.url;
                             processing.done = true;
                             $scope.form[type] = "../"+task._id+"/"+processing.name;
+                            $scope.form.deps.push(task._id);
                         }
                         if(task.status == "failed") {
                             delete $scope.form.processing[type];

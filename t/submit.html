@@ -86,23 +86,23 @@
                         <div ng-if="appconf.inputs.t1">
                             <h3>ANATOMY</h3>
                             <h4>T1 (.NII.GZ)</h4>
-                            <transfer_ui id="'t1'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/t1.nii.gz</p>
+                            <transfer_ui id="'t1'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_t1.nii.gz</p>
                         </div><!--t1-->
 
                         <div ng-if="appconf.inputs.dwi">
                             <h3>Diffusion</h3>
                             <h4>DWI (.nii.gz)</h4>     
-                            <transfer_ui id="'dwi'" form="form" instance="form.instance" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz</p>
+                            <transfer_ui id="'dwi'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.nii.gz</p>
 
                             <h4>bvecs</h4>     
-                            <transfer_ui id="'bvecs'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs</p>
+                            <transfer_ui id="'bvecs'" form="form" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvecs</p>
 
                             <h4>bvals</h4>     
-                            <transfer_ui id="'bvals'" form="form" instance="form.instance" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample http://xd-login.opensciencegrid.org/scratch/hayashis/conneval/life_demo_scan1_subject1_b2000_150dirs_stanford.bvals</p>
+                            <transfer_ui id="'bvals'" form="form" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
+                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvals</p>
                         </div><!--dwi-->
                     </div>
                 </div><!--container-->
