@@ -84,6 +84,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     url: url,
                     name: filename,
                     type: type,
+                    status: "",
                 };
                 $scope.form.processing[type] = processing;
 
@@ -97,8 +98,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     config: {
                         download: [ 
                             {
-                                url: url,
-                                dir: "./",
+                                url: url, dir: "./",
                             }
                         ]
                     },
@@ -168,6 +168,7 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                     var processing = $scope.form.processing[type];
                     if(!processing) return; //don't care if we don't have
                     if(task._id == processing.download_task_id) {
+                        processing.status = task.status_msg;
                         if(task.status == "finished") {
                             //handle download end
                             if(!processing.url) return; //downlaod complete already handled
