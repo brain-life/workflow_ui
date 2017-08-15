@@ -77,33 +77,33 @@
                         <p class="alert alert-warning">TODO - not yet implemented</p>
                     </div>
 
-                    <!--
-                    <div ng-if="form.datatype == 'ind' && !resources.upload" class="form-section">
-                        <p alert="alert alert-danger">Backend computing resource is currently not available.</p>
-                    </div>
-                    -->
                     <div ng-if="form.datatype == 'ind'" class="form-section">
-                        <div ng-if="appconf.inputs.t1">
-                            <h3>ANATOMY</h3>
-                            <h4>T1 (.NII.GZ)</h4>
-                            <transfer_ui id="'t1'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_t1.nii.gz</p>
-                        </div><!--t1-->
+                        <p ng-if="!form.upload_task" class="alert alert-info">
+                            <i style="font-size: 150%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Preparing for upload... 
+                        </p>
+                        <div ng-if="form.upload_task">
+                            <div ng-if="appconf.inputs.t1">
+                                <h3>ANATOMY</h3>
+                                <h4>T1 (.NII.GZ)</h4>
+                                <transfer_ui id="'t1'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                                <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_t1.nii.gz</p>
+                            </div><!--t1-->
 
-                        <div ng-if="appconf.inputs.dwi">
-                            <h3>Diffusion</h3>
-                            <h4>DWI (.nii.gz)</h4>     
-                            <transfer_ui id="'dwi'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.nii.gz</p>
+                            <div ng-if="appconf.inputs.dwi">
+                                <h3>Diffusion</h3>
+                                <h4>DWI (.nii.gz)</h4>     
+                                <transfer_ui id="'dwi'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                                <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.nii.gz</p>
 
-                            <h4>bvecs</h4>     
-                            <transfer_ui id="'bvecs'" form="form" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvecs</p>
+                                <h4>bvecs</h4>     
+                                <transfer_ui id="'bvecs'" form="form" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
+                                <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvecs</p>
 
-                            <h4>bvals</h4>     
-                            <transfer_ui id="'bvals'" form="form" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
-                            <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvals</p>
-                        </div><!--dwi-->
+                                <h4>bvals</h4>     
+                                <transfer_ui id="'bvals'" form="form" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
+                                <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvals</p>
+                            </div><!--dwi-->
+                        </div>
                     </div>
                 </div><!--container-->
                 <div ng-if="isvalid()">

@@ -58,6 +58,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 		.then(function(res) {
 			console.dir(res);
 			var task = res.data.tasks[0];
+			if(task.status == "running") return cb(null, task);
 			if(task.status == "finished") return cb(null, task);
 			if(task.status == "failed") return cb(task.status_msg);
 			console.log("waiting for job to finish..", task.status);
@@ -86,9 +87,10 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 preferred_resource_id: $scope.resources.validator._id, //where connectome validator runs
             })
         }).then(function(res) {
+            //we need to wait for the task to start so that we know the resource id.
 			wait_for_task(res.data.task._id, function(err, task) {	
 				if(err) $scope.toast_error(err);
-				console.log("created upload_task");
+				console.log("upload_task is ready");
 				$scope.form.upload_task = task;
                 $scope.form.deps.push(task._id);
 				console.dir(task);
