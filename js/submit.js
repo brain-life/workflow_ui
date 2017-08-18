@@ -380,6 +380,10 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
                 fibers: $scope.form.config.tracking.fibers,
                 fibers_max: $scope.form.config.tracking.fibers_max,
+
+                do_tensor: true,
+                do_probabilistic: true,
+                do_deterministic: true,
                 
                 //https://github.com/brain-life/app-ensembletracking/issues/1
                 //lmax: $scope.form.config.tracking.lmax,
