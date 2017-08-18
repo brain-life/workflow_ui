@@ -407,7 +407,7 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
                             sizemode: 'area',
                             size: 20, 
                             opacity: 0.9,
-                            color: '#008cba',
+                            color: '#2693ff',
                         }
                     });
                     cb(null, data);

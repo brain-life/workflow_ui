@@ -42,7 +42,7 @@
     "reconnectingwebsocket": "^1.0.0",
     "sca-ng-wf": "^1.0.17",
     "sca-product-raw": "^1.0.8",
-    "sca-shared": "^0.0.10",
+    "sca-shared": "^0.0.11",
     "stats.js": "^0.17.0",
     "three": "^0.84.0",
     "ui-select": "^0.19.4"

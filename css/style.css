@@ -13,7 +13,7 @@ h2 {
 h2.page-heading {
   padding-bottom: 8px;
   border-bottom: 1px solid #ddd;
-  color: #008cba;
+  color: #2693ff;
 }
 h3 {
   text-transform: uppercase;
@@ -22,7 +22,7 @@ h3 {
 }
 i[mw-confirm-click]:hover,
 i[onclick]:hover {
-  color: #008cba;
+  color: #2693ff;
   cursor: pointer;
 }
 .static-content h1 {
@@ -118,12 +118,11 @@ i[onclick]:hover {
   font-size: 12px;
 }
 .workflow .workflow-item.active {
-  color: #008cba;
+  color: #2693ff;
 }
 .workflow .workflow-item.active .item-header-badge {
   color: white;
-  background-color: #008cba;
-  /*border: none;*/
+  background-color: #2693ff;
 }
 .workflow .workflow-item .item-header-status .item-header-badge,
 .workflow .workflow-item .item-header-status .item-header-task {
@@ -239,7 +238,7 @@ vtkview canvas {
 }
 .file:hover {
   background-color: #eee;
-  color: #008cba;
+  color: #2693ff;
   cursor: pointer;
 }
 .fixed-top,
