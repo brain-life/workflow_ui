@@ -23,7 +23,21 @@ h3 {
 i[mw-confirm-click]:hover,
 i[onclick]:hover {
   color: #2693ff;
-  cursor: pointer;
+}
+a {
+  color: #2693ff;
+}
+.btn-primary {
+  background-color: #2693ff;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #159957;
+}
+a:hover,
+a:focus {
+  color: ##2693ff;
+  text-decoration: underline;
 }
 .static-content h1 {
   background-color: #555;

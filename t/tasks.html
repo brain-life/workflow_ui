@@ -235,13 +235,14 @@
     <div class="row">
         <div class="col-md-6">
             <h4>Uncleaned</h4>
-            <img ng-src="{{download_url(task, 'uncleaned_edge_density.png')}}" width="100%">
+            <img ng-src="{{download_url(task, 'output/edge_density.png')}}" width="100%">
         </div>
         <div class="col-md-6">
             <h4>Cleaned</h4>
-            <img ng-src="{{download_url(task, 'cleaned_edge_density.png')}}" width="100%">
+            <img ng-src="{{download_url(task, 'output/edge_LiFE.png')}}" width="100%">
         </div>
     </div>
+    <!--
     <h3>Earth Mover's Distance (EMD)</h3>
     <div class="row">
         <div class="col-md-6">
@@ -253,6 +254,7 @@
             <img ng-src="{{download_url(task, 'cleaned_edge_emd.png')}}" width="100%">
         </div>
     </div>
+    -->
 </script>
 
 <script type='text/ng-template' id="afq">
