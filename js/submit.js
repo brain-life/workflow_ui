@@ -379,7 +379,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 freesurfer: "../"+submit_tasks.freesurfer._id+"/output",
 
                 fibers: $scope.form.config.tracking.fibers,
-                fibers_max: $scope.form.config.tracking.fibers_max,
+                //fibers_max: $scope.form.config.tracking.fibers_max,
 
                 do_tensor: true,
                 do_probabilistic: true,

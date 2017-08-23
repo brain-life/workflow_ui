@@ -55,8 +55,7 @@ angular.module('app.config', [])
             fibers: 500000,  
             fibers_max: 1000000,  
             */
-            fibers: 60000,  
-            fibers_max: 100000,  
+            fibers: 660000,  
         },
         life: {
             discretization: 360,  
