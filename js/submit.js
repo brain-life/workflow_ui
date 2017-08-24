@@ -406,16 +406,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "brain-life/app-life",
             //remove_date: remove_date,
             config: {
-                diff: {
-                    dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
-                    bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
-                    bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
-                },
-                anatomy: {
-                    t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
-                },
-                //trac: { ptck: "../"+submit_tasks.tracking._id+"/output.SD_PROB.tck" },
-                trac: { ptck: "../"+submit_tasks.tracking._id+"/track.tck" },
+                dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
+                //bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
+                //bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
+                //t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
+                track: "../"+submit_tasks.tracking._id+"/track.tck",
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
             },
