@@ -472,6 +472,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
                 dt6: "../"+submit_tasks.dtiinit._id+"/dti_trilin/dt6.mat",
+                useinterhemisphericsplit: false,
+                remove_zero_weighted_fibers: "before",
             },
             deps: [submit_tasks.life._id, submit_tasks.dtiinit._id],
         })
