@@ -467,11 +467,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
         $http.post($scope.appconf.wf_api+"/task", {
             instance_id: $scope.form.instance._id,
             name: "afq",
-            desc: "Generate tracts segments from fe-structure and dt6",
+            desc: "Generate tracts segments from fe-structure and dtiInit output",
             service: "brain-life/app-tractclassification",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
-                dt6: "../"+submit_tasks.dtiinit._id+"/dti_trilin/dt6.mat",
+                dti: "../"+submit_tasks.dtiinit._id+"/dti_trilin",
                 useinterhemisphericsplit: false,
                 remove_zero_weighted_fibers: "before",
             },
