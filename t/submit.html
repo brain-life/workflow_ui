@@ -38,12 +38,6 @@
                 </div>
 
                 <div class="fixed-top-under">
-                    <!-- TODO - we need to check all resources used by brain-life-->
-                    <!--
-                    <p ng-if="!resources.validator" class="alert alert-danger">
-                        Backend computing resource is currently not available (maybe maintenance day?) You may not be able to submit new task
-                    </p>
-                    -->
                     <h3 style="margin-top: 0px;">Name</h3>
                     <input type="text" class="form-control" focus-me="true" ng-model="form.name" placeholder="Name for this process"></input>
 
@@ -85,22 +79,22 @@
                             <div ng-if="appconf.inputs.t1">
                                 <h3>ANATOMY</h3>
                                 <h4>T1 (.NII.GZ)</h4>
-                                <transfer_ui id="'t1'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                                <transfer_ui id="'t1'" form="form" ngfpattern="'.nii.gz'"></transfer_ui>
                                 <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_t1.nii.gz</p>
                             </div><!--t1-->
 
                             <div ng-if="appconf.inputs.dwi">
                                 <h3>Diffusion</h3>
                                 <h4>DWI (.nii.gz)</h4>     
-                                <transfer_ui id="'dwi'" form="form" resources="resources" ngfpattern="'.nii.gz'"></transfer_ui>
+                                <transfer_ui id="'dwi'" form="form" ngfpattern="'.nii.gz'"></transfer_ui>
                                 <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.nii.gz</p>
 
                                 <h4>bvecs</h4>     
-                                <transfer_ui id="'bvecs'" form="form" resources="resources" ngfpattern-dis="'.bvecs'"></transfer_ui>
+                                <transfer_ui id="'bvecs'" form="form" ngfpattern-dis="'.bvecs'"></transfer_ui>
                                 <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvecs</p>
 
                                 <h4>bvals</h4>     
-                                <transfer_ui id="'bvals'" form="form" resources="resources" ngfpattern-dis="'.bvals'"></transfer_ui>
+                                <transfer_ui id="'bvals'" form="form" ngfpattern-dis="'.bvals'"></transfer_ui>
                                 <p class="help-block" ng-if="appconf.debug">Sample https://brain-life.org/ui/sample/158035_dwi.bvals</p>
                             </div><!--dwi-->
                         </div>

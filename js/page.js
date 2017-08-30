@@ -45,22 +45,6 @@ app.controller('PageController', function($scope, appconf, jwtHelper, $location,
         $(".subbar").toggleClass('animated slideInLeft subbar-shown');
     }
 
-    //load resources that user has access
-    $scope.resources = {
-        //sca_product_raw: null, //used to copy stuff around
-        validator: null, //used to upload files and validate
-    };
-
-    if($scope.user) {
-        $http.get($scope.appconf.wf_api+"/resource/best", {params: {
-            service: "soichih/sca-service-conneval-validate",
-        }}).then(function(res) {
-            //TODO - what if we don't find any resource?
-
-            $scope.resources.validator = res.data.resource;
-        }, console.dir);
-    }
-
     $scope.toast_error = function(res) {
         console.dir(res);
         if(res.data && res.data.message) toaster.error(res.data.message);

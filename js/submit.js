@@ -34,6 +34,11 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     scaMessage.show(toaster);//doesn't work if it's placed in PageController (why!?)
     $scope.$parent.active_menu = "submit";
     $scope.form = submitform.get();
+   
+    //load resources that user has access
+    $scope.resources = {
+        validator: null, //used to upload files and validate
+    };
 
     //remove date used to submit various services
     var remove_date = new Date();
@@ -78,6 +83,13 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             $scope.form.instance = res.data;
             console.dir("created new instance");
             console.dir($scope.form.instance);
+
+            //load validator 
+            return $http.get($scope.appconf.wf_api+"/resource/best", {params: {
+                service: "soichih/sca-service-conneval-validate", //TODO should be using the new version?
+            }})
+        }).then(function(res) {
+            $scope.resources.validator = res.data.resource;
             
             //submit task to upload data to
             return $http.post($scope.appconf.wf_api+"/task", {
@@ -276,8 +288,6 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             config: {
                 copy: copy,
             },
-            //preferred_resource_id: $scope.resources.validator._id, //where connectome validator runs
-            //deps: [validation_task._id]
 			deps: $scope.form.deps,
         })
         .then(function(res) {
@@ -414,7 +424,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
             },
-            deps: [submit_tasks.tracking._id, submit_tasks.dtiinit._id, submit_tasks.input._id],
+            deps: [submit_tasks.tracking._id, submit_tasks.dtiinit._id /*, submit_tasks.input._id*/],
         })
         .then(function(res) {
             var task = res.data.task;

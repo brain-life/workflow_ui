@@ -55,7 +55,6 @@ app.directive('transferUi', function(appconf, toaster, $http) {
         templateUrl: 't/transferui.html',
         scope: { 
             form: '=',
-            resources: '=',
             id: '=',
             ngfpattern: '<',
         },
