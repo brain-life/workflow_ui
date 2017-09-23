@@ -118,13 +118,13 @@
                 </div>
                 <div class="fixed-top-under">
 
-                    <div ng-if="!tasks.validation.products[0].results">
+                    <div ng-if="!tasks.validation.product.results">
                         <!-- no results yet. must be running validation or failed-->
                         <div ng-if="tasks.validation.status == 'failed'">
                             <p class="alert alert-danger"><b>Validation Failed</b> {{tasks.validation.status_msg}}</p>
                         </div>
 
-                        <div ng-if="!tasks.validation.products">
+                        <div ng-if="!tasks.validation.product">
                             <h3><i style="font-size: 150%;" class="fa fa-cog fa-spin" aria-hidden="true"></i> Validating ... </h3>
                             <p class="help-block">{{tasks.validation.status_msg}}</p>
                         </div>
@@ -156,15 +156,15 @@
                     </div>
 
                     <!--has validation product!-->
-                    <div ng-if="tasks.validation.products[0].results">
+                    <div ng-if="tasks.validation.product.results">
                         <!--display what to do-->
-                        <div ng-if="tasks.validation.products[0].results.errors.length == 0">
+                        <div ng-if="tasks.validation.product.results.errors.length == 0">
                             <p class="alert alert-success">
                                 Congratulations! Your data passed all of our checks. Please proceed.
                             </p>
                         </div>
 
-                        <div ng-if="tasks.validation.products[0].results.errors.length > 0">
+                        <div ng-if="tasks.validation.product.results.errors.length > 0">
                             <p class="alert alert-danger">
                                 <i class="fa fa-exclamation" aria-hidden="true"></i> Validation Failed.
                                 Please go back and correct problems.
@@ -174,23 +174,23 @@
                         <!--display errors / warnings -->
                         <ul>
                             <li class="text-danger" style="padding: 10px;" 
-                                ng-repeat="error in tasks.validation.products[0].results.errors">
+                                ng-repeat="error in tasks.validation.product.results.errors">
                                 {{error}}
                             </li>
                             <li class="text-warning" style="padding: 10px;" 
-                                ng-repeat="warning in tasks.validation.products[0].results.warnings">
+                                ng-repeat="warning in tasks.validation.product.results.warnings">
                                 {{warning}}
                             </li>
                         </ul>
 
                         <!--display mrinfo-->
-                        <div ng-if="tasks.validation.products[0].results.t1_mrinfo">
+                        <div ng-if="tasks.validation.product.results.t1_mrinfo">
                             <h3>T1 mrinfo</h3>
-                            <pre>{{tasks.validation.products[0].results.t1_mrinfo}}</pre>
+                            <pre>{{tasks.validation.product.results.t1_mrinfo}}</pre>
                         </div>
-                        <div ng-if="tasks.validation.products[0].results.dwi_mrinfo">
+                        <div ng-if="tasks.validation.product.results.dwi_mrinfo">
                             <h3>DWI mrinfo</h3>
-                            <pre>{{tasks.validation.products[0].results.dwi_mrinfo}}</pre>
+                            <pre>{{tasks.validation.product.results.dwi_mrinfo}}</pre>
                         </div>
                     </div>
                 </div>

@@ -183,7 +183,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 if(task.name == "validation") {
                     console.log("validation task updated", task);
                     //compute validation status only check for errors
-                    if(task.status == 'finished' && task.products[0].results.errors.length == 0) {
+                    if(task.status == 'finished' && task.product.results.errors.length == 0) {
                         $scope.form.validated = true;
                     }
                 }
