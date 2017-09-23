@@ -382,9 +382,10 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "brain-life/app-ensembletracking",
             //remove_date: remove_date,
             config: {
-                dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
-                bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
-                bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
+                dtiinit: "../"+submit_tasks.dtiinit._id,
+                //dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
+                //bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
+                //bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
 
                 freesurfer: "../"+submit_tasks.freesurfer._id+"/output",
 
@@ -416,10 +417,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "brain-life/app-life",
             //remove_date: remove_date,
             config: {
-                dwi: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.nii.gz",
-                //bvals: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvals",
-                //bvecs: "../"+submit_tasks.dtiinit._id+"/dwi_aligned_trilin_noMEC.bvecs",
-                //t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
+                dtiinit: "../"+submit_tasks.dtiinit._id,
                 track: "../"+submit_tasks.tracking._id+"/track.tck",
                 life_discretization: $scope.form.config.life.discretization,
                 num_iterations: $scope.form.config.life.num_iteration,
@@ -476,7 +474,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             service: "brain-life/app-tractclassification",
             config: {
                 fe: "../"+submit_tasks.life._id+"/output_fe.mat",
-                dti: "../"+submit_tasks.dtiinit._id+"/dti_trilin",
+                dtiinit: "../"+submit_tasks.dtiinit._id,
                 useinterhemisphericsplit: false,
                 remove_zero_weighted_fibers: "before",
             },
