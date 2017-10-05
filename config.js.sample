@@ -88,13 +88,13 @@ angular.module('app.config', [])
             } 
         },
         sample3: {
-            name: "lifebid/2t1/HCP/110411",
-            desc: "Sample data from IU lifebid/2t1",
+            name: "HCP1200/3T/108323",
+            desc: "Sample data from HCP1200",
             files: {
-                t1: "/N/u/hayashis/Karst/testdata/samples/sample3/anatomy/T1w_acpc_dc_restore_1p25.nii.gz",
-                dwi: "/N/u/hayashis/Karst/testdata/samples/sample3/diffusion_data/dwi_data_b2000.nii.gz",
-                bvecs: "/N/u/hayashis/Karst/testdata/samples/sample3/diffusion_data/dwi_data_b2000.bvecs",
-                bvals: "/N/u/hayashis/Karst/testdata/samples/sample3/diffusion_data/dwi_data_b2000.bvals",
+                t1: "/N/u/hayashis/Karst/testdata/108323/anat/t1.nii.gz",
+                dwi: "/N/u/hayashis/Karst/testdata/108323/dwi/dwi.nii.gz",
+                bvecs: "/N/u/hayashis/Karst/testdata/108323/dwi/dwi.bvecs",
+                bvals: "/N/u/hayashis/Karst/testdata/108323/dwi/dwi.bvals",
             } 
         }
     },

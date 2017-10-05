@@ -66,10 +66,10 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 			if(task.status == "running") return cb(null, task);
 			if(task.status == "finished") return cb(null, task);
 			if(task.status == "failed") return cb(task.status_msg);
-			console.log("waiting for job to finish..", task.status);
+			console.log("waiting for job to finish..", task.name, task.status);
 			setTimeout(function() {
 				wait_for_task(id, cb);
-			}, 500);
+			}, 1000);
 		});
 	}
 
