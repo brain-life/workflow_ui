@@ -339,7 +339,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
                 bvals: "../"+submit_tasks.input._id+"/data/dwi.bvals",
                 bvecs: "../"+submit_tasks.input._id+"/data/dwi.bvecs",
                 phaseEncodeDir: "2",
-                resolutionn: "default",
+                resolution: "default",
             },
             deps: [submit_tasks.align._id, submit_tasks.input._id],
         })
