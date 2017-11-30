@@ -262,7 +262,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
 
     var submit_tasks = {}; //stores tasks submitted
     $scope.submit = function() {
-        //submit_align();
+        $scope.step = "submitting"; 
         submit_input();
     }
 
