@@ -303,10 +303,12 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             instance_id: $scope.form.instance._id,
             name: "align",
             desc: "Align brains(t1) to the AC-PC plane by guessing their location given MNI coordinates",
-            service: "brain-life/app-autoalignacpc",
+            //service: "brain-life/app-autoalignacpc",
+            service: "brain-life/app-acpcART",
             config: {
+                crop_reorient: true,
                 t1: "../"+submit_tasks.input._id+"/data/t1.nii.gz",
-                coords: [ [0,0,0], [0, -16, 0], [0, -8, 40] ]
+                //coords: [ [0,0,0], [0, -16, 0], [0, -8, 40] ]
             },
             deps: [submit_tasks.input._id],
         })
