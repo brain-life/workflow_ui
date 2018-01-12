@@ -41,13 +41,6 @@
                         {{instance.name}}
                     </small>
                 </div>
-                <!--
-                    <p>
-                        <code>dwi</code>{{instance.config._form.dwi|filename}}
-                        <code>t1</code>{{instance.config._form.t1|filename}}
-                        {{instance.desc}}
-                    </p>
-                -->
             </div>
         </div><!--workflow-->
         <ng-include src="'t/improve.html'"></ng-include>
@@ -196,13 +189,11 @@
     <div class="row">
         <div class="col-lg-6">
             <h4>Left Hemisphere</h4>
-            <vtkview resourceid="task.resource_id" 
-                url="task.instance_id+'/'+task._id+'/lh.10.vtk'"></vtkview>
+            <vtkview taskid="task._id" url="'lh.10.vtk'"></vtkview>
         </div>
         <div class="col-lg-6">
             <h4>Right Hemishpere</h4>
-            <vtkview resourceid="task.resource_id" 
-                url="task.instance_id+'/'+task._id+'/rh.10.vtk'"></vtkview>
+            <vtkview taskid="task._id" url="'rh.10.vtk'"></vtkview>
         </div>
     </div>
 </script>

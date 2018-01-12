@@ -125,8 +125,10 @@ app.directive('transferUi', function(appconf, toaster, $http) {
                 //do upload
                 var xhr = new XMLHttpRequest();
                 processing.xhr = xhr; //so that I can abort i
-                var path = $scope.form.instance._id+"/"+$scope.form.upload_task._id+"/"+file.name;
-                xhr.open("POST", appconf.wf_api+"/resource/upload/"+$scope.form.upload_task.resource_id+"/"+btoa(path));
+                //var path = $scope.form.instance._id+"/"+$scope.form.upload_task._id+"/"+file.name;
+                //var path = file.name;
+                //xhr.open("POST", appconf.wf_api+"/resource/upload/"+$scope.form.upload_task.resource_id+"/"+btoa(path));
+                xhr.open("POST", appconf.wf_api+"/task/upload/"+$scope.form.upload_task._id+"?p="+encodeURIComponent(file.name));
                 var jwt = localStorage.getItem(appconf.jwt_id);
                 xhr.setRequestHeader("Authorization", "Bearer "+jwt);
                 xhr.upload.addEventListener("progress", function(evt) {
@@ -208,13 +210,11 @@ app.directive('file', function(appconf) {
         controller: function($scope) {
             $scope.download = function() {
                 var jwt = localStorage.getItem(appconf.jwt_id);
-                var url = $scope.task.instance_id+"/"+$scope.task._id;
-                if($scope.path) url += "/"+$scope.path;
-                console.log(url);
-                document.location = appconf.wf_api+"/resource/download"+
-                    "?r="+$scope.task.resource_id+
-                    "&p="+encodeURIComponent(url)+
-                    "&at="+jwt;
+                //var url = $scope.task.instance_id+"/"+$scope.task._id;
+                var url = "";
+                if($scope.path) url += $scope.path;
+                document.location = appconf.wf_api+"/task/download/"+$scope.task._id+
+                    "?p="+encodeURIComponent(url)+"&at="+jwt;
             }
         }
     }
@@ -230,9 +230,9 @@ app.directive('lifeplot', function(appconf, $http) {
             if(scope.task.status == "finished" && !element.loaded) {
                 element.loaded = true;
                 //load life_results.json
-                var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/life_results.json");
+                var path = encodeURIComponent("life_results.json");
                 //var jwt = localStorage.getItem(appconf.jwt_id);
-                $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
+                $http.get(appconf.wf_api+"/task/download/"+scope.task._id+"?p="+path)
                 .then(function(res) {
                     if(scope.destroyed) return; 
 
@@ -285,14 +285,11 @@ app.directive('dtiinitplot', function(appconf, $http) {
         scope: { task: '<' },
         link: function(scope, element, attrs) {
             var jwt = localStorage.getItem(appconf.jwt_id);
-            var urlbase = appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&at="+jwt;
-            var base = scope.task.instance_id+"/"+scope.task._id;
+            var urlbase = appconf.wf_api+"/task/download/"+scope.task._id+"?at="+jwt;
             scope.plots = [
                 {
-                    //label: "ecXform", 
-                    //url: urlbase+"&p="+encodeURIComponent(base+"/dwi_aligned_trilin_ecXform.png"),
                     label: "T1 PDD", 
-                    url: urlbase+"&p="+encodeURIComponent(base+"/dti/t1pdd.png"),
+                    url: urlbase+"&p="+encodeURIComponent("dti/t1pdd.png"),
                 },
             ];
             scope.open = function(plot) {
@@ -354,8 +351,9 @@ app.directive('comparisonplot', function(appconf, $http, vtk) {
             
             function load_nnz(cb) {
                 //load out.json (should move nnz / rmse to products.json?)
-                var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/out.json");
-                $http.get(appconf.wf_api+"/resource/download?r="+scope.task.resource_id+"&p="+path)
+                //var path = encodeURIComponent(scope.task.instance_id+"/"+scope.task._id+"/out.json");
+                var path = encodeURIComponent("out.json");
+                $http.get(appconf.wf_api+"/task/download/"+scope.task._id+"?p="+path)
                 .then(function(res) {
                     if(scope.destroyed) return;
                     //console.log("out.json");
@@ -452,19 +450,17 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                 var jwt = localStorage.getItem(appconf.jwt_id);
 
                 //load left
-                var base = scope.freesurfer.instance_id+"/"+scope.freesurfer._id;
-                var path = encodeURIComponent(base+"/lh.10.vtk");
-                vtk.get(appconf.wf_api+"/resource/download?r="+rid+"&p="+path+"&at="+jwt).then(function(geometry) {
-                    //var material = new THREE.MeshLambertMaterial({color: 0xffcc99, transparent: true, opacity: 0.5});
+                //var base = scope.freesurfer.instance_id+"/"+scope.freesurfer._id;
+                var path = encodeURIComponent("lh.10.vtk");
+                vtk.get(appconf.wf_api+"/task/download/"+scope.freesurfer._id+"?p="+path+"&at="+jwt).then(function(geometry) {
                     var material = new THREE.MeshBasicMaterial();
                     var mesh = new THREE.Mesh( geometry, material );
                     mesh.rotation.x = -Math.PI/2;
                     scene_back.add(mesh);
                 });
                 //load right
-                var path = encodeURIComponent(base+"/rh.10.vtk");
-                vtk.get(appconf.wf_api+"/resource/download?r="+rid+"&p="+path+"&at="+jwt).then(function(geometry) {
-                    //var material = new THREE.MeshLambertMaterial({color: 0xffcc99, transparent: true, opacity: 0.5});
+                var path = encodeURIComponent("rh.10.vtk");
+                vtk.get(appconf.wf_api+"/task/download/"+scope.freesurfer._id+"?p="+path+"&at="+jwt).then(function(geometry) {
                     var material = new THREE.MeshBasicMaterial();
                     var mesh = new THREE.Mesh( geometry, material );
                     mesh.rotation.x = -Math.PI/2;
@@ -473,11 +469,10 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                 
                 //TODO - 21 might not be the correct number of tracts
                 var afq_rid = scope.afq.resource_id;
-                var afq_base = scope.afq.instance_id+"/"+scope.afq._id;
+                //var afq_base = scope.afq.instance_id+"/"+scope.afq._id;
                 for(var i = 1;i < 21;++i) {
-                    //load_tract("tracts/tracts_110411/tracts."+i+".json", function(err, mesh) {
-                    var path = encodeURIComponent(afq_base+"/tracts/"+i+".json");
-                    load_tract(appconf.wf_api+"/resource/download?r="+afq_rid+"&p="+path+"&at="+jwt, function(err, mesh) {
+                    var path = encodeURIComponent("tracts/"+i+".json");
+                    load_tract(appconf.wf_api+"/task/download/"+scope.afq._id+"?p="+path+"&at="+jwt, function(err, mesh) {
                         scene.add(mesh);
                     });
                 }
@@ -566,7 +561,7 @@ app.directive('vtkview', function(appconf, $http, vtk) {
         template: '',
         scope: { 
             url: '<',
-            resourceid: '<' 
+            taskid: '<' 
         },
         link: function(scope, element, attrs) {
 
@@ -634,7 +629,7 @@ app.directive('vtkview', function(appconf, $http, vtk) {
 
             var p = encodeURIComponent(scope.url);
             var jwt = localStorage.getItem(appconf.jwt_id);
-            vtk.get(appconf.wf_api+"/resource/download?r="+scope.resourceid+"&p="+p+"&at="+jwt).then(function(geometry) {
+            vtk.get(appconf.wf_api+"/task/download/"+scope.taskid+"?p="+p+"&at="+jwt).then(function(geometry) {
                 var material = new THREE.MeshLambertMaterial( { color: 0xcc9966 } );
                 var mesh = new THREE.Mesh( geometry, material );
                 mesh.rotation.x = -Math.PI/2;
