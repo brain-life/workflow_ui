@@ -126,7 +126,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             eventws.send(JSON.stringify({
                 bind: {
                     ex: "wf.task",
-                    key: $scope.user.sub+"."+$scope.selected._id+".#",
+                    key: $scope.selected._id+".#",
                 }
             }));
         }
