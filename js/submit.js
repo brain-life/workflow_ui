@@ -384,6 +384,7 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
             name: "tracking",
             desc: "Ensemble Tracking white matter fascicles (1 h compute time).",
             service: "brain-life/app-ensembletracking",
+            service_branch: "singularity",
             //remove_date: remove_date,
             config: {
                 dtiinit: "../"+submit_tasks.dtiinit._id,
