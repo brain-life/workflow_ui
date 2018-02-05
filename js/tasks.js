@@ -89,8 +89,8 @@ function($scope, toaster, $http, jwtHelper, $routeParams, $location, $timeout, s
     }    
     $scope.download_url = function(task, path) {
         var jwt = localStorage.getItem($scope.appconf.jwt_id);
-        return $scope.appconf.wf_api+"/resource/download?r="+task.resource_id+
-            "&p="+encodeURIComponent(task.instance_id+"/"+task._id+"/"+path)+"&at="+jwt;
+        return $scope.appconf.wf_api+"/task/download/"+task._id+
+            "?p="+encodeURIComponent(path)+"&at="+jwt;
     } 
 
     function calc_inst_status() {
