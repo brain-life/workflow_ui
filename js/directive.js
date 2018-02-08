@@ -220,7 +220,6 @@ app.directive('file', function(appconf) {
     }
 });
 
-
 app.directive('lifeplot', function(appconf, $http) {
     return {
         templateUrl: 't/lifeplot.html',
@@ -543,10 +542,8 @@ app.directive('tractsview', function(appconf, $http, vtk) {
                         opacity: 0.7,
                     } );
                     var mesh = new THREE.LineSegments( geometry, material );
+                    //somehow I need to rotate 90deg
                     mesh.rotation.x = -Math.PI/2;
-                    //temporarly hack to fit fascicles inside
-                    mesh.position.z = -20;
-                    mesh.position.y = -20;
 
                     cb(null, mesh);
                 });
